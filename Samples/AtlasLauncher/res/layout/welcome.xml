@@ -14,7 +14,7 @@
         android:layout_weight="1"
         app:pathColor="@android:color/white"
         app:pathWidth="2"
-        app:svg="@raw/logo_shou" />
+        app:svg="@raw/monitor" />
 
     <com.eftimoff.androipathview.PathView
         android:id="@+id/pathViewJ"
@@ -23,7 +23,7 @@
         android:layout_weight="1"
         app:pathColor="@android:color/white"
         app:pathWidth="2"
-        app:svg="@raw/logo_ji" />
+        app:svg="@raw/monitor" />
 
     <com.eftimoff.androipathview.PathView
         android:id="@+id/pathViewT"
@@ -32,7 +32,7 @@
         android:layout_weight="1"
         app:pathColor="@android:color/white"
         app:pathWidth="2"
-        app:svg="@raw/logo_tao" />
+        app:svg="@raw/monitor" />
 
     <com.eftimoff.androipathview.PathView
         android:id="@+id/pathViewB"
@@ -41,6 +41,6 @@
         android:layout_weight="1"
         app:pathColor="@android:color/white"
         app:pathWidth="2"
-        app:svg="@raw/logo_bao" />
+        app:svg="@raw/monitor" />
 
 </LinearLayout>
