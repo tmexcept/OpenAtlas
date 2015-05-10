@@ -20,12 +20,12 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEAL
  * **/
 package com.openAtlas.launcher.mirrorProvider;
 
-import com.openAtlas.boot.ProviderProxy;
-
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
+
+import com.openAtlas.boot.ProviderProxy;
 
 public class TBLocationContentProviderProxy extends ProviderProxy {
     /**

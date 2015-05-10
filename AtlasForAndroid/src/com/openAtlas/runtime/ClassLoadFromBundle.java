@@ -34,8 +34,8 @@ import org.osgi.framework.Bundle;
 import android.content.pm.PackageInfo;
 import android.text.TextUtils;
 import android.util.Log;
-import blue.stack.openAtlas.PlatformConfigure;
 
+import com.openAtlas.boot.PlatformConfigure;
 import com.openAtlas.bundleInfo.BundleInfoList;
 import com.openAtlas.framework.Atlas;
 import com.openAtlas.framework.BundleImpl;

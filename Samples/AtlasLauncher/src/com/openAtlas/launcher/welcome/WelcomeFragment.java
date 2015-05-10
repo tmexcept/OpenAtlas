@@ -45,10 +45,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AnimationUtils;
-import blue.stack.openAtlas.Globals;
-import blue.stack.openAtlas.PlatformConfigure;
 
 import com.eftimoff.androipathview.PathView;
+import com.openAtlas.boot.Globals;
+import com.openAtlas.boot.PlatformConfigure;
 import com.openAtlas.launcher.R;
 
 
@@ -300,7 +300,6 @@ public class WelcomeFragment extends Fragment implements Callback {
             this.atlasBroadCast = new BundlesInstallBroadcastReceiver();
             getActivity().registerReceiver(this.atlasBroadCast, new IntentFilter(PlatformConfigure.ACTION_BROADCAST_BUNDLES_INSTALLED));
             this.bundlestart = System.currentTimeMillis();
-           // com.taobao.android.e.a.a.start(65177, "Page_Welcome", "InstallBundle");
             this.mHandler.sendEmptyMessageDelayed(MSG_CONSUME_TIMEOUT, 4000);
         } else {
             this.mHandler.sendEmptyMessageDelayed(MSG_CONSUME_FINISH, 600);

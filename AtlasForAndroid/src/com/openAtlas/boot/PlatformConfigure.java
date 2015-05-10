@@ -19,7 +19,7 @@ FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TOR
 ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 @author BunnyBlue
 * **/
-package blue.stack.openAtlas;
+package com.openAtlas.boot;
 
 /**
  * App  Platform configuration
@@ -32,5 +32,8 @@ public class PlatformConfigure {
 	public static final String ACTION_BROADCAST_BUNDLES_INSTALLED="com.openAtlas.action.BUNDLES_INSTALLED";
 	public static final String ATLAS_APP_DIRECTORY="com.openAtlas.AppDirectory";
 	public static final String INSTALL_LOACTION="com.openAtlas.storage";
+	public static final String COM_OPENATLAS_DEBUG_BUNDLES="com.openAtlas.debug.bundles";
+	public static final String  OPENATLAS_PUBLIC_KEY="om.openAtlas.publickey";
+	
 	
 }

@@ -65,8 +65,8 @@ import org.osgi.service.startlevel.StartLevel;
 import android.annotation.SuppressLint;
 import android.os.Build;
 import android.os.Build.VERSION;
-import blue.stack.openAtlas.PlatformConfigure;
 
+import com.openAtlas.boot.PlatformConfigure;
 import com.openAtlas.framework.bundlestorage.BundleArchive;
 import com.openAtlas.log.Logger;
 import com.openAtlas.log.LoggerFactory;

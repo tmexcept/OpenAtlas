@@ -41,8 +41,8 @@ import android.os.Build.VERSION;
 import android.os.Process;
 import android.text.TextUtils;
 import android.util.Log;
-import blue.stack.openAtlas.Globals;
 
+import com.openAtlas.boot.Globals;
 import com.openAtlas.launcher.Atlaswrapper.AtlasInitializer;
 import com.openAtlas.launcher.Atlaswrapper.BundleParser;
 import com.openAtlas.launcher.android.lifecycle.PanguApplication;

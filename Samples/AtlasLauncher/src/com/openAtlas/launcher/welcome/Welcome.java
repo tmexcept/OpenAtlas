@@ -24,8 +24,8 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.os.Bundle;
 import android.view.Menu;
-import blue.stack.openAtlas.Globals;
 
+import com.openAtlas.boot.Globals;
 import com.openAtlas.launcher.R;
 import com.openAtlas.launcher.android.lifecycle.PanguActivity;
 
@@ -132,29 +132,7 @@ public class Welcome extends PanguActivity {
 		return true;
 	}
 
-	//@Override
-//	public boolean onOptionsItemSelected(MenuItem item) {
-//		// Handle action bar item clicks here. The action bar will
-//		// automatically handle clicks on the Home/Up button, so long
-//		// as you specify Component parent activity in AndroidManifest.xml.
-//		int id = item.getItemId();
-//		if (id == R.id.action_settings) {
-//
-//			{
-//
-//				Intent mIntent = null;
-//				mIntent = new Intent("com.taobao.scan.MainActivity");
-//
-//				mIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//				// mIntent.setClassName("com.taobao.scan",
-//				// "com.taobao.scan.MainActivity");
-//				BootApp.instaceApp.startActivity(mIntent);
-//
-//			}
-//			return true;
-//		}
-//		return super.onOptionsItemSelected(item);
-//	}
+
 
 	@Override
 	protected void onResume() {

@@ -107,7 +107,7 @@ public class SecurityFrameListener implements FrameworkListener {//PUT Your Publ
 
         protected void postResult(Boolean bool) {
             if (bool != null && !bool.booleanValue()) {
-                Toast.makeText(RuntimeVariables.androidApplication, "\u68c0\u6d4b\u5230\u5b89\u88c5\u6587\u4ef6\u88ab\u635f\u574f\uff0c\u8bf7\u5378\u8f7d\u540e\u91cd\u65b0\u5b89\u88c5\uff01", 1).show();
+                Toast.makeText(RuntimeVariables.androidApplication, "Public Key error，PLZ update your  public key", 1).show();
                 this.mSecurityFrameListener.mHandler.sendEmptyMessageDelayed(0, 5000);
             }
         }
