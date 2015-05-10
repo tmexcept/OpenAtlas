@@ -24,9 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Intent;
-import blue.stack.openAtlas.Globals;
-import blue.stack.openAtlas.PlatformConfigure;
 
+import com.openAtlas.boot.Globals;
+import com.openAtlas.boot.PlatformConfigure;
 import com.openAtlas.bundleInfo.BundleInfoList;
 import com.openAtlas.launcher.lightapk.BundleListing.Component;
 import com.openAtlas.runtime.ClassNotFoundInterceptorCallback;
@@ -89,27 +89,27 @@ public class ClassNotFoundInterceptor implements ClassNotFoundInterceptorCallbac
     public static final String KEY_ACTIVITY = "lightapk_activity";
     public static final String KEY_BUNDLE_PKG = "lightapk_pkg";
     class BootRunnable implements Runnable {
-        final  Intent a;
-        final  String b;
-        final  Component c;
-        final  ClassNotFoundInterceptor d;
+        final  Intent mIntent;
+        final  String mActivityName;
+        final  Component mComponent;
+        final  ClassNotFoundInterceptor mClassNotFoundInterceptor;
 
-        BootRunnable(ClassNotFoundInterceptor jVar, Intent intent, String str, Component aVar) {
-            this.d = jVar;
-            this.a = intent;
-            this.b = str;
-            this.c = aVar;
+        BootRunnable(ClassNotFoundInterceptor mClassNotFoundInterceptor, Intent mIntent, String mActivityName, Component mComponent) {
+            this.mClassNotFoundInterceptor = mClassNotFoundInterceptor;
+            this.mIntent = mIntent;
+            this.mActivityName = mActivityName;
+            this.mComponent = mComponent;
         }
 
         @Override
 		public void run() {
             Intent intent = new Intent();
-            if (this.a.getExtras() != null) {
-                intent.putExtras(this.a.getExtras());
+            if (this.mIntent.getExtras() != null) {
+                intent.putExtras(this.mIntent.getExtras());
             }
-            intent.putExtra(KEY_ACTIVITY, this.b);
-            intent.putExtra(KEY_BUNDLE_PKG, this.c.getPkgName());
-            intent.setData(this.a.getData());
+            intent.putExtra(KEY_ACTIVITY, this.mActivityName);
+            intent.putExtra(KEY_BUNDLE_PKG, this.mComponent.getPkgName());
+            intent.setData(this.mIntent.getData());
             intent.setFlags(268435456);
             intent.setClass(Globals.getApplication(), BundleNotFoundActivity.class);
             Globals.getApplication().startActivity(intent);

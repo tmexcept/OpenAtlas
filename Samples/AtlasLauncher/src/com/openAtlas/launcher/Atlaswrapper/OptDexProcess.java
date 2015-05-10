@@ -30,8 +30,8 @@ import org.osgi.framework.Bundle;
 import android.app.Application;
 import android.content.Intent;
 import android.util.Log;
-import blue.stack.openAtlas.PlatformConfigure;
 
+import com.openAtlas.boot.PlatformConfigure;
 import com.openAtlas.framework.Atlas;
 import com.openAtlas.framework.BundleImpl;
 import com.openAtlas.framework.bundlestorage.BundleArchiveRevision.DexLoadException;

@@ -23,9 +23,9 @@ package com.openAtlas.launcher;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.openAtlas.runtime.ClassNotFoundInterceptorCallback;
-
 import android.content.Intent;
+
+import com.openAtlas.runtime.ClassNotFoundInterceptorCallback;
 
 
 public class ClassNotFoundInterceptorCallbackImpl implements ClassNotFoundInterceptorCallback {

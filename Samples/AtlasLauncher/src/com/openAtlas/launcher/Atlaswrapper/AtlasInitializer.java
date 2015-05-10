@@ -41,9 +41,9 @@ import android.os.Build.VERSION;
 import android.os.Process;
 import android.text.TextUtils;
 import android.util.Log;
-import blue.stack.openAtlas.Globals;
-import blue.stack.openAtlas.PlatformConfigure;
 
+import com.openAtlas.boot.Globals;
+import com.openAtlas.boot.PlatformConfigure;
 import com.openAtlas.bundleInfo.BundleInfoList;
 import com.openAtlas.bundleInfo.BundleInfoList.BundleInfo;
 import com.openAtlas.framework.Atlas;
@@ -109,7 +109,7 @@ public class AtlasInitializer {
 		}
 		Properties properties = new Properties();
 		properties.put(PlatformConfigure.BOOT_ACTIVITY, PlatformConfigure.BOOT_ACTIVITY);
-		properties.put("android.taobao.atlas.debug.bundles", "true");
+		properties.put(PlatformConfigure.COM_OPENATLAS_DEBUG_BUNDLES, "true");
 		properties.put(PlatformConfigure.ATLAS_APP_DIRECTORY, this.mApp.getFilesDir().getParent());
 
 		try {
@@ -122,7 +122,7 @@ public class AtlasInitializer {
 			//  this.d = new AwbDebug();
 			if (this.mApp.getPackageName().equals(this.pkgName)) {
 				if ( verifyRumtime() || !ApkUtils.isRootSystem()) {
-					properties.put("android.taobao.atlas.publickey", SecurityFrameListener.PUBLIC_KEY);
+					properties.put(PlatformConfigure.OPENATLAS_PUBLIC_KEY, SecurityFrameListener.PUBLIC_KEY);
 					Atlas.getInstance().addFrameworkListener(new SecurityFrameListener());
 				}
 				if (this.init) {

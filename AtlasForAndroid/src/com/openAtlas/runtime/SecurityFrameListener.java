@@ -26,11 +26,6 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkEvent;
 import org.osgi.framework.FrameworkListener;
 
-import com.openAtlas.framework.Atlas;
-import com.openAtlas.framework.Framework;
-import com.openAtlas.util.ApkUtils;
-import com.openAtlas.util.StringUtils;
-
 import android.os.AsyncTask;
 import android.os.Build.VERSION;
 import android.os.Handler;
@@ -38,6 +33,12 @@ import android.os.Message;
 import android.os.Process;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.openAtlas.boot.PlatformConfigure;
+import com.openAtlas.framework.Atlas;
+import com.openAtlas.framework.Framework;
+import com.openAtlas.util.ApkUtils;
+import com.openAtlas.util.StringUtils;
 
 public class SecurityFrameListener implements FrameworkListener {
     static final String TAG = "SecurityFrameListener";
@@ -48,7 +49,7 @@ public class SecurityFrameListener implements FrameworkListener {
 
         private SecurityTask() {
             this.PUBLIC_KEY = Framework
-                    .getProperty("com.openAtlas.publickey");
+                    .getProperty(PlatformConfigure.OPENATLAS_PUBLIC_KEY);
         }
 
         @Override

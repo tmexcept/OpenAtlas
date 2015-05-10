@@ -1,8 +1,5 @@
 package org.osgi.framework;
 
-//import com.taobao.business.orderManage.OrderListBusiness;
-//import blue.stack.openAtlas.util.Constants;
-//import com.taobao.wireless.security.sdk.staticdataencrypt.IStaticDataEncryptComponent;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -222,7 +219,8 @@ public final class PackagePermission extends BasicPermission {
         throw new IllegalArgumentException("invalid permission: " + str);
     }
 
-    public boolean implies(Permission permission) {
+    @Override
+	public boolean implies(Permission permission) {
         if (!(permission instanceof PackagePermission)) {
             return false;
         }
@@ -231,7 +229,8 @@ public final class PackagePermission extends BasicPermission {
                 && super.implies(permission);
     }
 
-    public String getActions() {
+    @Override
+	public String getActions() {
         Object obj = ACTION_EXPORT;
         if (this.actions == null) {
             StringBuffer stringBuffer = new StringBuffer();
@@ -251,11 +250,13 @@ public final class PackagePermission extends BasicPermission {
         return this.actions;
     }
 
-    public PermissionCollection newPermissionCollection() {
+    @Override
+	public PermissionCollection newPermissionCollection() {
         return new PackagePermissionCollection();
     }
 
-    public boolean equals(Object obj) {
+    @Override
+	public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         }
@@ -267,7 +268,8 @@ public final class PackagePermission extends BasicPermission {
                 && getName().equals(packagePermission.getName());
     }
 
-    public int hashCode() {
+    @Override
+	public int hashCode() {
         return getName().hashCode() ^ getActions().hashCode();
     }
 

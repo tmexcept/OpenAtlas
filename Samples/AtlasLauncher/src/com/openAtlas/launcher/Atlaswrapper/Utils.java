@@ -34,7 +34,8 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.util.Log;
-import blue.stack.openAtlas.PlatformConfigure;
+
+import com.openAtlas.boot.PlatformConfigure;
 
 
 

@@ -26,7 +26,11 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import blue.stack.openAtlas.Globals;
+import com.openAtlas.boot.Globals;
+
+
+
+
 /**
  * @author BunnyBlue
  *

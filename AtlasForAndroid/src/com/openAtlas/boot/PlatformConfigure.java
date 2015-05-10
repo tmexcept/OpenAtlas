@@ -19,7 +19,7 @@ FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TOR
 ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 @author BunnyBlue
 * **/
-package blue.stack.openAtlas;
+package com.openAtlas.boot;
 
 /**
  * App  Platform configuration
@@ -29,8 +29,25 @@ package blue.stack.openAtlas;
 public class PlatformConfigure {
 	/****闪屏activity****/
 	public static final String BOOT_ACTIVITY="com.openAtlas.welcome.Welcome";
+	public static final String BOOT_ACTIVITY_DEFAULT="com.openAtlas.launcher.welcome";
 	public static final String ACTION_BROADCAST_BUNDLES_INSTALLED="com.openAtlas.action.BUNDLES_INSTALLED";
 	public static final String ATLAS_APP_DIRECTORY="com.openAtlas.AppDirectory";
 	public static final String INSTALL_LOACTION="com.openAtlas.storage";
+	public static final String COM_OPENATLAS_DEBUG_BUNDLES="com.openAtlas.debug.bundles";
+	public static final String  OPENATLAS_PUBLIC_KEY="om.openAtlas.publickey";
+	public static final String  OPENATLAS_BASEDIR="com.openAtlas.basedir";
+	public static final String  OPENATLAS_BUNDLE_LOCATION="com.openAtlas.jars";
+	public static final String  OPENATLAS_CLASSLOADER_BUFFER_SIZE="com.openAtlas.classloader.buffersize";
+	public static final String  OPENATLAS_LOG_LEVEL="com.openAtlas.log.level";
+	public static final String  OPENATLAS_DEBUG_BUNDLES="com.openAtlas.debug.bundles";
+	public static final String  OPENATLAS_DEBUG_PACKAGES="com.openAtlas.debug.packages";
+	public static final String  OPENATLAS_DEBUG_SERVICES="com.openAtlas.debug.services";
+	public static final String  OPENATLAS_DEBUG_CLASSLOADING="com.openAtlas.debug.classloading";
+	public static final String  OPENATLAS_DEBUG="com.openAtlas.debug";
+	public static final String OPENATLAS_FRAMEWORK_PACKAGE="com.openAtlas.framework";
+	
+	public static final String OPENATLAS_STRICT_STARTUP="com.openAtlas.strictStartup";
+	public static final String OPENATLAS_AUTO_LOAD="com.openAtlas.auto.load";
+
 	
 }

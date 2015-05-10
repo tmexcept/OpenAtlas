@@ -46,6 +46,7 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
+import com.openAtlas.boot.PlatformConfigure;
 import com.openAtlas.framework.BundleClassLoader;
 import com.openAtlas.framework.Framework;
 import com.openAtlas.hack.AtlasHacks;
@@ -427,10 +428,10 @@ public class InstrumentationHook extends Instrumentation {
 			newActivity = this.mBase.newActivity(cl, className, intent);
 		} catch (ClassNotFoundException e) {
 			ClassNotFoundException classNotFoundException = e;
-			CharSequence property = Framework.getProperty("com.openAtlas.welcome",
-					"blue.stack.openAtlas.welcome.Welcome");
+			CharSequence property = Framework.getProperty(PlatformConfigure.BOOT_ACTIVITY,
+					PlatformConfigure.BOOT_ACTIVITY_DEFAULT);
 			if (TextUtils.isEmpty(property)) {
-				str2 = "blue.stack.openAtlas.welcome.Welcome";
+				str2 = PlatformConfigure.BOOT_ACTIVITY_DEFAULT;
 			} else {
 				@SuppressWarnings("unused")
 				CharSequence charSequence = property;
@@ -482,9 +483,9 @@ public class InstrumentationHook extends Instrumentation {
 					log.error(e.getMessage() + " Caused by: ", e.getNestedException());
 				}
 			}
-			String property = Framework.getProperty("com.openAtlas.welcome", "blue.stack.openAtlas.welcome.Welcome");
+			String property = Framework.getProperty(PlatformConfigure.BOOT_ACTIVITY, PlatformConfigure.BOOT_ACTIVITY);
 			if (TextUtils.isEmpty(property)) {
-				property = "blue.stack.openAtlas.welcome.Welcome";
+				property = PlatformConfigure.BOOT_ACTIVITY;
 			}
 			if (activity.getClass().getName().equals(property)) {
 				this.mBase.callActivityOnCreate(activity, null);

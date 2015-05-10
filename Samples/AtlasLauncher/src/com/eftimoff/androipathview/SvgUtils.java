@@ -1,5 +1,8 @@
 package com.eftimoff.androipathview;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
@@ -14,9 +17,6 @@ import android.util.Log;
 import com.caverock.androidsvg.PreserveAspectRatio;
 import com.caverock.androidsvg.SVG;
 import com.caverock.androidsvg.SVGParseException;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Util class to init and get paths from svg.

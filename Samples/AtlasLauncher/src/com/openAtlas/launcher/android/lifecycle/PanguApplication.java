@@ -30,7 +30,6 @@ import android.os.Bundle;
 import android.os.Handler;
 
 import com.openAtlas.launcher.android.compat.ApplicationCompat;
-import com.openAtlas.launcher.android.compat.ApplicationCompat.ActivityLifecycleCallbacksCompat;
 
 
 

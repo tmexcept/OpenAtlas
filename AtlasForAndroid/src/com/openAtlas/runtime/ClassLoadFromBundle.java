@@ -34,8 +34,8 @@ import org.osgi.framework.Bundle;
 import android.content.pm.PackageInfo;
 import android.text.TextUtils;
 import android.util.Log;
-import blue.stack.openAtlas.PlatformConfigure;
 
+import com.openAtlas.boot.PlatformConfigure;
 import com.openAtlas.bundleInfo.BundleInfoList;
 import com.openAtlas.framework.Atlas;
 import com.openAtlas.framework.BundleImpl;
@@ -133,7 +133,7 @@ public class ClassLoadFromBundle {
                 File file = new File(
                         new File(
                                 Framework
-                                        .getProperty("com.openAtlas.AppDirectory"),
+                                        .getProperty(PlatformConfigure.ATLAS_APP_DIRECTORY),
                                 "lib"), "lib".concat(str2.replace(".", "_"))
                                 .concat(".so"));
                 if (Atlas.getInstance().getBundle(str2) == null) {

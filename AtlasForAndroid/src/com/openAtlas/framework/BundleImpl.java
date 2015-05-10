@@ -277,13 +277,11 @@ public final class BundleImpl implements Bundle {
             }
             this.state = 8;
             try {
-             //   this.classloader.activatorClassName = "com.taobao.scan.SimpleBundle";
-                // Bundle-Activator="com.taobao.scan.SimpleBundle"
-                // Bundle-Activity="com.taobao.scan.MainActivity"
+     
                 this.context.isValid = true;
                 if (!(this.classloader.activatorClassName == null || StringUtils
                         .isBlank(this.classloader.activatorClassName))) {
-                    Class loadClass = this.classloader
+                    Class<?> loadClass = this.classloader
                             .loadClass(this.classloader.activatorClassName);
                     if (loadClass == null) {
                         throw new ClassNotFoundException(

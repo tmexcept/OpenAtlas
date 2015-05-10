@@ -45,6 +45,7 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
 
+import com.openAtlas.boot.PlatformConfigure;
 import com.openAtlas.framework.bundlestorage.Archive;
 import com.openAtlas.framework.bundlestorage.BundleArchiveRevision.DexLoadException;
 import com.openAtlas.hack.AtlasHacks;
@@ -124,7 +125,7 @@ public final class BundleClassLoader extends ClassLoader {
 	static {
 		log = LoggerFactory.getInstance("BundleClassLoader");
 		FRAMEWORK_PACKAGES = new HashSet<String>();
-		FRAMEWORK_PACKAGES.add("com.openAtlas.framework");
+		FRAMEWORK_PACKAGES.add(PlatformConfigure.OPENATLAS_FRAMEWORK_PACKAGE);
 		FRAMEWORK_PACKAGES.add("org.osgi.framework");
 		FRAMEWORK_PACKAGES.add("org.osgi.service.packageadmin");
 		FRAMEWORK_PACKAGES.add("org.osgi.service.startlevel");
