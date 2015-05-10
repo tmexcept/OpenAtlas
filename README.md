@@ -1,6 +1,7 @@
 # AtlasForAndroid
-AtlasForAndroid
+AtlasForAndroid，The MIT License (MIT) Copyright (c) 2015 Bunny Blue,achellies
 This is A Plugin Framework run as Taobao
+
 
 
 
@@ -11,6 +12,14 @@ write your plugin as normal app, ant build  with  hacked aapt.
 you can define your package id at Manifest by "versionName",such as versionName:"1.0.1" ,but as a plugin should be versionName:"1.0.10x7a",you will get apk which versionName is "1.0.0" but package id is 0x7a not 0x7f.you can use 0x2 to 0x7,
 also you can define package change packageName "com.myapp.pkgname" to " com.myapp.pkgname0x7a".
 
+##Sample & Art
+<a href="https://github.com/bunnyblue/AtlasForAndroid/raw/bunny/Dist/AtlasLauncher.apk">
+  Sample Apk,you can download from here
+</a>
+
+![Sample Gif](https://github.com/bunnyblue/AtlasForAndroid/raw/bunny/art/demo.gif)
+
+## License
 The MIT License (MIT) Copyright (c) 2015 Bunny Blue,achellies
 
 
