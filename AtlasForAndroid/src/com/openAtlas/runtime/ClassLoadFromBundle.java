@@ -133,7 +133,7 @@ public class ClassLoadFromBundle {
                 File file = new File(
                         new File(
                                 Framework
-                                        .getProperty("com.openAtlas.AppDirectory"),
+                                        .getProperty(PlatformConfigure.ATLAS_APP_DIRECTORY),
                                 "lib"), "lib".concat(str2.replace(".", "_"))
                                 .concat(".so"));
                 if (Atlas.getInstance().getBundle(str2) == null) {

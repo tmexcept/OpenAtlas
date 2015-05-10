@@ -112,9 +112,9 @@ public class Atlas {
         Framework.startup(properties);
     }
 
-    public void startup() throws BundleException {
-        Framework.startup();
-    }
+//    public void startup() throws BundleException {
+//        Framework.startup();
+//    }
 
     public void shutdown() throws BundleException {
         Framework.shutdown(false);
