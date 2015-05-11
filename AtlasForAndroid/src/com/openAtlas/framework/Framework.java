@@ -185,17 +185,17 @@ public final class Framework {
 			public void run() {
 				synchronized (exportedPackages) {
 					try {
-						List bundles;
+						List<?> bundles;
 						Bundle[] bundleArr;
 						int i;
 						BundleImpl bundleImpl;
 						if (this.bundleArray == null) {
 							bundles = Framework.getBundles();
-							bundleArr = (Bundle[]) bundles.toArray(new Bundle[bundles.size()]);
+							bundleArr = bundles.toArray(new Bundle[bundles.size()]);
 						} else {
 							bundleArr = this.bundleArray;
 						}
-						List arrayList = new ArrayList(bundleArr.length);
+						List<Bundle> arrayList = new ArrayList<Bundle>(bundleArr.length);
 						for (i = 0; i < bundleArr.length; i++) {
 							if (bundleArr[i] != systemBundle) {
 								bundleImpl = (BundleImpl) bundleArr[i];
@@ -235,7 +235,7 @@ public final class Framework {
 						Bundle[] bundleArr2 = new Bundle[hashSet.size()];
 						i = -1;
 						bundles = Framework.getBundles();
-						Bundle[] bundleArr3 = (Bundle[]) bundles.toArray(new Bundle[bundles.size()]);
+						Bundle[] bundleArr3 = bundles.toArray(new Bundle[bundles.size()]);
 						for (i2 = 0; i2 < bundleArr3.length; i2++) {
 							if (hashSet.contains(bundleArr3[i2])) {
 								i++;
@@ -256,7 +256,7 @@ public final class Framework {
 						}
 						for (Bundle bundle2 : bundleArr2) {
 							try {
-								((BundleImpl) bundle2).classloader.resolveBundle(true, new HashSet());
+								((BundleImpl) bundle2).classloader.resolveBundle(true, new HashSet<BundleClassLoader>());
 							} catch (BundleException e) {
 								e.printStackTrace();
 							}
@@ -272,7 +272,7 @@ public final class Framework {
 		}
 
 		SystemBundle() {
-			this.props = new Hashtable();
+			this.props = new Hashtable<String, String>();
 			this.props.put(Constants.BUNDLE_NAME, Constants.SYSTEM_BUNDLE_LOCATION);
 			this.props.put(Constants.BUNDLE_VERSION, Framework.FRAMEWORK_VERSION);
 			this.props.put(Constants.BUNDLE_VENDOR, "Atlas");
@@ -304,8 +304,8 @@ public final class Framework {
 		}
 
 		@Override
-		public URL getResource(String str) {
-			return getClass().getResource(str);
+		public URL getResource(String name) {
+			return getClass().getResource(name);
 		}
 
 		@Override
@@ -319,7 +319,7 @@ public final class Framework {
 		}
 
 		@Override
-		public boolean hasPermission(Object obj) {
+		public boolean hasPermission(Object permission) {
 			return true;
 		}
 
@@ -546,10 +546,10 @@ public final class Framework {
 		}
 
 		@Override
-		public ExportedPackage getExportedPackage(String str) {
+		public ExportedPackage getExportedPackage(String name) {
 			synchronized (exportedPackages) {
 				try {
-					Package packageR = exportedPackages.get(new Package(str, null, false));
+					Package packageR = exportedPackages.get(new Package(name, null, false));
 					if (packageR == null) {
 						return null;
 					}
@@ -595,22 +595,22 @@ public final class Framework {
 		return ((BundleImpl) mBundle);
 	}
 
-	static BundleImpl installNewBundle(String arg7, InputStream arg8) throws BundleException {
-		Bundle v0_1 = null;
+	static BundleImpl installNewBundle(String location, InputStream archiveInputStream) throws BundleException {
+		Bundle mBundle = null;
 		try {
-			BundleLock.WriteLock(arg7);
-			v0_1 = Framework.getBundle(arg7);
-			if (v0_1 != null) {
+			BundleLock.WriteLock(location);
+			mBundle = Framework.getBundle(location);
+			if (mBundle != null) {
 			} else {
-				BundleImpl v0_2 = new BundleImpl(new File(Framework.STORAGE_LOCATION, arg7), arg7, new BundleContextImpl(), arg8, null, true);
+				mBundle  = new BundleImpl(new File(Framework.STORAGE_LOCATION, location), location, new BundleContextImpl(), archiveInputStream, null, true);
 				Framework.storeMetadata();
-				return v0_2;
+				return (BundleImpl) mBundle;
 			}
 		} catch (Throwable v0) {
-			BundleLock.WriteUnLock(arg7);
+			BundleLock.WriteUnLock(location);
 		}
 
-		return ((BundleImpl) v0_1);
+		return ((BundleImpl) mBundle);
 	}
 
 	static {

@@ -34,15 +34,15 @@ final class Package implements ExportedPackage {
     boolean resolved;
     private final short[] version;
 
-    Package(String str, BundleClassLoader bundleClassLoader, boolean z) {
+    Package(String packageString, BundleClassLoader bundleClassLoader, boolean resolved) {
         this.importingBundles = null;
         this.removalPending = false;
         this.resolved = false;
-        String[] parsePackageString = parsePackageString(str);
+        String[] parsePackageString = parsePackageString(packageString);
         this.pkg = parsePackageString[0];
         this.version = getVersionNumber(parsePackageString[1]);
         this.classloader = bundleClassLoader;
-        this.resolved = z;
+        this.resolved = resolved;
     }
 
     @Override
