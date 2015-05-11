@@ -576,23 +576,23 @@ public final class Framework {
 		}
 	}
 
-	static BundleImpl installNewBundle(String arg7, File arg8) throws BundleException {
-		Bundle v0_1;
+	static BundleImpl installNewBundle(String location, File apkFile) throws BundleException {
+		Bundle mBundle;
 		try {
-			BundleLock.WriteLock(arg7);
-			v0_1 = Framework.getBundle(arg7);
-			if (v0_1 != null) {
+			BundleLock.WriteLock(location);
+			mBundle = Framework.getBundle(location);
+			if (mBundle != null) {
 			} else {
-				v0_1 = new BundleImpl(new File(Framework.STORAGE_LOCATION, arg7), arg7, new BundleContextImpl(), null, arg8, true);
+				mBundle = new BundleImpl(new File(Framework.STORAGE_LOCATION, location), location, new BundleContextImpl(), null, apkFile, true);
 			}
 		} catch (Throwable v0) {
 
 			v0.printStackTrace();
-			BundleLock.WriteUnLock(arg7);
+			BundleLock.WriteUnLock(location);
 			throw new BundleException(v0.getMessage());
 		}
 
-		return ((BundleImpl) v0_1);
+		return ((BundleImpl) mBundle);
 	}
 
 	static BundleImpl installNewBundle(String arg7, InputStream arg8) throws BundleException {

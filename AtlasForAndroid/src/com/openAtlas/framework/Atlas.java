@@ -138,8 +138,8 @@ public class Atlas {
         return Framework.installNewBundle(str, inputStream);
     }
 
-    public Bundle installBundle(String str, File file) throws BundleException {
-        return Framework.installNewBundle(str, file);
+    public Bundle installBundle(String location, File apkFile) throws BundleException {
+        return Framework.installNewBundle(location, apkFile);
     }
 
     public void updateBundle(String pkgName, InputStream inputStream)

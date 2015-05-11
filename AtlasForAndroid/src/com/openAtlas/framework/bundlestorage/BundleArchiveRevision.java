@@ -102,7 +102,12 @@ public class BundleArchiveRevision {
     }
 
     public static class DexLoadException extends RuntimeException {
-        DexLoadException(String str) {
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
+		DexLoadException(String str) {
             super(str);
         }
     }
@@ -111,25 +116,23 @@ public class BundleArchiveRevision {
         log = LoggerFactory.getInstance("BundleArchiveRevision");
     }
 
-    BundleArchiveRevision(String str, long j, File file, InputStream inputStream)
+    BundleArchiveRevision(String location, long revisionNum, File revisionDir, InputStream inputStream)
             throws IOException {
     	System.out.println("BundleArchiveRevision.BundleArchiveRevision()");
         Object obj = 1;
-        this.revisionNum = j;
-        this.revisionDir = file;
+        this.revisionNum = revisionNum;
+        this.revisionDir = revisionDir;
         if (!this.revisionDir.exists()) {
             this.revisionDir.mkdirs();
         }
         this.revisionLocation = FILE_PROTOCOL;
-        this.bundleFile = new File(file, BUNDLE_FILE_NAME);
+        this.bundleFile = new File(revisionDir, BUNDLE_FILE_NAME);
         ApkUtils.copyInputStreamToFile(inputStream, this.bundleFile);
         BundleInfoList instance = BundleInfoList.getInstance();
         instance.print();
-        System.out.println("BundleArchiveRevision.BundleArchiveRevision()"+str);
-if (str.contains("qrcode")) {
-	  installSoLib(this.bundleFile);
-}
-        if (instance == null || !instance.getHasSO(str)) {
+    
+
+        if (instance == null || !instance.getHasSO(location)) {
             obj = null;
         }
         if (obj != null) {
@@ -138,11 +141,11 @@ if (str.contains("qrcode")) {
         updateMetadata();
     }
 
-    BundleArchiveRevision(String packageName, long j, File file, File file2)
+    BundleArchiveRevision(String packageName, long revisionNum, File revisionDir, File file2)
             throws IOException {
         boolean  hasSO=false;;
-        this.revisionNum = j;
-        this.revisionDir = file;
+        this.revisionNum = revisionNum;
+        this.revisionDir = revisionDir;
         BundleInfoList instance = BundleInfoList.getInstance();
         if (instance == null || !instance.getHasSO(packageName)) {
         	
@@ -153,13 +156,13 @@ if (str.contains("qrcode")) {
             this.revisionDir.mkdirs();
         }
         if (file2.canWrite()) {
-            if (isSameDriver(file, file2)) {
+            if (isSameDriver(revisionDir, file2)) {
                 this.revisionLocation = FILE_PROTOCOL;
-                this.bundleFile = new File(file, BUNDLE_FILE_NAME);
+                this.bundleFile = new File(revisionDir, BUNDLE_FILE_NAME);
                 file2.renameTo(this.bundleFile);
             } else {
                 this.revisionLocation = FILE_PROTOCOL;
-                this.bundleFile = new File(file, BUNDLE_FILE_NAME);
+                this.bundleFile = new File(revisionDir, BUNDLE_FILE_NAME);
                 ApkUtils.copyInputStreamToFile(new FileInputStream(file2),
                         this.bundleFile);
             }
@@ -169,7 +172,7 @@ if (str.contains("qrcode")) {
         } else if (Build.HARDWARE.toLowerCase().contains("mt6592")
                 && file2.getName().endsWith(".so")) {
             this.revisionLocation = FILE_PROTOCOL;
-            this.bundleFile = new File(file, BUNDLE_FILE_NAME);
+            this.bundleFile = new File(revisionDir, BUNDLE_FILE_NAME);
             Runtime.getRuntime().exec(
                     String.format("ln -s %s %s",
                             new Object[] { file2.getAbsolutePath(),
@@ -191,7 +194,7 @@ if (str.contains("qrcode")) {
             }
         } else {
             this.revisionLocation = FILE_PROTOCOL;
-            this.bundleFile = new File(file, BUNDLE_FILE_NAME);
+            this.bundleFile = new File(revisionDir, BUNDLE_FILE_NAME);
             ApkUtils.copyInputStreamToFile(new FileInputStream(file2),
                     this.bundleFile);
             if (hasSO) {
@@ -244,7 +247,7 @@ if (str.contains("qrcode")) {
                     dataOutputStream2.writeUTF(this.revisionLocation);
                     dataOutputStream2.flush();
                     AtlasFileLock.getInstance().unLock(file);
-                    if (dataOutputStream2 != null) {
+                    {
                         try {
                             dataOutputStream2.close();
                             return;
@@ -253,7 +256,6 @@ if (str.contains("qrcode")) {
                             return;
                         }
                     }
-                    return;
                 } catch (IOException e3) {
                     e = e3;
                     dataOutputStream = dataOutputStream2;
@@ -459,7 +461,7 @@ if (str.contains("qrcode")) {
     // TODO impl
     public Manifest getManifest() throws IOException {
         InputStream open;
-        InputStream inputStream;
+        InputStream inputStream = null;
         Throwable th;
         Exception e;
         InputStream inputStream2 = null;
@@ -488,28 +490,22 @@ if (str.contains("qrcode")) {
                     }
                     return null;
                 } catch (Exception e4) {
-                    e = e4;
-                    open = null;
+              
+                    
                     try {
-                        e.printStackTrace();
-                        inputStream = open;
+//                    	if (inputStream!=null) {
+//							inputStream.close();
+//						}
+                    	 e4.printStackTrace();
+                      
                     } catch (Exception e5) {
                         th = e5;
                         log.error("Exception while parse OSGI.MF >>>", th);
-                        if (open != null) {
-                            open.close();
-                        }
                         return null;
-                    }
-                    if (inputStream != null) {
-                        inputStream.close();
                     }
                     return null;
                 } catch (Throwable th3) {
                     th = th3;
-                    if (inputStream2 != null) {
-                        inputStream2.close();
-                    }
                     throw th;
                 }
                 try {
