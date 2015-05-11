@@ -76,7 +76,7 @@ public final class BundleImpl implements Bundle {
     }
 
     BundleImpl(File bundleDir, String location, BundleContextImpl bundleContextImpl,
-            InputStream inputStream, File archiveFile, boolean isInstall)
+            InputStream archiveInputStream, File archiveFile, boolean isInstall)
             throws BundleException {
         this.persistently = false;
         this.domain = null;
@@ -91,9 +91,9 @@ public final class BundleImpl implements Bundle {
         this.context = bundleContextImpl;
         this.currentStartlevel = Framework.initStartlevel;
         this.bundleDir = bundleDir;
-        if (inputStream != null) {
+        if (archiveInputStream != null) {
             try {
-                this.archive = new BundleArchive(location, bundleDir, inputStream);
+                this.archive = new BundleArchive(location, bundleDir, archiveInputStream);
             } catch (Throwable e) {
                 Framework.deleteDirectory(bundleDir);
                 throw new BundleException("Could not install bundle " + location, e);
@@ -213,9 +213,9 @@ public final class BundleImpl implements Bundle {
     }
 
     @Override
-	public URL getResource(String str) {
+	public URL getResource(String name) {
         if (this.state != 1) {
-            return this.classloader.getResource(str);
+            return this.classloader.getResource(name);
         }
         throw new IllegalStateException("Bundle " + toString()
                 + " has been uninstalled");
@@ -227,7 +227,7 @@ public final class BundleImpl implements Bundle {
             throw new IllegalStateException("Bundle " + toString()
                     + "has been unregistered.");
         }
-        ArrayList arrayList = new ArrayList();
+        ArrayList<ServiceReferenceImpl> arrayList = new ArrayList<ServiceReferenceImpl>();
         ServiceReferenceImpl[] serviceReferenceImplArr = Framework.services
                 .toArray(new ServiceReferenceImpl[Framework.services.size()]);
         int i = 0;
@@ -239,7 +239,7 @@ public final class BundleImpl implements Bundle {
             }
             i++;
         }
-        return (ServiceReference[]) arrayList
+        return arrayList
                 .toArray(new ServiceReference[arrayList.size()]);
     }
 
