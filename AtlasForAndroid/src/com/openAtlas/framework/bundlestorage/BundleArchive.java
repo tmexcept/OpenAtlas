@@ -38,9 +38,9 @@ public class BundleArchive implements Archive {
     private final BundleArchiveRevision currentRevision;
     private final SortedMap<Long, BundleArchiveRevision> revisions;
 
-    public BundleArchive(String str, File file) throws IOException {
-        this.revisions = new TreeMap();
-        String[] list = file.list();
+    public BundleArchive(String location, File bundleDir) throws IOException {
+        this.revisions = new TreeMap<Long, BundleArchiveRevision>();
+        String[] list = bundleDir.list();
         if (list != null) {
             for (String str2 : list) {
                 if (str2.startsWith(REVISION_DIRECTORY)) {
@@ -54,33 +54,33 @@ public class BundleArchive implements Archive {
         }
         if (this.revisions.isEmpty()) {
             throw new IOException(
-                    "No valid revisions in bundle archive directory: " + file);
+                    "No valid revisions in bundle archive directory: " + bundleDir);
         }
-        this.bundleDir = file;
+        this.bundleDir = bundleDir;
         long longValue = this.revisions.lastKey().longValue();
         BundleArchiveRevision bundleArchiveRevision = new BundleArchiveRevision(
-                str, longValue, new File(file, "version."
+                location, longValue, new File(bundleDir, "version."
                         + String.valueOf(longValue)));
         this.revisions.put(Long.valueOf(longValue), bundleArchiveRevision);
         this.currentRevision = bundleArchiveRevision;
     }
 
-    public BundleArchive(String str, File file, InputStream inputStream)
+    public BundleArchive(String location, File bundleDir, InputStream inputStream)
             throws IOException {
-        this.revisions = new TreeMap();
-        this.bundleDir = file;
+        this.revisions = new TreeMap<Long, BundleArchiveRevision>();
+        this.bundleDir = bundleDir;
         BundleArchiveRevision bundleArchiveRevision = new BundleArchiveRevision(
-                str, 1, new File(file, "version." + String.valueOf(1)),
+                location, 1, new File(bundleDir, "version." + String.valueOf(1)),
                 inputStream);
         this.revisions.put(Long.valueOf(1), bundleArchiveRevision);
         this.currentRevision = bundleArchiveRevision;
     }
 
-    public BundleArchive(String str, File file, File file2) throws IOException {
-        this.revisions = new TreeMap();
-        this.bundleDir = file;
+    public BundleArchive(String location, File bundleDir, File file2) throws IOException {
+        this.revisions = new TreeMap<Long, BundleArchiveRevision>();
+        this.bundleDir = bundleDir;
         BundleArchiveRevision bundleArchiveRevision = new BundleArchiveRevision(
-                str, 1, new File(file, "version." + String.valueOf(1)), file2);
+                location, 1, new File(bundleDir, "version." + String.valueOf(1)), file2);
         this.revisions.put(Long.valueOf(1), bundleArchiveRevision);
         this.currentRevision = bundleArchiveRevision;
     }

@@ -129,29 +129,29 @@ public class ClassLoadFromBundle {
                         .getDependencyForBundle(bundleForComponet));
             }
             linkedList.add(bundleForComponet);
-            for (String str2 : linkedList) {
-                File file = new File(
+            for (String location : linkedList) {
+                File apkPath = new File(
                         new File(
                                 Framework
                                         .getProperty(PlatformConfigure.ATLAS_APP_DIRECTORY),
-                                "lib"), "lib".concat(str2.replace(".", "_"))
+                                "lib"), "lib".concat(location.replace(".", "_"))
                                 .concat(".so"));
-                if (Atlas.getInstance().getBundle(str2) == null) {
+                if (Atlas.getInstance().getBundle(location) == null) {
                     try {
-                        if (!file.exists()) {
+                        if (!apkPath.exists()) {
                             return null;
                         }
-                        installBundle = Atlas.getInstance().installBundle(str2,
-                                file);
+                        installBundle = Atlas.getInstance().installBundle(location,
+                                apkPath);
                         if (installBundle != null) {
-                            Log.e("me", "Succeed to install bundle " + str2);
+                            Log.e("me", "Succeed to install bundle " + location);
                             try {
                                 long currentTimeMillis = System
                                         .currentTimeMillis();
                                 ((BundleImpl) installBundle).optDexFile();
                                 Log.e("me",
                                         "Succeed to dexopt bundle "
-                                                + str2
+                                                + location
                                                 + " cost time = "
                                                 + (System.currentTimeMillis() - currentTimeMillis)
                                                 + " ms");

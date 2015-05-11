@@ -75,8 +75,8 @@ public final class BundleImpl implements Bundle {
         log = LoggerFactory.getInstance("BundleImpl");
     }
 
-    BundleImpl(File file, String str, BundleContextImpl bundleContextImpl,
-            InputStream inputStream, File file2, boolean z)
+    BundleImpl(File bundleDir, String location, BundleContextImpl bundleContextImpl,
+            InputStream inputStream, File archiveFile, boolean isInstall)
             throws BundleException {
         this.persistently = false;
         this.domain = null;
@@ -86,21 +86,21 @@ public final class BundleImpl implements Bundle {
         this.registeredServiceListeners = null;
         this.staleExportedPackages = null;
         long currentTimeMillis = System.currentTimeMillis();
-        this.location = str;
+        this.location = location;
         bundleContextImpl.bundle = this;
         this.context = bundleContextImpl;
         this.currentStartlevel = Framework.initStartlevel;
-        this.bundleDir = file;
+        this.bundleDir = bundleDir;
         if (inputStream != null) {
             try {
-                this.archive = new BundleArchive(str, file, inputStream);
+                this.archive = new BundleArchive(location, bundleDir, inputStream);
             } catch (Throwable e) {
-                Framework.deleteDirectory(file);
-                throw new BundleException("Could not install bundle " + str, e);
+                Framework.deleteDirectory(bundleDir);
+                throw new BundleException("Could not install bundle " + location, e);
             }
-        } else if (file2 != null) {
+        } else if (archiveFile != null) {
             try {
-                this.archive = new BundleArchive(str, file, file2);
+                this.archive = new BundleArchive(location, bundleDir, archiveFile);
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -109,8 +109,8 @@ public final class BundleImpl implements Bundle {
         this.state = 2;
         Framework.notifyBundleListeners(1, this);
         updateMetadata();
-        if (z) {
-            Framework.bundles.put(str, this);
+        if (isInstall) {
+            Framework.bundles.put(location, this);
             resolveBundle(false);
         }
         if (Framework.DEBUG_BUNDLES && log.isInfoEnabled()) {
