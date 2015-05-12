@@ -36,7 +36,7 @@ import com.openAtlas.framework.Atlas;
 import com.openAtlas.framework.BundleImpl;
 import com.openAtlas.framework.bundlestorage.BundleArchiveRevision.DexLoadException;
 
-/* compiled from: OptDexProcess */
+
 public class OptDexProcess {
 	private static OptDexProcess mOptDexProcess;
 	private Application mApplication;
