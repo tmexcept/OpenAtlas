@@ -106,7 +106,7 @@ public final class BundleImpl implements Bundle {
                 e.printStackTrace();
             }
         }
-        this.state = 2;
+        this.state = BundleEvent.STARTED;
         Framework.notifyBundleListeners(1, this);
         updateMetadata();
         if (isInstall) {
@@ -134,7 +134,7 @@ public final class BundleImpl implements Bundle {
                     new FileInputStream(file2));
             this.location = dataInputStream.readUTF();
             this.currentStartlevel = dataInputStream.readInt();
-            this.state = 2;
+            this.state = BundleEvent.STARTED;
             this.persistently = dataInputStream.readBoolean();
             dataInputStream.close();
             AtlasFileLock.getInstance().unLock(file2);
@@ -200,7 +200,7 @@ public final class BundleImpl implements Bundle {
 
     @Override
 	public ServiceReference[] getRegisteredServices() {
-        if (this.state == 1) {
+        if (this.state == BundleEvent.INSTALLED) {
             throw new IllegalStateException("Bundle " + toString()
                     + "has been unregistered.");
         } else if (this.registeredServices == null) {
@@ -214,7 +214,7 @@ public final class BundleImpl implements Bundle {
 
     @Override
 	public URL getResource(String name) {
-        if (this.state != 1) {
+        if (this.state != BundleEvent.INSTALLED) {
             return this.classloader.getResource(name);
         }
         throw new IllegalStateException("Bundle " + toString()
@@ -223,7 +223,7 @@ public final class BundleImpl implements Bundle {
 
     @Override
 	public ServiceReference[] getServicesInUse() {
-        if (this.state == 1) {
+        if (this.state == BundleEvent.INSTALLED) {
             throw new IllegalStateException("Bundle " + toString()
                     + "has been unregistered.");
         }
@@ -250,7 +250,7 @@ public final class BundleImpl implements Bundle {
 
     @Override
 	public boolean hasPermission(Object permission) {
-        if (this.state != 1) {
+        if (this.state != BundleEvent.INSTALLED) {
             return true;
         }
         throw new IllegalStateException("Bundle " + toString()
@@ -268,14 +268,14 @@ public final class BundleImpl implements Bundle {
 
     public synchronized void startBundle() throws BundleException {
         state = 0;// TODO
-        if (this.state == 1) {
+        if (this.state == BundleEvent.INSTALLED) {
             throw new IllegalStateException("Cannot start uninstalled bundle "
                     + toString());
-        } else if (this.state != 32) {
-            if (this.state == 2) {
+        } else if (this.state != BundleEvent.RESOLVED) {
+            if (this.state == BundleEvent.STARTED) {
                 resolveBundle(true);
             }
-            this.state = 8;
+            this.state =BundleEvent.UPDATED;
             try {
      
                 this.context.isValid = true;
@@ -292,7 +292,7 @@ public final class BundleImpl implements Bundle {
                     this.classloader.activator.start(this.context);
 
                 }
-                this.state = 32;
+                this.state = BundleEvent.RESOLVED;
                 Framework.notifyBundleListeners(BundleEvent.STARTED, this);
                 if (Framework.DEBUG_BUNDLES && log.isInfoEnabled()) {
                     log.info("Framework: Bundle " + toString() + " started.");
@@ -300,7 +300,7 @@ public final class BundleImpl implements Bundle {
             } catch (Throwable th) {
                 Throwable th2 = th;
                 Framework.clearBundleTrace(this);
-                this.state = 4;
+                this.state = BundleEvent.STOPPED;
                 String str = "Error starting bundle " + toString();
                 if (th2.getCause() != null) {
                     th2 = th2.getCause();
@@ -318,11 +318,11 @@ public final class BundleImpl implements Bundle {
     }
 
     public synchronized void stopBundle() throws BundleException {
-        if (this.state == 1) {
+        if (this.state == BundleEvent.INSTALLED) {
             throw new IllegalStateException("Cannot stop uninstalled bundle "
                     + toString());
-        } else if (this.state == 32) {
-            this.state = 16;
+        } else if (this.state == BundleEvent.RESOLVED) {
+            this.state = BundleEvent.UNINSTALLED;
             try {
                 if (this.classloader.activator != null) {
                     this.classloader.activator.stop(this.context);
@@ -332,14 +332,14 @@ public final class BundleImpl implements Bundle {
                 }
                 this.classloader.activator = null;
                 Framework.clearBundleTrace(this);
-                this.state = 4;
+                this.state = BundleEvent.STOPPED;
                 Framework.notifyBundleListeners(BundleEvent.STOPPED, this);
                 this.context.isValid = false;
             } catch (Throwable th) {
                 this.classloader.activator = null;
                 Framework.clearBundleTrace(this);
-                this.state = 4;
-                Framework.notifyBundleListeners(4, this);
+                this.state = BundleEvent.STOPPED;
+                Framework.notifyBundleListeners(BundleEvent.STOPPED, this);
                 this.context.isValid = false;
             }
         }
@@ -347,18 +347,18 @@ public final class BundleImpl implements Bundle {
 
     @Override
 	public synchronized void uninstall() throws BundleException {
-        if (this.state == 1) {
+        if (this.state == BundleEvent.INSTALLED) {
             throw new IllegalStateException("Bundle " + toString()
                     + " is already uninstalled.");
         }
-        if (this.state == 32) {
+        if (this.state == BundleEvent.RESOLVED) {
             try {
                 stopBundle();
             } catch (Throwable th) {
-                Framework.notifyFrameworkListeners(2, this, th);
+                Framework.notifyFrameworkListeners(BundleEvent.STARTED, this, th);
             }
         }
-        this.state = 1;
+        this.state = BundleEvent.INSTALLED;
         File file = new File(this.bundleDir, "meta");
         if (AtlasFileLock.getInstance().LockExclusive(file)) {
             file.delete();
@@ -399,7 +399,7 @@ public final class BundleImpl implements Bundle {
     @Override
 	public synchronized void update(InputStream inputStream)
             throws BundleException {
-        if (this.state == 1) {
+        if (this.state == BundleEvent.INSTALLED) {
             throw new IllegalStateException("Cannot update uninstalled bundle "
                     + toString());
         }
@@ -414,7 +414,7 @@ public final class BundleImpl implements Bundle {
 
     @Override
 	public synchronized void update(File bundleFile) throws BundleException {
-        if (this.state == 1) {
+        if (this.state == BundleEvent.INSTALLED) {
             throw new IllegalStateException("Cannot update uninstalled bundle "
                     + toString());
         }
@@ -427,12 +427,12 @@ public final class BundleImpl implements Bundle {
     }
 
     public synchronized void refresh() throws BundleException {
-        if (this.state == 1) {
+        if (this.state == BundleEvent.INSTALLED) {
             throw new IllegalStateException(
                     "Cannot refresh uninstalled bundle " + toString());
         }
         Object obj;
-        if (this.state == 32) {
+        if (this.state == BundleEvent.RESOLVED) {
             stopBundle();
             obj = 1;
         } else {
@@ -470,11 +470,11 @@ public final class BundleImpl implements Bundle {
             this.classloader.cleanup(true);
             this.classloader = bundleClassLoader;
             if (this.classloader.resolveBundle(false, null)) {
-                this.state = 4;
+                this.state = BundleEvent.STOPPED;
             } else {
-                this.state = 2;
+                this.state = BundleEvent.STARTED;
             }
-            Framework.notifyBundleListeners(8, this);
+            Framework.notifyBundleListeners(BundleEvent.UPDATED, this);
             if (obj != null) {
                 startBundle();
             }

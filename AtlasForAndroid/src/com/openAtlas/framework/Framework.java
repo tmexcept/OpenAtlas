@@ -362,7 +362,7 @@ public final class Framework {
 				return 0;
 			}
 			BundleImpl bundleImpl = (BundleImpl) bundle;
-			if (bundleImpl.state != 1) {
+			if (bundleImpl.state != BundleEvent.INSTALLED) {
 				return bundleImpl.currentStartlevel;
 			}
 			throw new IllegalArgumentException("Bundle " + bundle + " has been uninstalled");
@@ -384,39 +384,39 @@ public final class Framework {
 				return true;
 			}
 			BundleImpl bundleImpl = (BundleImpl) bundle;
-			if (bundleImpl.state != 1) {
+			if (bundleImpl.state != BundleEvent.INSTALLED) {
 				return bundleImpl.persistently;
 			}
 			throw new IllegalArgumentException("Bundle " + bundle + " has been uninstalled");
 		}
 
 		@Override
-		public void setBundleStartLevel(Bundle bundle, int i) {
+		public void setBundleStartLevel(Bundle bundle, int level) {
 			if (bundle == this) {
 				throw new IllegalArgumentException("Cannot set the start level for the system bundle.");
 			}
 			BundleImpl bundleImpl = (BundleImpl) bundle;
-			if (bundleImpl.state == 1) {
+			if (bundleImpl.state == BundleEvent.INSTALLED) {
 				throw new IllegalArgumentException("Bundle " + bundle + " has been uninstalled");
-			} else if (i <= 0) {
-				throw new IllegalArgumentException("Start level " + i + " is not Component valid level");
+			} else if (level <= 0) {
+				throw new IllegalArgumentException("Start level " + level + " is not Component valid level");
 			} else {
-				bundleImpl.currentStartlevel = i;
+				bundleImpl.currentStartlevel = level;
 				bundleImpl.updateMetadata();
-				if (i <= Framework.startlevel && bundle.getState() != 32 && bundleImpl.persistently) {
+				if (level <= Framework.startlevel && bundle.getState() != BundleEvent.RESOLVED && bundleImpl.persistently) {
 					try {
 						bundleImpl.startBundle();
 					} catch (Throwable e) {
 						e.printStackTrace();
-						Framework.notifyFrameworkListeners(2, bundle, e);
+						Framework.notifyFrameworkListeners(BundleEvent.STARTED, bundle, e);
 					}
-				} else if (i <= Framework.startlevel) {
+				} else if (level <= Framework.startlevel) {
 				} else {
-					if (bundle.getState() != 4 || bundle.getState() != 2) {
+					if (bundle.getState() != BundleEvent.STOPPED || bundle.getState() != BundleEvent.STARTED) {
 						try {
 							bundleImpl.stopBundle();
 						} catch (Throwable e2) {
-							Framework.notifyFrameworkListeners(2, bundle, e2);
+							Framework.notifyFrameworkListeners(BundleEvent.STARTED, bundle, e2);
 						}
 					}
 				}
@@ -696,7 +696,7 @@ public final class Framework {
 		System.out.println("  Framework " + (restart ? "restarted" : "started") + " in " + currentTimeMillis2 + " milliseconds.");
 		System.out.println("---------------------------------------------------------");
 		System.out.flush();
-		systemBundle.state = 32;
+		systemBundle.state = BundleEvent.RESOLVED;
 		try {
 			notifyFrameworkListeners(FrameworkEvent.STARTED, systemBundle, null);
 		} catch (Throwable e222) {
@@ -724,16 +724,16 @@ public final class Framework {
 		return null;
 	}
 
-	static void shutdown(boolean z) {
+	static void shutdown(boolean restart) {
 		System.out.println("---------------------------------------------------------");
 		System.out.println("  Atlas OSGi shutting down ...");
 		System.out.println("  Bye !");
 		System.out.println("---------------------------------------------------------");
-		systemBundle.state = 16;
+		systemBundle.state = BundleEvent.UNINSTALLED;
 		systemBundle.setLevel(getBundles().toArray(new Bundle[bundles.size()]), 0, true);
 		bundles.clear();
-		systemBundle.state = 1;
-		if (z) {
+		systemBundle.state = BundleEvent.INSTALLED;
+		if (restart) {
 			try {
 				startup();
 			} catch (Throwable th) {
@@ -814,7 +814,7 @@ public final class Framework {
 		STORAGE_LOCATION = properties.getProperty(PlatformConfigure.INSTALL_LOACTION, properties.getProperty("org.osgi.framework.dir", BASEDIR + File.separatorChar + "storage"))
 				+ File.separatorChar;
 		systemBundle = new SystemBundle();
-		systemBundle.state = 8;
+		systemBundle.state = BundleEvent.UPDATED;
 	}
 
 	public static boolean getProperty(String key, boolean defaultValue) {
@@ -1102,9 +1102,9 @@ public final class Framework {
 		bundleListeners.remove(bundleListener);
 	}
 
-	static void notifyFrameworkListeners(int i, Bundle bundle, Throwable th) {
+	static void notifyFrameworkListeners(int event, Bundle bundle, Throwable th) {
 		if (!frameworkListeners.isEmpty()) {
-			FrameworkEvent frameworkEvent = new FrameworkEvent(i, bundle, th);
+			FrameworkEvent frameworkEvent = new FrameworkEvent(event, bundle, th);
 			FrameworkListener[] frameworkListenerArr = frameworkListeners.toArray(new FrameworkListener[frameworkListeners.size()]);
 			for (FrameworkListener frameworkEvent2 : frameworkListenerArr) {
 				frameworkEvent2.frameworkEvent(frameworkEvent);
@@ -1112,9 +1112,9 @@ public final class Framework {
 		}
 	}
 
-	static void notifyServiceListeners(int i, ServiceReference serviceReference) {
+	static void notifyServiceListeners(int event, ServiceReference serviceReference) {
 		if (!serviceListeners.isEmpty()) {
-			ServiceEvent serviceEvent = new ServiceEvent(i, serviceReference);
+			ServiceEvent serviceEvent = new ServiceEvent(event, serviceReference);
 			ServiceListenerEntry[] serviceListenerEntryArr = serviceListeners.toArray(new ServiceListenerEntry[serviceListeners.size()]);
 			int i2 = 0;
 			while (i2 < serviceListenerEntryArr.length) {
