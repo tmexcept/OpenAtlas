@@ -71,13 +71,13 @@ public class AtlasInitializer {
 		time = 0;
 	}
 
-	public AtlasInitializer(Application application, String str, Context context) {
+	public AtlasInitializer(Application application, String packageName, Context context) {
 	
 		this.init = true;
 		this.mApp = application;
-		this.pkgName = str;
+		this.pkgName = packageName;
 	
-		if (application.getPackageName().equals(str)) {
+		if (application.getPackageName().equals(packageName)) {
 			isAppPkg = true;
 		}
 	}

@@ -49,7 +49,7 @@ import com.openAtlas.runtime.RuntimeVariables;
 public class BundlesInstaller {
     private static boolean autoStart;
     private static BundlesInstaller mBundlesInstaller;
-   // AwbDebug a;
+
     private Application mApplication;
 
     private boolean isinitialized;
@@ -67,7 +67,7 @@ public class BundlesInstaller {
     }
 
     static synchronized BundlesInstaller getInstance() {
-    	System.out.println("BundlesInstaller.a()");
+ 
    
         if (mBundlesInstaller!=null) {
 			return mBundlesInstaller;
@@ -82,9 +82,7 @@ public class BundlesInstaller {
     }
 
     public synchronized void process(boolean installAuto, boolean updatePackageVersion) {
-    	
-     
-        if (!this.isinitialized) {
+    	if (!this.isinitialized) {
             Log.e("BundlesInstaller", "Bundle Installer not initialized yet, process abort!");
         } else if (!this.isInstalled || updatePackageVersion) {
             ZipFile zipFile = null;
@@ -93,11 +91,9 @@ public class BundlesInstaller {
                 List<String> bundleList = fetchBundleFileList(zipFile, "lib/armeabi/libcom_", ".so");
 				if (bundleList != null && bundleList.size() > 0 && getAvailableSize() < (((bundleList.size() * 2) * 4096) * 4096)) {
 				    new Handler(Looper.getMainLooper()).post(new Runnable() {
-						
 						@Override
 						public void run() {
-
-					        Toast.makeText(RuntimeVariables.androidApplication, "\u68c0\u6d4b\u5230\u624b\u673a\u5b58\u50a8\u7a7a\u95f4\u4e0d\u8db3\uff0c\u4e3a\u4e0d\u5f71\u54cd\u60a8\u7684\u4f7f\u7528\u8bf7\u6e05\u7406\uff01", 1).show();
+					        Toast.makeText(RuntimeVariables.androidApplication, "Ops 可用空间不足！", 1).show();
 					    
 							
 						}
@@ -105,8 +101,7 @@ public class BundlesInstaller {
 				}
 				if (installAuto) {
 				    List<String> arrayList = new ArrayList<String>();
-				    for (String str : bundleList) {//TODO notice
-				    //	arrayList.add(str.replace(".", "_").replace("_so", ".so"));
+				    for (String str : bundleList) {
 				        for (String replace : Utils.AUTO) {
 				            if (str.contains(replace.replace(".", "_"))) {
 				                arrayList.add(str);
@@ -129,7 +124,7 @@ public class BundlesInstaller {
 				}
             } catch (IOException e5) {
                 //isInstalled = e5;
-                zipFile = null;
+               
                 Log.e("BundlesInstaller", "IOException while processLibsBundles >>>", e5);
           
                 if (updatePackageVersion) {
