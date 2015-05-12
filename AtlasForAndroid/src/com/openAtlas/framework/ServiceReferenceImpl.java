@@ -116,55 +116,55 @@ final class ServiceReferenceImpl implements ServiceReference {
         forbidden.add(Constants.OBJECTCLASS.toLowerCase(Locale.US));
     }
 
-    ServiceReferenceImpl(Bundle bundle, Object obj,
-            Dictionary<String, ?> dictionary, String[] strArr) {
-        this.useCounters = new HashMap(0);
+    ServiceReferenceImpl(Bundle bundle, Object service,
+            Dictionary<String, ?> properties, String[] clazzes) {
+        this.useCounters = new HashMap<Bundle, Integer>(0);
         this.cachedServices = null;
-        if (obj instanceof ServiceFactory) {
+        if (service instanceof ServiceFactory) {
             this.isServiceFactory = true;
         } else {
             this.isServiceFactory = false;
-            checkService(obj, strArr);
+            checkService(service, clazzes);
         }
         this.bundle = bundle;
-        this.service = obj;
-        this.properties = dictionary == null ? new Hashtable() : new Hashtable(
-                dictionary.size());
-        if (dictionary != null) {
-            Enumeration keys = dictionary.keys();
+        this.service = service;
+        this.properties = properties == null ? new Hashtable() : new Hashtable(
+                properties.size());
+        if (properties != null) {
+            Enumeration<String> keys = properties.keys();
             while (keys.hasMoreElements()) {
-                String str = (String) keys.nextElement();
-                this.properties.put(str, dictionary.get(str));
+                String str = keys.nextElement();
+                this.properties.put(str, properties.get(str));
             }
         }
-        this.properties.put(Constants.OBJECTCLASS, strArr);
-        Dictionary dictionary2 = this.properties;
+        this.properties.put(Constants.OBJECTCLASS, clazzes);
+        Dictionary<String, Object> dictionary2 = this.properties;
         String str2 = Constants.SERVICE_ID;
         long j = nextServiceID + 1;
         nextServiceID = j;
         dictionary2.put(str2, Long.valueOf(j));
-        Integer num = dictionary == null ? null : (Integer) dictionary
+        Integer num = properties == null ? null : (Integer) properties
                 .get(Constants.SERVICE_RANKING);
         this.properties.put(Constants.SERVICE_RANKING,
                 Integer.valueOf(num == null ? 0 : num.intValue()));
         this.registration = new ServiceRegistrationImpl();
     }
 
-    private void checkService(Object obj, String[] strArr) {
+    private void checkService(Object service, String[] clazzes) {
         int i = 0;
-        while (i < strArr.length) {
+        while (i < clazzes.length) {
             try {
-                if (Class.forName(strArr[i], false,
-                        obj.getClass().getClassLoader()).isInstance(obj)) {
+                if (Class.forName(clazzes[i], false,
+                        service.getClass().getClassLoader()).isInstance(service)) {
                     i++;
                 } else {
                     throw new IllegalArgumentException("Service "
-                            + obj.getClass().getName()
-                            + " does not implement the interface " + strArr[i]);
+                            + service.getClass().getName()
+                            + " does not implement the interface " + clazzes[i]);
                 }
             } catch (ClassNotFoundException e) {
-                throw new IllegalArgumentException("Interface " + strArr[i]
-                        + " implemented by service " + obj.getClass().getName()
+                throw new IllegalArgumentException("Interface " + clazzes[i]
+                        + " implemented by service " + service.getClass().getName()
                         + " cannot be located: " + e.getMessage());
             }
         }
@@ -190,20 +190,20 @@ final class ServiceReferenceImpl implements ServiceReference {
     }
 
     @Override
-	public Object getProperty(String str) {
-        Object obj = this.properties.get(str);
+	public Object getProperty(String key) {
+        Object obj = this.properties.get(key);
         if (obj != null) {
             return obj;
         }
-        obj = this.properties.get(str.toLowerCase(Locale.US));
+        obj = this.properties.get(key.toLowerCase(Locale.US));
         if (obj != null) {
             return obj;
         }
         Object obj2;
-        Enumeration keys = this.properties.keys();
+        Enumeration<String> keys = this.properties.keys();
         while (keys.hasMoreElements()) {
-            String str2 = (String) keys.nextElement();
-            if (str2.equalsIgnoreCase(str)) {
+            String str2 = keys.nextElement();
+            if (str2.equalsIgnoreCase(key)) {
                 obj2 = this.properties.get(str2);
                 break;
             }
@@ -214,12 +214,12 @@ final class ServiceReferenceImpl implements ServiceReference {
 
     @Override
 	public String[] getPropertyKeys() {
-        ArrayList arrayList = new ArrayList(this.properties.size());
-        Enumeration keys = this.properties.keys();
+        ArrayList<String> arrayList = new ArrayList<String>(this.properties.size());
+        Enumeration<String> keys = this.properties.keys();
         while (keys.hasMoreElements()) {
             arrayList.add(keys.nextElement());
         }
-        return (String[]) arrayList.toArray(new String[arrayList.size()]);
+        return arrayList.toArray(new String[arrayList.size()]);
     }
 
     @Override
@@ -251,7 +251,7 @@ final class ServiceReferenceImpl implements ServiceReference {
             this.useCounters.put(bundle, (Integer) valueOf);
             if (this.isServiceFactory) {
                 if (this.cachedServices == null) {
-                    this.cachedServices = new HashMap();
+                    this.cachedServices = new HashMap<Bundle, Object>();
                 }
                 valueOf = this.cachedServices.get(bundle);
                 if (valueOf != null) {

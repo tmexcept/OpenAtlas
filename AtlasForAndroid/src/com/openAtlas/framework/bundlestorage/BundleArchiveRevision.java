@@ -330,19 +330,19 @@ public class BundleArchiveRevision {
         if (!isDexOpted()) {
             if (AtlasHacks.LexFile == null
                     || AtlasHacks.LexFile.getmClass() == null) {
-                File file = new File(this.revisionDir, BUNDLE_ODEX_FILE);
+                File oDexFile = new File(this.revisionDir, BUNDLE_ODEX_FILE);
                 long currentTimeMillis = System.currentTimeMillis();
                 try {
-                    if (!AtlasFileLock.getInstance().LockExclusive(file)) {
+                    if (!AtlasFileLock.getInstance().LockExclusive(oDexFile)) {
                         log.error("Failed to get file lock for "
                                 + this.bundleFile.getAbsolutePath());
                     }
-                    if (file.length() <= 0) {
+                    if (oDexFile.length() <= 0) {
                         InitExecutor.optDexFile(
                                 this.bundleFile.getAbsolutePath(),
-                                file.getAbsolutePath());
-                        loadDex(file);
-                        AtlasFileLock.getInstance().unLock(file);
+                                oDexFile.getAbsolutePath());
+                        loadDex(oDexFile);
+                        AtlasFileLock.getInstance().unLock(oDexFile);
                         // "bundle archieve dexopt bundle " +
                         // this.bundleFile.getAbsolutePath() + " cost time = " +
                         // (System.currentTimeMillis() - currentTimeMillis) +
@@ -355,7 +355,7 @@ public class BundleArchiveRevision {
                                     + "' >>> ", e);
                 } finally {
                     AtlasFileLock mAtlasFileLock = AtlasFileLock.getInstance();
-                    mAtlasFileLock.unLock(file);
+                    mAtlasFileLock.unLock(oDexFile);
                 }
             } else {
                 DexClassLoader dexClassLoader = new DexClassLoader(

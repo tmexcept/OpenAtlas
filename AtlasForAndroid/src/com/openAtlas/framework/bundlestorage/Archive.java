@@ -30,10 +30,10 @@ import java.util.jar.Manifest;
 public interface Archive {
     void close();
 
-    Class<?> findClass(String str, ClassLoader classLoader)
+    Class<?> findClass(String clazz, ClassLoader classLoader)
             throws ClassNotFoundException;
 
-    File findLibrary(String str);
+    File findLibrary(String name);
 
     File getArchiveFile();
 
@@ -41,19 +41,19 @@ public interface Archive {
 
     Manifest getManifest() throws IOException;
 
-    List<URL> getResources(String str) throws IOException;
+    List<URL> getResources(String location) throws IOException;
 
     boolean isDexOpted();
 
-    BundleArchiveRevision newRevision(String str, File file, File file2)
+    BundleArchiveRevision newRevision(String packageName, File bundleDir, File bundleFile)
             throws IOException;
 
-    BundleArchiveRevision newRevision(String str, File file,
-            InputStream inputStream) throws IOException;
+    BundleArchiveRevision newRevision(String packageName, File bundleDir,
+            InputStream bundleInputStream) throws IOException;
 
-    InputStream openAssetInputStream(String str) throws IOException;
+    InputStream openAssetInputStream(String assetName) throws IOException;
 
-    InputStream openNonAssetInputStream(String str) throws IOException;
+    InputStream openNonAssetInputStream(String assetName) throws IOException;
 
     void optDexFile();
 

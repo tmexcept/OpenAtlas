@@ -106,16 +106,16 @@ final class Package implements ExportedPackage {
         return this.pkg.hashCode();
     }
 
-    static String[] parsePackageString(String str) {
-        if (str.indexOf(";") > -1) {
-            return new String[] { str.substring(0, str.indexOf(";")).trim(),
-                    str.substring(str.indexOf(";") + 1).trim() };
+    static String[] parsePackageString(String name) {
+        if (name.indexOf(";") > -1) {
+            return new String[] { name.substring(0, name.indexOf(";")).trim(),
+            		name.substring(name.indexOf(";") + 1).trim() };
         }
-        return new String[] { str.trim(), "" };
+        return new String[] { name.trim(), "" };
     }
 
-    boolean matches(String str) {
-        String[] parsePackageString = parsePackageString(str);
+    boolean matches(String name) {
+        String[] parsePackageString = parsePackageString(name);
         return matches(this.pkg, this.version, parsePackageString[0],
                 getVersionNumber(parsePackageString[1]));
     }

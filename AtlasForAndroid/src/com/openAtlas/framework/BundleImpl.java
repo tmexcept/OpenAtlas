@@ -160,12 +160,12 @@ public final class BundleImpl implements Bundle {
         throw new BundleException("FileLock failed " + file2.getAbsolutePath());
     }
 
-    private synchronized void resolveBundle(boolean z) throws BundleException {
+    private synchronized void resolveBundle(boolean recursive) throws BundleException {
         if (this.state != 4) {
             if (this.classloader == null) {
                 this.classloader = new BundleClassLoader(this);
             }
-            if (z) {
+            if (recursive) {
                 this.classloader.resolveBundle(true, new HashSet(0));
                 this.state = 4;
             } else if (this.classloader.resolveBundle(false, null)) {
@@ -249,7 +249,7 @@ public final class BundleImpl implements Bundle {
     }
 
     @Override
-	public boolean hasPermission(Object obj) {
+	public boolean hasPermission(Object permission) {
         if (this.state != 1) {
             return true;
         }
@@ -413,13 +413,13 @@ public final class BundleImpl implements Bundle {
     }
 
     @Override
-	public synchronized void update(File file) throws BundleException {
+	public synchronized void update(File bundleFile) throws BundleException {
         if (this.state == 1) {
             throw new IllegalStateException("Cannot update uninstalled bundle "
                     + toString());
         }
         try {
-            this.archive.newRevision(this.location, this.bundleDir, file);
+            this.archive.newRevision(this.location, this.bundleDir, bundleFile);
         } catch (Throwable e) {
             throw new BundleException("Could not update bundle " + toString(),
                     e);

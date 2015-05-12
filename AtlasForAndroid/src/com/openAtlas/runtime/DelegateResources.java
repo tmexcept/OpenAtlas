@@ -183,7 +183,7 @@ public class DelegateResources extends Resources {
 		if (str != null && assetPathsHistory != null && assetPathsHistory.contains(str)) {
 			return null;
 		}
-		Set<String> linkedHashSet = new LinkedHashSet();
+		Set<String> linkedHashSet = new LinkedHashSet<String>();
 		linkedHashSet.add(application.getApplicationInfo().sourceDir);
 		if (VERSION.SDK_INT > 20) {
 			try {
@@ -240,7 +240,7 @@ public class DelegateResources extends Resources {
 		if (TextUtils.isEmpty(str) || TextUtils.isEmpty(str2)) {
 			return 0;
 		}
-		List bundles = Framework.getBundles();
+		List<?> bundles = Framework.getBundles();
 		if (!(bundles == null || bundles.isEmpty())) {
 			for (Bundle bundle : Framework.getBundles()) {
 				String location = bundle.getLocation();
