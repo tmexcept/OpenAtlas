@@ -42,6 +42,7 @@ import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
 import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleEvent;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
 
@@ -450,7 +451,7 @@ public final class BundleClassLoader extends ClassLoader {
 	}
 
 	private List<URL> findImportedResources(String str, boolean z) {
-		if (this.bundle.state == 2 || this.importDelegations == null) {
+		if (this.bundle.state == BundleEvent.STARTED || this.importDelegations == null) {
 			return EMPTY_LIST;
 		}
 		BundleClassLoader bundleClassLoader = this.importDelegations
