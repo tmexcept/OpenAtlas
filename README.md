@@ -1,6 +1,6 @@
-# AtlasForAndroid
-AtlasForAndroid，The MIT License (MIT) Copyright (c) 2015 Bunny Blue,achellies
-This is A Plugin Framework run as Taobao
+# OpenAtlas
+OpenAtlas ,a Android plugin framework，The MIT License (MIT) Copyright (c) 2015 Bunny Blue,achellies
+This is A Plugin Framework run like Taobao.
 
 
 
