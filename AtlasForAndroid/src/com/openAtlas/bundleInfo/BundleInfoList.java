@@ -115,21 +115,7 @@ public class BundleInfoList {
         }
         return null;
     }
-@Deprecated
-    public String getBundleForComponet(String str) {
-        if (this.mBundleInfoList == null || this.mBundleInfoList.isEmpty()) {
-            return null;
-        }
-        for (int index = 0; index < this.mBundleInfoList.size(); ++index) {
-        	BundleInfo bundleInfo = this.mBundleInfoList.get(index);
-            for (String equals : bundleInfo.Components) {
-                if (equals.equals(str)) {
-                    return bundleInfo.bundleName;
-                }
-            }
-        }
-        return null;
-    }
+
 
     public List<String> getAllBundleNames() {
         if (this.mBundleInfoList == null || this.mBundleInfoList.isEmpty()) {

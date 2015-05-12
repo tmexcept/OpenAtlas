@@ -68,7 +68,7 @@ final class RFC1960Filter implements Filter {
             try {
                 return match(((ServiceReferenceImpl) serviceReference).properties);
             } catch (Exception e) {
-                Dictionary hashtable = new Hashtable();
+                Dictionary<String, Object> hashtable = new Hashtable<String, Object>();
                 String[] propertyKeys = serviceReference.getPropertyKeys();
                 for (int i = EQUALS; i < propertyKeys.length; i++) {
                     hashtable.put(propertyKeys[i],
@@ -398,6 +398,8 @@ final class RFC1960Filter implements Filter {
 		public int hashCode() {
             return toString().hashCode();
         }
+
+	
     }
 
     static {
@@ -413,6 +415,8 @@ final class RFC1960Filter implements Filter {
 			public boolean match(Dictionary dictionary) {
                 return true;
             }
+
+		
         };
     }
 
