@@ -35,11 +35,11 @@ public class Interception {
         private T mDelegatee;
 
         @Override
-		public Object invoke(Object obj, Method method, Object[] objArr)
+		public Object invoke(Object obj, Method method, Object[] args)
                 throws Throwable {
             Object obj2 = null;
             try {
-                obj2 = method.invoke(delegatee(), objArr);
+                obj2 = method.invoke(delegatee(), args);
             } catch (IllegalArgumentException e) {
                 e.printStackTrace();
             } catch (IllegalAccessException e2) {

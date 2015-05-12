@@ -153,19 +153,19 @@ public class Atlas {
                 + ", because could not find it");
     }
 
-    public void updateBundle(String pkgName, File file) throws BundleException {
+    public void updateBundle(String pkgName, File mBundleFile) throws BundleException {
         Bundle bundle = Framework.getBundle(pkgName);
         if (bundle != null) {
-            bundle.update(file);
+            bundle.update(mBundleFile);
             return;
         }
         throw new BundleException("Could not update bundle " + pkgName
                 + ", because could not find it");
     }
 
-    public void installOrUpdate(String[] strArr, File[] fileArr)
+    public void installOrUpdate(String[] packageNames, File[] bundleFiles)
             throws BundleException {
-        Framework.installOrUpdate(strArr, fileArr);
+        Framework.installOrUpdate(packageNames, bundleFiles);
     }
 
     public void uninstallBundle(String pkgName) throws BundleException {
@@ -231,20 +231,20 @@ public class Atlas {
         return null;
     }
 
-    public InputStream openAssetInputStream(String str, String str2)
+    public InputStream openAssetInputStream(String packageName, String assetName)
             throws IOException {
-        Bundle bundle = Framework.getBundle(str);
+        Bundle bundle = Framework.getBundle(packageName);
         if (bundle != null) {
-            return ((BundleImpl) bundle).archive.openAssetInputStream(str2);
+            return ((BundleImpl) bundle).archive.openAssetInputStream(assetName);
         }
         return null;
     }
 
-    public InputStream openNonAssetInputStream(String str, String str2)
+    public InputStream openNonAssetInputStream(String packageName, String assetName)
             throws IOException {
-        Bundle bundle = Framework.getBundle(str);
+        Bundle bundle = Framework.getBundle(packageName);
         if (bundle != null) {
-            return ((BundleImpl) bundle).archive.openNonAssetInputStream(str2);
+            return ((BundleImpl) bundle).archive.openNonAssetInputStream(assetName);
         }
         return null;
     }
@@ -269,23 +269,23 @@ public class Atlas {
         this.bundleLifecycleHandler.handleLowMemory();
     }
 
-    public void enableComponent(String str) {
-        PackageLite packageLite = DelegateComponent.getPackage(str);
+    public void enableComponent(String componentName) {
+        PackageLite packageLite = DelegateComponent.getPackage(componentName);
         if (packageLite != null && packageLite.disableComponents != null) {
-            for (String str2 : packageLite.disableComponents) {
+            for (String disableComponent : packageLite.disableComponents) {
                 PackageManager packageManager = RuntimeVariables.androidApplication
                         .getPackageManager();
-                ComponentName componentName = new ComponentName(
+                ComponentName componentName2 = new ComponentName(
                         RuntimeVariables.androidApplication.getPackageName(),
-                        str2);
+                        disableComponent);
                 try {
-                    packageManager.setComponentEnabledSetting(componentName, 1,
+                    packageManager.setComponentEnabledSetting(componentName2, 1,
                             1);
                     log.debug("enableComponent: "
-                            + componentName.getClassName());
+                            + componentName2.getClassName());
                 } catch (Exception e) {
                     log.error("enableComponent error: "
-                            + componentName.getClassName() + e.getMessage());
+                            + componentName2.getClassName() + e.getMessage());
                 }
             }
         }

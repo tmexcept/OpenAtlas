@@ -97,13 +97,13 @@ public class BundleArchive implements Archive {
     }
 
     @Override
-	public BundleArchiveRevision newRevision(String str, File file, File file2)
+	public BundleArchiveRevision newRevision(String packageName, File file, File file2)
             throws IOException {
-        long longValue = 1 + this.revisions.lastKey().longValue();
+        long revision = 1 + this.revisions.lastKey().longValue();
         BundleArchiveRevision bundleArchiveRevision = new BundleArchiveRevision(
-                str, longValue, new File(file, "version."
-                        + String.valueOf(longValue)), file2);
-        this.revisions.put(Long.valueOf(longValue), bundleArchiveRevision);
+                packageName, revision, new File(file, "version."
+                        + String.valueOf(revision)), file2);
+        this.revisions.put(Long.valueOf(revision), bundleArchiveRevision);
         return bundleArchiveRevision;
     }
 

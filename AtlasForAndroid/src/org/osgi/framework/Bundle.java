@@ -64,7 +64,7 @@ public interface Bundle {
 
     void update() throws BundleException;
 
-    void update(File file) throws BundleException;
+    void update(File bundleFile) throws BundleException;
 
     void update(InputStream inputStream) throws BundleException;
 }

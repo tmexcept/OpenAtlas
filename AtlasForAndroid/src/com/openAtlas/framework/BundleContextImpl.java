@@ -93,11 +93,11 @@ public class BundleContextImpl implements BundleContext {
     }
 
     @Override
-	public void addServiceListener(ServiceListener serviceListener, String str)
+	public void addServiceListener(ServiceListener serviceListener, String  filter)
             throws InvalidSyntaxException {
         checkValid();
         ServiceListenerEntry serviceListenerEntry = new ServiceListenerEntry(
-                serviceListener, str);
+                serviceListener,  filter);
         if (this.bundle.registeredServiceListeners == null) {
             this.bundle.registeredServiceListeners = new ArrayList<ServiceListener>();
         }
@@ -131,9 +131,9 @@ public class BundleContextImpl implements BundleContext {
     }
 
     @Override
-	public Filter createFilter(String str) throws InvalidSyntaxException {
-        if (str != null) {
-            return RFC1960Filter.fromString(str);
+	public Filter createFilter(String filter) throws InvalidSyntaxException {
+        if (filter != null) {
+            return RFC1960Filter.fromString(filter);
         }
         throw new NullPointerException();
     }
@@ -144,7 +144,7 @@ public class BundleContextImpl implements BundleContext {
     }
 
     @Override
-	public Bundle getBundle(long j) {
+	public Bundle getBundle(long bundleID) {
         checkValid();
         return null;
     }
@@ -190,15 +190,15 @@ public class BundleContextImpl implements BundleContext {
     }
 
     @Override
-	public ServiceReference[] getServiceReferences(String str, String str2)
+	public ServiceReference[] getServiceReferences(String clazz, String filter)
             throws InvalidSyntaxException {
         Collection collection = null;
         checkValid();
-        Filter fromString = RFC1960Filter.fromString(str2);
-        if (str == null) {
+        Filter fromString = RFC1960Filter.fromString(filter);
+        if (clazz == null) {
             collection = Framework.services;
         } else {
-            List<ServiceReference> list = Framework.classes_services.get(str);
+            List<ServiceReference> list = Framework.classes_services.get(clazz);
             if (list == null) {
                 return null;
             }
@@ -212,7 +212,7 @@ public class BundleContextImpl implements BundleContext {
             }
         }
         if (Framework.DEBUG_SERVICES && log.isInfoEnabled()) {
-            log.info("Framework: REQUESTED SERVICES " + str + " " + str2);
+            log.info("Framework: REQUESTED SERVICES " + clazz + " " + filter);
             log.info("\tRETURNED " + arrayList);
         }
         return arrayList.size() == 0 ? null : (ServiceReference[]) arrayList
@@ -220,12 +220,12 @@ public class BundleContextImpl implements BundleContext {
     }
 
     @Override
-	public ServiceReference getServiceReference(String str) {
+	public ServiceReference getServiceReference(String clazz) {
         ServiceReference serviceReference = null;
         checkValid();
         int i = -1;
         long j = 5000;// MAlarmHandler.NEXT_FIRE_INTERVAL;
-        List list = Framework.classes_services.get(str);
+        List list = Framework.classes_services.get(clazz);
         if (list != null) {
             ServiceReference[] serviceReferenceArr = (ServiceReference[]) list
                     .toArray(new ServiceReference[list.size()]);
@@ -257,7 +257,7 @@ public class BundleContextImpl implements BundleContext {
                 j = longValue;
             }
             if (Framework.DEBUG_SERVICES && log.isInfoEnabled()) {
-                log.info("Framework: REQUESTED SERVICE " + str);
+                log.info("Framework: REQUESTED SERVICE " + clazz);
                 log.info("\tRETURNED " + serviceReference);
             }
         }
@@ -274,45 +274,43 @@ public class BundleContextImpl implements BundleContext {
     }
 
     @Override
-	public Bundle installBundle(String str, InputStream inputStream)
+	public Bundle installBundle(String location, InputStream inputStream)
             throws BundleException {
-        if (str == null) {
+        if (location == null) {
             throw new IllegalArgumentException("Location must not be null");
         }
         checkValid();
-        return Framework.installNewBundle(str, inputStream);
+        return Framework.installNewBundle(location, inputStream);
     }
 
     @Override
-	public ServiceRegistration registerService(String[] strArr, Object obj,
-            Dictionary<String, ?> dictionary) {
+	public ServiceRegistration registerService(String[] clazzes, Object service, Dictionary<String, ?> properties) {
         checkValid();
-        if (obj == null) {
+        if (service == null) {
             throw new IllegalArgumentException("Cannot register Component null service");
         }
         ServiceReferenceImpl serviceReferenceImpl = new ServiceReferenceImpl(
-                this.bundle, obj, dictionary, strArr);
+                this.bundle, service, properties, clazzes);
         Framework.services.add(serviceReferenceImpl);
         if (this.bundle.registeredServices == null) {
             this.bundle.registeredServices = new ArrayList();
         }
         this.bundle.registeredServices.add(serviceReferenceImpl);
-        for (Object addValue : strArr) {
+        for (Object addValue : clazzes) {
             Framework.addValue(Framework.classes_services, addValue,
                     serviceReferenceImpl);
         }
         if (Framework.DEBUG_SERVICES && log.isInfoEnabled()) {
-            log.info("Framework: REGISTERED SERVICE " + strArr[0]);
+            log.info("Framework: REGISTERED SERVICE " + clazzes[0]);
         }
         Framework.notifyServiceListeners(1, serviceReferenceImpl);
         return serviceReferenceImpl.registration;
     }
 
     @Override
-	public ServiceRegistration registerService(String str, Object obj,
-            Dictionary<String, ?> dictionary) {
-        return registerService(new String[] { str }, obj,
-                dictionary);
+	public ServiceRegistration registerService(String clazz, Object service, Dictionary<String, ?> properties) {
+        return registerService(new String[] { clazz }, service,
+        		properties);
     }
 
     @Override

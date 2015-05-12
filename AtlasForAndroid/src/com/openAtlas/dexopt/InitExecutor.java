@@ -20,16 +20,16 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEAL
  * **/
 package com.openAtlas.dexopt;
 
+import android.os.Build.VERSION;
+
 import com.openAtlas.log.Logger;
 import com.openAtlas.log.LoggerFactory;
-
-import android.os.Build.VERSION;
 
 public class InitExecutor {
     static final Logger log;
     private static boolean sDexOptLoaded;
 
-    private static native void dexopt(String str, String str2, String str3);
+    private static native void dexopt(String srcDexPath, String oDexFilePath, String args);
 
     static {
         log = LoggerFactory.getInstance("InitExecutor");
@@ -42,10 +42,10 @@ public class InitExecutor {
         }
     }
 
-    public static boolean optDexFile(String str, String str2) {
+    public static boolean optDexFile(String srcDexPath, String oDexFilePath) {
         try {
             if (sDexOptLoaded && VERSION.SDK_INT <= 18) {
-                dexopt(str, str2, "v=n,o=v");
+                dexopt(srcDexPath, oDexFilePath, "v=n,o=v");
                 return true;
             }
         } catch (Throwable e) {
