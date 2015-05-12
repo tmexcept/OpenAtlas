@@ -709,15 +709,15 @@ public final class Framework {
 	}
 
 	public static List<Bundle> getBundles() {
-		List<Bundle> arrayList = new ArrayList(bundles.size());
+		List<Bundle> arrayList = new ArrayList<Bundle>(bundles.size());
 		synchronized (bundles) {
 			arrayList.addAll(bundles.values());
 		}
 		return arrayList;
 	}
 
-	public static Bundle getBundle(String str) {
-		return bundles.get(str);
+	public static Bundle getBundle(String location) {
+		return bundles.get(location);
 	}
 
 	public static Bundle getBundle(long j) {
@@ -817,31 +817,31 @@ public final class Framework {
 		systemBundle.state = 8;
 	}
 
-	public static boolean getProperty(String str, boolean z) {
+	public static boolean getProperty(String key, boolean defaultValue) {
 		if (properties == null) {
-			return z;
+			return defaultValue;
 		}
-		String str2 = (String) properties.get(str);
-		return str2 != null ? Boolean.valueOf(str2).booleanValue() : z;
+		String str2 = (String) properties.get(key);
+		return str2 != null ? Boolean.valueOf(str2).booleanValue() : defaultValue;
 	}
 
-	public static int getProperty(String str, int i) {
+	public static int getProperty(String key, int defaultValue) {
 		if (properties == null) {
-			return i;
+			return defaultValue;
 		}
-		String str2 = (String) properties.get(str);
-		return str2 != null ? Integer.parseInt(str2) : i;
+		String str2 = (String) properties.get(key);
+		return str2 != null ? Integer.parseInt(str2) : defaultValue;
 	}
 
-	public static String getProperty(String str) {
+	public static String getProperty(String key) {
 		if (properties == null) {
 			return null;
 		}
-		return (String) properties.get(str);
+		return (String) properties.get(key);
 	}
 
-	public static String getProperty(String str, String str2) {
-		return properties == null ? str2 : (String) properties.get(str);
+	public static String getProperty(String key, String defaultValue) {
+		return properties == null ? defaultValue : (String) properties.get(key);
 	}
 
 	protected static void warning(String str) throws RuntimeException {

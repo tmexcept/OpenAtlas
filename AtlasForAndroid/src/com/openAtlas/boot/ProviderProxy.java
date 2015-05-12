@@ -75,10 +75,11 @@ public class ProviderProxy extends ContentProvider {
 	}
 
 	@Override
-	public Cursor query(Uri uri, String[] strArr, String str, String[] strArr2, String str2) {
+	public Cursor query(Uri uri, String[] projection,
+            String selection, String[] selectionArgs, String sortOrder) {
 		ContentProvider mContentProvider = getContentProvider();
 		if (mContentProvider != null) {
-			return mContentProvider.query(uri, strArr, str, strArr2, str2);
+			return mContentProvider.query(uri, projection, selection, selectionArgs, sortOrder);
 		}
 		return null;
 	}
@@ -102,19 +103,20 @@ public class ProviderProxy extends ContentProvider {
 	}
 
 	@Override
-	public int delete(Uri uri, String str, String[] strArr) {
+	public int delete(Uri uri, String selection, String[] selectionArgs) {
 		ContentProvider mContentProvider = getContentProvider();
 		if (mContentProvider != null) {
-			return mContentProvider.delete(uri, str, strArr);
+			return mContentProvider.delete(uri, selection, selectionArgs);
 		}
 		return 0;
 	}
 
 	@Override
-	public int update(Uri uri, ContentValues contentValues, String str, String[] strArr) {
+	public int update(Uri uri, ContentValues values, String selection,
+            String[] selectionArgs) {
 		ContentProvider mContentProvider = getContentProvider();
 		if (mContentProvider != null) {
-			return mContentProvider.update(uri, contentValues, str, strArr);
+			return mContentProvider.update(uri, values, selection, selectionArgs);
 		}
 		return 0;
 	}

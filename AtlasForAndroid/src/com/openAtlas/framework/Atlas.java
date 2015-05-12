@@ -123,19 +123,19 @@ public class Atlas {
     public Bundle getBundle(String pkgName) {
         return Framework.getBundle(pkgName);
     }
-    public Bundle getBundleOnDemand(String str) {
-        if (str == null || str.length() == 0) {
+    public Bundle getBundleOnDemand(String pkgName) {
+        if (pkgName == null || pkgName.length() == 0) {
             return null;
         }
-        if (Framework.getBundle(str) == null) {
-            ClassLoadFromBundle.checkInstallBundleAndDependency(str);
+        if (Framework.getBundle(pkgName) == null) {
+            ClassLoadFromBundle.checkInstallBundleAndDependency(pkgName);
         }
-        return Framework.getBundle(str);
+        return Framework.getBundle(pkgName);
     }
 
-    public Bundle installBundle(String str, InputStream inputStream)
+    public Bundle installBundle(String location, InputStream inputStream)
             throws BundleException {
-        return Framework.installNewBundle(str, inputStream);
+        return Framework.installNewBundle(location, inputStream);
     }
 
     public Bundle installBundle(String location, File apkFile) throws BundleException {
