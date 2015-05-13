@@ -63,10 +63,10 @@ public class DelegateResources extends Resources {
 		String newPath;
 		Resources res;
 
-		public DelegateResourcesGetter(Application application, Resources resources, String str) {
+		public DelegateResourcesGetter(Application application, Resources res, String newPath) {
 			this.application = application;
-			this.res = resources;
-			this.newPath = str;
+			this.res = res;
+			this.newPath = newPath;
 		}
 
 		@Override
@@ -100,26 +100,28 @@ public class DelegateResources extends Resources {
 		this.resIdentifierMap = new ConcurrentHashMap<String, Integer>();
 	}
 
-	public static void newDelegateResources(Application application, Resources resources, String str) throws Exception {
+	public static void newDelegateResources(Application application, Resources resources, String newPath) throws Exception {
 		if (Thread.currentThread().getId() == Looper.getMainLooper().getThread().getId()) {
-			newDelegateResourcesInternal(application, resources, str);
+			newDelegateResourcesInternal(application, resources, newPath);
 			return;
 		}
 		synchronized (lock) {
-			new Handler(Looper.getMainLooper()).post(new DelegateResourcesGetter(application, resources, str));
+			new Handler(Looper.getMainLooper()).post(new DelegateResourcesGetter(application, resources, newPath));
 			lock.wait();
 		}
 	}
-
-	private static void newDelegateResourcesInternal(Application application, Resources resources, String str) throws Exception {
-		Set<String> generateNewAssetPaths = generateNewAssetPaths(application, str);
+	/********将新的资源资源加入宿主程序中
+	 * @param newPath 新插件的路径
+	 * ******/
+	private static void newDelegateResourcesInternal(Application application, Resources resources, String newPath) throws Exception {
+		Set<String> generateNewAssetPaths = generateNewAssetPaths(application, newPath);
 		if (generateNewAssetPaths != null) {
 			Resources delegateResources;
 			AssetManager assetManager = AssetManager.class.newInstance();
-			for (String str2 : generateNewAssetPaths) {
-				AtlasHacks.AssetManager_addAssetPath.invoke(assetManager, str2);
+			for (String assetPath : generateNewAssetPaths) {
+				AtlasHacks.AssetManager_addAssetPath.invoke(assetManager, assetPath);
 			}
-			if (resources == null || !resources.getClass().getName().equals("android.content.res.MiuiResources")) {
+			if (resources == null || !resources.getClass().getName().equals("android.content.res.MiuiResources")) {//如果是翔米UI需要使用MiuiResources
 				delegateResources = new DelegateResources(assetManager, resources);
 			} else {
 				Constructor<?> declaredConstructor = Class.forName("android.content.res.MiuiResources").getDeclaredConstructor(new Class[]{AssetManager.class, DisplayMetrics.class, Configuration.class});
@@ -136,8 +138,8 @@ public class DelegateResources extends Resources {
 					stringBuffer.append(append).append(",");
 				}
 				stringBuffer.append("]");
-				if (str != null) {
-					stringBuffer.append("Add new path:" + str);
+				if (newPath != null) {
+					stringBuffer.append("Add new path:" + newPath);
 				}
 				log.debug(stringBuffer.toString());
 			}
@@ -151,15 +153,15 @@ public class DelegateResources extends Resources {
 			declaredMethod.setAccessible(true);
 			int intValue = ((Integer) declaredMethod.invoke(assetManager, new Object[0])).intValue();
 			for (int i = 0; i < intValue; i++) {
-				String str = (String) assetManager.getClass().getMethod("getCookieName", new Class[]{Integer.TYPE}).invoke(assetManager, new Object[]{Integer.valueOf(i + 1)});
-				if (!TextUtils.isEmpty(str)) {
-					arrayList.add(str);
+				String cookieName = (String) assetManager.getClass().getMethod("getCookieName", new Class[]{Integer.TYPE}).invoke(assetManager, new Object[]{Integer.valueOf(i + 1)});
+				if (!TextUtils.isEmpty(cookieName)) {
+					arrayList.add(cookieName);
 				}
 			}
 			return arrayList;
-		} catch (Throwable th) {
+		} catch (Exception th) {
 			th.printStackTrace();
-			
+
 			arrayList.clear();
 			return arrayList;
 		}
@@ -177,10 +179,9 @@ public class DelegateResources extends Resources {
 		stringBuffer.append("]");
 		return stringBuffer.toString();
 	}
-
-	private static Set<String> generateNewAssetPaths(Application application, String str) {
-		//Set<String> linkedHashSet = null;
-		if (str != null && assetPathsHistory != null && assetPathsHistory.contains(str)) {
+	/**重新生成Asset列表**/
+	private static Set<String> generateNewAssetPaths(Application application, String newPath) {
+		if (newPath != null && assetPathsHistory != null && assetPathsHistory.contains(newPath)) {
 			return null;
 		}
 		Set<String> linkedHashSet = new LinkedHashSet<String>();
@@ -196,30 +197,30 @@ public class DelegateResources extends Resources {
 				if (assetPathsHistory != null) {
 					linkedHashSet.addAll(assetPathsHistory);
 				}
-				if (str == null) {
+				if (newPath == null) {
 					return linkedHashSet;
 				}
-				linkedHashSet.add(str);
+				linkedHashSet.add(newPath);
 				return linkedHashSet;
 			} catch (Throwable th) {
-				
+
 				if (assetPathsHistory != null) {
 					linkedHashSet.addAll(assetPathsHistory);
 				}
-				if (str != null) {
+				if (newPath != null) {
 					return linkedHashSet;
 				}
-				linkedHashSet.add(str);
+				linkedHashSet.add(newPath);
 				return linkedHashSet;
 			}
 		}
 		if (assetPathsHistory != null) {
 			linkedHashSet.addAll(assetPathsHistory);
 		}
-		if (str == null) {
+		if (newPath == null) {
 			return linkedHashSet;
 		}
-		linkedHashSet.add(str);
+		linkedHashSet.add(newPath);
 		return linkedHashSet;
 	}
 
