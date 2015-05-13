@@ -28,7 +28,7 @@ import android.app.Application;
 import android.os.Build.VERSION;
 import android.os.Bundle;
 
-public class ApplicationCompat extends Application {
+public class AtlasCompat extends Application {
     private final ArrayList<ActivityLifecycleCallbacksCompat> mActivityLifecycleCallbacks;
 
     public static interface ActivityLifecycleCallbacksCompat {
@@ -77,7 +77,7 @@ public class ApplicationCompat extends Application {
         }
     }
 
-    public ApplicationCompat() {
+    public AtlasCompat() {
         this.mActivityLifecycleCallbacks = new ArrayList<ActivityLifecycleCallbacksCompat>();
     }
 

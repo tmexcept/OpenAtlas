@@ -27,17 +27,22 @@ import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
-
+/****
+ * Provider需要做一些处理，因为ContentProvider在Application onCreate之前初始化，so，做一个桥<br>
+ * 告诉系统这个ContentProvider初始化完毕，都可以用了，实际上还没完成，只是一个空实现，当需要的类能加载的时候对正常的类进行实例化
+ * @author BunnyBlue
+ * 
+ * *****/
 public class ProviderProxy extends ContentProvider {
 	ContentProvider mContentProvider;
 	String mTargetProvider;
 	/**
-	 * 
+	 * @param mTargetProvider 真正的ContentProvider类名
 	 */
 	public ProviderProxy(String  mTargetProvider) {
 		this.mTargetProvider=mTargetProvider;
 	}
-
+	/*****验证ContentProvider实现类是否加载*****/
 	protected ContentProvider getContentProvider() {
 		if (this.mContentProvider != null) {
 			return this.mContentProvider;
@@ -76,7 +81,7 @@ public class ProviderProxy extends ContentProvider {
 
 	@Override
 	public Cursor query(Uri uri, String[] projection,
-            String selection, String[] selectionArgs, String sortOrder) {
+			String selection, String[] selectionArgs, String sortOrder) {
 		ContentProvider mContentProvider = getContentProvider();
 		if (mContentProvider != null) {
 			return mContentProvider.query(uri, projection, selection, selectionArgs, sortOrder);
@@ -113,7 +118,7 @@ public class ProviderProxy extends ContentProvider {
 
 	@Override
 	public int update(Uri uri, ContentValues values, String selection,
-            String[] selectionArgs) {
+			String[] selectionArgs) {
 		ContentProvider mContentProvider = getContentProvider();
 		if (mContentProvider != null) {
 			return mContentProvider.update(uri, values, selection, selectionArgs);

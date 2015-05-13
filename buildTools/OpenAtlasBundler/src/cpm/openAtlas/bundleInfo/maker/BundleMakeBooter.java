@@ -33,8 +33,13 @@ import org.json.JSONException;
  */
 public class BundleMakeBooter {
 	public static void main(String[] args) throws JSONException, IOException {
-		String path="/Users/BunnyBlue/Documents/openSource/AtlasForAndroid/sample/AtlasLauncher/libs/armeabi/";
-		String targetFile="/Users/BunnyBlue/Documents/openSource/AtlasForAndroid/sample/AtlasLauncher/assets/bundle-info.json";
+		if(args.length!=2){
+			throw new  IOException(" args to less , usage plugin_dir out_put_json_path");
+			
+			
+		}
+		String path=args[0];
+		String targetFile=args[1];
 		File dirFile=new File(path);
 		JSONArray jsonArray=new JSONArray();
 		File[]files=	dirFile.listFiles();
