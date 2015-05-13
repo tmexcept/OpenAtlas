@@ -44,21 +44,7 @@ public class DelegateClassLoader extends ClassLoader {
         }
         throw new ClassNotFoundException("Can't find class " + className + printExceptionInfo() + " " + ClassLoadFromBundle.getClassNotFoundReason(className));
     }
- //   @Override
-//	protected Class<?> findClass(String str) throws ClassNotFoundException {
-//        Class<?> loadFromInstalledBundles = ClassLoadFromBundle
-//                .loadFromInstalledBundles(str);
-//        if (loadFromInstalledBundles == null) {
-//            loadFromInstalledBundles = ClassLoadFromBundle
-//                    .loadFromUninstalledBundles(str);
-//        }
-//        if (loadFromInstalledBundles != null) {
-//            return loadFromInstalledBundles;
-//        }
-//        throw new ClassNotFoundException("Can't find class " + str
-//                + printExceptionInfo() + " "
-//                + ClassLoadFromBundle.getClassNotFoundReason(str));
-//    }
+
 
     private String printExceptionInfo() {
         StringBuilder stringBuilder = new StringBuilder("installed bundles: ");
