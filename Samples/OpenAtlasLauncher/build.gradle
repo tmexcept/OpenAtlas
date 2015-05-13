@@ -1,7 +1,8 @@
-apply plugin: 'com.android.library'
+apply plugin: 'com.android.application'
 
 dependencies {
     compile fileTree(dir: 'libs', include: '*.jar')
+    compile project(':OpenAtlasCore')
 }
 
 android {
@@ -17,7 +18,6 @@ android {
             renderscript.srcDirs = ['src']
             res.srcDirs = ['res']
             assets.srcDirs = ['assets']
-            jniLibs.srcDir 'libs'
         }
 
         // Move the tests to tests/java, tests/res, etc...
