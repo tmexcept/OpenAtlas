@@ -32,6 +32,7 @@ import android.os.Process;
 import com.openAtlas.android.initializer.AtlasInitializer;
 import com.openAtlas.android.lifecycle.AtlasApp;
 import com.openAtlas.boot.Globals;
+import com.openAtlas.boot.PlatformConfigure;
 
 public class BootApp extends AtlasApp {
 
@@ -81,7 +82,7 @@ public class BootApp extends AtlasApp {
 		super.onCreate();
 		instaceApp = this;
 		this.mAtlasInitializer.startUp();
-
+		PlatformConfigure.BundleNotFoundActivity=BundleNotFoundActivity.class;
 	}
 
 

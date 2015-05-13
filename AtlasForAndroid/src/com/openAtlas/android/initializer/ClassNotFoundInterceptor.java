@@ -25,6 +25,7 @@ import java.util.List;
 
 import android.content.Intent;
 
+import com.openAtlas.boot.Globals;
 import com.openAtlas.boot.PlatformConfigure;
 import com.openAtlas.bundleInfo.BundleInfoList;
 import com.openAtlas.bundleInfo.BundleListing.Component;
@@ -109,10 +110,10 @@ public class ClassNotFoundInterceptor implements ClassNotFoundInterceptorCallbac
             intent.putExtra(KEY_ACTIVITY, this.mActivityName);
             intent.putExtra(KEY_BUNDLE_PKG, this.mComponent.getPkgName());
             intent.setData(this.mIntent.getData());
-            intent.setFlags(268435456);
-            throw  new  UnsupportedOperationException(" no  impl");
-//            intent.setClass(Globals.getApplication(), BundleNotFoundActivity.class);
-//            Globals.getApplication().startActivity(intent);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+           
+            intent.setClass(Globals.getApplication(), PlatformConfigure.BundleNotFoundActivity);
+            Globals.getApplication().startActivity(intent);
         }
     }
 }

@@ -18,8 +18,9 @@ PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS 
 FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
 ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 @author BunnyBlue
-* **/
+ * **/
 package com.openAtlas.boot;
+
 
 /**
  * App  Platform configuration
@@ -45,9 +46,9 @@ public class PlatformConfigure {
 	public static final String  OPENATLAS_DEBUG_CLASSLOADING="com.openAtlas.debug.classloading";
 	public static final String  OPENATLAS_DEBUG="com.openAtlas.debug";
 	public static final String OPENATLAS_FRAMEWORK_PACKAGE="com.openAtlas.framework";
-	
+
 	public static final String OPENATLAS_STRICT_STARTUP="com.openAtlas.strictStartup";
 	public static final String OPENATLAS_AUTO_LOAD="com.openAtlas.auto.load";
+	public static Class<?> BundleNotFoundActivity=null;
 
-	
 }
