@@ -51,7 +51,6 @@ import com.openAtlas.framework.bundlestorage.BundleArchiveRevision.DexLoadExcept
 import com.openAtlas.hack.AtlasHacks;
 import com.openAtlas.log.Logger;
 import com.openAtlas.log.LoggerFactory;
-import com.openAtlas.util.Constants;
 
 public final class BundleClassLoader extends ClassLoader {
 	private static final List<URL> EMPTY_LIST;
@@ -169,16 +168,16 @@ public final class BundleClassLoader extends ClassLoader {
 			mainAttributes = new Attributes();
 		}
 		checkEE(readProperty(mainAttributes,
-				Constants.BUNDLE_REQUIREDEXECUTIONENVIRONMENT),
+				PlatformConfigure.BUNDLE_REQUIREDEXECUTIONENVIRONMENT),
 				splitString(System
-						.getProperty(Constants.FRAMEWORK_EXECUTIONENVIRONMENT)));
-		this.exports = readProperty(mainAttributes, Constants.EXPORT_PACKAGE);
-		this.imports = readProperty(mainAttributes, Constants.IMPORT_PACKAGE);
+						.getProperty(PlatformConfigure.FRAMEWORK_EXECUTIONENVIRONMENT)));
+		this.exports = readProperty(mainAttributes, PlatformConfigure.EXPORT_PACKAGE);
+		this.imports = readProperty(mainAttributes, PlatformConfigure.IMPORT_PACKAGE);
 		this.dynamicImports = readProperty(mainAttributes,
-				Constants.DYNAMICIMPORT_PACKAGE);
-		this.requires = readProperty(mainAttributes, Constants.REQUIRE_BUNDLE);
+				PlatformConfigure.DYNAMICIMPORT_PACKAGE);
+		this.requires = readProperty(mainAttributes, PlatformConfigure.REQUIRE_BUNDLE);
 		this.activatorClassName = mainAttributes
-				.getValue(Constants.BUNDLE_ACTIVATOR);
+				.getValue(PlatformConfigure.BUNDLE_ACTIVATOR);
 		Hashtable<String, String> hashtable = new Hashtable<String, String>(mainAttributes.size());
 		Object[] toArray = mainAttributes.keySet().toArray(
 				new Object[mainAttributes.keySet().size()]);

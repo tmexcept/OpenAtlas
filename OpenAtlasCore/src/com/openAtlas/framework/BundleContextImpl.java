@@ -39,10 +39,10 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.framework.SynchronousBundleListener;
 
+import com.openAtlas.boot.PlatformConfigure;
 import com.openAtlas.framework.Framework.ServiceListenerEntry;
 import com.openAtlas.log.Logger;
 import com.openAtlas.log.LoggerFactory;
-import com.openAtlas.util.Constants;
 
 public class BundleContextImpl implements BundleContext {
     static final Logger log;
@@ -235,14 +235,14 @@ public class BundleContextImpl implements BundleContext {
                 ServiceReference serviceReference2;
                 int i3;
                 Integer num = (Integer) serviceReferenceArr[i2]
-                        .getProperty(Constants.SERVICE_RANKING);
+                        .getProperty(PlatformConfigure.SERVICE_RANKING);
                 if (num != null) {
                     intValue = num.intValue();
                 } else {
                     intValue = 0;
                 }
                 long longValue = ((Long) serviceReferenceArr[i2]
-                        .getProperty(Constants.SERVICE_ID)).longValue();
+                        .getProperty(PlatformConfigure.SERVICE_ID)).longValue();
                 if (intValue > i || (intValue == i && longValue < j)) {
                     serviceReference2 = serviceReferenceArr[i2];
                     i3 = intValue;

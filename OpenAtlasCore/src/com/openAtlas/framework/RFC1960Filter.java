@@ -36,8 +36,6 @@ import org.osgi.framework.GetUserInfoRequest;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
-import com.openAtlas.util.Constants;
-
 final class RFC1960Filter implements Filter {
     private static final int AND_OPERATOR = 1;
     private static final int APPROX = 2;
@@ -484,7 +482,7 @@ final class RFC1960Filter implements Filter {
                                 "Surplus left paranthesis at: "
                                         + str.substring(i5), str);
                     }
-                case Constants.LOGIN_HANDLER_KEY_PURCHASE:
+                case 41:
                     RFC1960Filter rFC1960Filter;
                     if (i == -1) {
                         rFC1960Filter = (RFC1960Filter) stack.pop();
@@ -556,14 +554,14 @@ final class RFC1960Filter implements Filter {
                     }
                     throw new InvalidSyntaxException("Unexpected character "
                             + toCharArray[i4 + 1], str);
-                case Constants.LOGIN_HANDLER_KEY_TF_PUBACCOUNT_ADDFOLLOW:
+                case 61:
                     i3 = i4;
                     i7 = i;
                     obj = null;
                     i5 = i4;
                     str3 = str.substring(i + 1, i4).trim();
                     break;
-                case Constants.LOGIN_HANDLER_KEY_TC_SCAN_PAY:
+                case 62:
                     if (i2 == 0 && toCharArray[i4 + 1] == '=') {
                         trim = str.substring(i + 1, i4).trim();
                         obj = NOT_OPERATOR;
@@ -574,7 +572,7 @@ final class RFC1960Filter implements Filter {
                     }
                     throw new InvalidSyntaxException("Unexpected character "
                             + toCharArray[i4 + 1], str);
-                case Constants.ITEM_DELETE_DAY30:
+                case 126:
                     if (i2 == 0 && toCharArray[i4 + 1] == '=') {
                         trim = str.substring(i + 1, i4).trim();
                         obj = OR_OPERATOR;

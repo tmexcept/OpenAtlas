@@ -73,7 +73,6 @@ import com.openAtlas.runtime.ClassNotFoundInterceptorCallback;
 import com.openAtlas.runtime.RuntimeVariables;
 import com.openAtlas.util.AtlasFileLock;
 import com.openAtlas.util.BundleLock;
-import com.openAtlas.util.Constants;
 import com.openAtlas.util.StringUtils;
 
 public final class Framework {
@@ -273,9 +272,9 @@ public final class Framework {
 
 		SystemBundle() {
 			this.props = new Hashtable<String, String>();
-			this.props.put(Constants.BUNDLE_NAME, Constants.SYSTEM_BUNDLE_LOCATION);
-			this.props.put(Constants.BUNDLE_VERSION, Framework.FRAMEWORK_VERSION);
-			this.props.put(Constants.BUNDLE_VENDOR, "Atlas");
+			this.props.put(PlatformConfigure.BUNDLE_NAME, PlatformConfigure.SYSTEM_BUNDLE_LOCATION);
+			this.props.put(PlatformConfigure.BUNDLE_VERSION, Framework.FRAMEWORK_VERSION);
+			this.props.put(PlatformConfigure.BUNDLE_VENDOR, "Atlas");
 			ServiceReferenceImpl serviceReferenceImpl = new ServiceReferenceImpl(this, this, null, new String[] { StartLevel.class.getName(), PackageAdmin.class.getName() });
 			Framework.addValue(Framework.classes_services, StartLevel.class.getName(), serviceReferenceImpl);
 			Framework.addValue(Framework.classes_services, PackageAdmin.class.getName(), serviceReferenceImpl);
@@ -295,7 +294,7 @@ public final class Framework {
 
 		@Override
 		public String getLocation() {
-			return Constants.SYSTEM_BUNDLE_LOCATION;
+			return PlatformConfigure.SYSTEM_BUNDLE_LOCATION;
 		}
 
 		@Override
@@ -773,33 +772,33 @@ public final class Framework {
 				BundleClassLoader.FRAMEWORK_PACKAGES.add(stringTokenizer.nextToken().trim());
 			}
 		}
-		properties.put(Constants.FRAMEWORK_EXECUTIONENVIRONMENT, System.getProperty("java.specification.name") + "/" + System.getProperty("java.specification.version"));
+		properties.put(PlatformConfigure.FRAMEWORK_EXECUTIONENVIRONMENT, System.getProperty("java.specification.name") + "/" + System.getProperty("java.specification.version"));
 		Properties properties2 = properties;
-		String str = Constants.FRAMEWORK_OS_NAME;
+		String str = PlatformConfigure.FRAMEWORK_OS_NAME;
 		Object property2 = System.getProperty("os.name");
 		if (property2 == null) {
 			property2 = "undefined";
 		}
 		properties2.put(str, property2);
 		properties2 = properties;
-		str = Constants.FRAMEWORK_OS_VERSION;
+		str = PlatformConfigure.FRAMEWORK_OS_VERSION;
 		property2 = System.getProperty("os.version");
 		if (property2 == null) {
 			property2 = "undefined";
 		}
 		properties2.put(str, property2);
 		properties2 = properties;
-		str = Constants.FRAMEWORK_PROCESSOR;
+		str = PlatformConfigure.FRAMEWORK_PROCESSOR;
 		property2 = System.getProperty("os.arch");
 		if (property2 == null) {
 			property2 = "undefined";
 		}
 		properties2.put(str, property2);
-		properties.put(Constants.FRAMEWORK_VERSION, FRAMEWORK_VERSION);
-		properties.put(Constants.FRAMEWORK_VENDOR, "Atlas");
+		properties.put(PlatformConfigure.FRAMEWORK_VERSION, FRAMEWORK_VERSION);
+		properties.put(PlatformConfigure.FRAMEWORK_VENDOR, "Atlas");
 		property2 = Locale.getDefault().getLanguage();
 		properties2 = properties;
-		str = Constants.FRAMEWORK_LANGUAGE;
+		str = PlatformConfigure.FRAMEWORK_LANGUAGE;
 		if (property2 == null) {
 			property2 = "en";
 		}
@@ -1056,7 +1055,7 @@ public final class Framework {
 
 	static void unregisterService(ServiceReference serviceReference) {
 		services.remove(serviceReference);
-		removeValue(classes_services, (String[]) serviceReference.getProperty(Constants.OBJECTCLASS), serviceReference);
+		removeValue(classes_services, (String[]) serviceReference.getProperty(PlatformConfigure.OBJECTCLASS), serviceReference);
 		BundleImpl bundleImpl = (BundleImpl) serviceReference.getBundle();
 		bundleImpl.registeredServices.remove(serviceReference);
 		if (bundleImpl.registeredServices.isEmpty()) {
