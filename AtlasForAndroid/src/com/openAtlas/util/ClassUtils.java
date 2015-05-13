@@ -28,8 +28,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
-import org.osgi.framework.Constants;
-
 public class ClassUtils {
     public static final String INNER_CLASS_SEPARATOR;
     public static final char INNER_CLASS_SEPARATOR_CHAR = '$';

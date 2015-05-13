@@ -50,7 +50,6 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleEvent;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.BundleListener;
-import org.osgi.framework.Constants;
 import org.osgi.framework.Filter;
 import org.osgi.framework.FrameworkEvent;
 import org.osgi.framework.FrameworkListener;
@@ -74,6 +73,7 @@ import com.openAtlas.runtime.ClassNotFoundInterceptorCallback;
 import com.openAtlas.runtime.RuntimeVariables;
 import com.openAtlas.util.AtlasFileLock;
 import com.openAtlas.util.BundleLock;
+import com.openAtlas.util.Constants;
 import com.openAtlas.util.StringUtils;
 
 public final class Framework {

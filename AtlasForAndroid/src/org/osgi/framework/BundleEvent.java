@@ -18,6 +18,8 @@ package org.osgi.framework;
 
 import java.util.EventObject;
 
+import com.openAtlas.util.Constants;
+
 /**
  * An event from the Framework describing a bundle lifecycle change.
  * <p>

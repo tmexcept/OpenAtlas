@@ -30,10 +30,11 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.osgi.framework.Bundle;
-import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceFactory;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
+
+import com.openAtlas.util.Constants;
 
 final class ServiceReferenceImpl implements ServiceReference {
     private static final HashSet<String> forbidden;
@@ -303,4 +304,6 @@ final class ServiceReferenceImpl implements ServiceReference {
 	public String toString() {
         return "ServiceReference{" + this.service + "}";
     }
+
+
 }
