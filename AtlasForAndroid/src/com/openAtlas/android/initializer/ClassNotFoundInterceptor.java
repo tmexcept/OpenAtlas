@@ -18,14 +18,13 @@ FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TOR
 ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 @author BunnyBlue
  * **/
-package com.openAtlas.launcher;
+package com.openAtlas.android.initializer;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Intent;
 
-import com.openAtlas.boot.Globals;
 import com.openAtlas.boot.PlatformConfigure;
 import com.openAtlas.bundleInfo.BundleInfoList;
 import com.openAtlas.bundleInfo.BundleListing.Component;
@@ -111,8 +110,9 @@ public class ClassNotFoundInterceptor implements ClassNotFoundInterceptorCallbac
             intent.putExtra(KEY_BUNDLE_PKG, this.mComponent.getPkgName());
             intent.setData(this.mIntent.getData());
             intent.setFlags(268435456);
-            intent.setClass(Globals.getApplication(), BundleNotFoundActivity.class);
-            Globals.getApplication().startActivity(intent);
+            throw  new  UnsupportedOperationException(" no  impl");
+//            intent.setClass(Globals.getApplication(), BundleNotFoundActivity.class);
+//            Globals.getApplication().startActivity(intent);
         }
     }
 }

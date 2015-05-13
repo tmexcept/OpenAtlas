@@ -42,14 +42,13 @@ import android.os.Process;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.openAtlas.android.initializer.AtlasInitializer;
+import com.openAtlas.android.initializer.BundleParser;
+import com.openAtlas.android.lifecycle.PanguApplication;
 import com.openAtlas.boot.Globals;
-import com.openAtlas.launcher.Atlaswrapper.AtlasInitializer;
-import com.openAtlas.launcher.Atlaswrapper.BundleParser;
-import com.openAtlas.launcher.android.lifecycle.PanguApplication;
 import com.openAtlas.runtime.ContextImplHook;
 import com.openAtlas.runtime.RuntimeVariables;
 import com.openAtlas.util.Utils;
-
 
 public class BootApp extends PanguApplication {
 

@@ -97,7 +97,7 @@ public class ClassLoadFromBundle {
                     }
                     apkFile.close();
                     sInternalBundles = arrayList;
-                } catch (Throwable e) {
+                } catch (Exception e) {
                     Log.e(TAG, "Exception while get bundles in assets or lib",
                             e);
                 }
