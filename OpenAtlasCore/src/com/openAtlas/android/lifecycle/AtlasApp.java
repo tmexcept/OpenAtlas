@@ -39,15 +39,15 @@ import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.openAtlas.android.compat.ApplicationCompat;
+import com.openAtlas.android.compat.AtlasCompat;
 import com.openAtlas.android.initializer.BundleParser;
 import com.openAtlas.boot.Globals;
 import com.openAtlas.runtime.ContextImplHook;
 import com.openAtlas.util.Utils;
 
 
-
-public class AtlasApp extends ApplicationCompat {
+/****OpenAtlas 框架App的基类，用户的application需要集成此类****/
+public class AtlasApp extends AtlasCompat {
     private static final Handler mAppHandler;
     private final AtomicInteger mCreationCount;
     private final List<CrossActivityLifecycleCallback> mCrossActivityLifecycleCallbacks;

@@ -59,12 +59,15 @@ public class OptDexProcess {
 		}
 		return mOptDexProcess;
 	}
-
+/***初始化OptDexProcess***/
 	void init(Application application) {
 		this.mApplication = application;
 		this.isInitialized = true;
 	}
-
+/**处理Bundles
+ * @param optAuto  是否只处理安装方式为AUTO的Bundle
+ * @param notifyResult 通知UI安装结果
+ * ******/
 	public synchronized void processPackages(boolean optAuto, boolean notifyResult) {
 		if (!this.isInitialized) {
 			Log.e("OptDexProcess", "Bundle Installer not initialized yet, process abort!");
@@ -94,16 +97,16 @@ public class OptDexProcess {
 			}
 		}
 	}
-
+	/**通知UI安装完成**/
 	private void finishInstalled() {
 		Utils.saveAtlasInfoBySharedPreferences(this.mApplication);
 		System.setProperty("BUNDLES_INSTALLED", "true");
 		this.mApplication.sendBroadcast(new Intent(PlatformConfigure.ACTION_BROADCAST_BUNDLES_INSTALLED));
 	}
-
+	/****对已安装并且安装方式为STORE的Bundle进行dexopt操作****/
 	private void optStoreDex() {
 		for (Bundle bundle : Atlas.getInstance().getBundles()) {
-			if (!(bundle == null || contains(Utils.STORE, bundle.getLocation()))) {
+			if (!(bundle == null || contains(PlatformConfigure.STORE, bundle.getLocation()))) {
 				try {
 					((BundleImpl) bundle).optDexFile();
 				} catch (Throwable e) {
@@ -115,9 +118,9 @@ public class OptDexProcess {
 			}
 		}
 	}
-
+	/****对全部安装方式为Store的Bundle进行dexopt操作***/
 	private void optStoreDex2() {
-		for (String bundle : Utils.STORE) {
+		for (String bundle : PlatformConfigure.STORE) {
 			Bundle bundle2 = Atlas.getInstance().getBundle(bundle);
 			if (bundle2 != null) {
 				try {
@@ -131,13 +134,13 @@ public class OptDexProcess {
 			}
 		}
 	}
-
+	/**对随宿主启动的插件进行dexopt操作****/
 	private void optAUTODex() {
-		for (String bundle : Utils.AUTO) {
-			Bundle bundle2 = Atlas.getInstance().getBundle(bundle);
-			if (bundle2 != null) {
+		for (String bundleName : PlatformConfigure.AUTO) {
+			Bundle bundle = Atlas.getInstance().getBundle(bundleName);
+			if (bundle != null) {
 				try {
-					((BundleImpl) bundle2).optDexFile();
+					((BundleImpl) bundle).optDexFile();
 				} catch (Throwable e) {
 					if (e instanceof DexLoadException) {
 						throw ((RuntimeException) e);

@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -41,95 +42,90 @@ import com.openAtlas.boot.PlatformConfigure;
 
 public class Utils {
 
-    static final String[] DELAY;
-    static final String[] AUTO;
-    static final String[] STORE;
+	/****从压缩包证获取Bundle的文件名称***/
+	public static String getFileNameFromEntryName(String entryName) {
+		return entryName.substring(entryName.indexOf("lib/armeabi/") + "lib/armeabi/".length());
+	}
+	/***从压缩包中获取插件的报名
+	 * @param entryName Bundle在压缩包中的路径
+	 * ****/
+	public static String getPackageNameFromEntryName(String entryName) {
+		return entryName.substring(entryName.indexOf("lib/armeabi/lib") + "lib/armeabi/lib".length(), entryName.indexOf(".so")).replace("_", ".");
+	}
+	/******从动态库中解析Bundle名称<br> 例如libcom_myapp_app1.so******/
+	public static String getPackageNameFromSoName(String soName) {
+		return soName.substring(soName.indexOf("lib") + "lib".length(), soName.indexOf(".so")).replace("_", ".");
+	}
+	/****获取文件名称，不含拓展名***/
+	public static String getBaseFileName(String fileName) {
+		int lastIndexOf = fileName.lastIndexOf(".");
+		if (lastIndexOf > 0) {
+			return fileName.substring(0, lastIndexOf);
+		}
+		return fileName;
+	}
 
-    static {
-    	DELAY = new String[]{"com.openatlas.qrcode"};
-        AUTO = new String[]{"com.openatlas.homelauncher","com.openatlas.qrcode","com.taobao.android.game20x7a","com.taobao.universalimageloader.sample0x6a"};
-        STORE = new String[]{"com.taobao.android.game20x7a","com.taobao.android.gamecenter","com.taobao.universalimageloader.sample0x6a"};
-    }
+	public static PackageInfo getPackageInfo(Application application) {
+		try {
+			return application.getPackageManager().getPackageInfo(application.getPackageName(), 0);
+		} catch (Throwable e) {
+			Log.e("Utils", "Error to get PackageInfo >>>", e);
+			return new PackageInfo();
+		}
+	}
 
-    public static String getFileNameFromEntryName(String str) {
-        return str.substring(str.indexOf("lib/armeabi/") + "lib/armeabi/".length());
-    }
-
-    public static String getPackageNameFromEntryName(String str) {
-    	//return str.replace("_so", ".so");
-    return str.substring(str.indexOf("lib/armeabi/lib") + "lib/armeabi/lib".length(), str.indexOf(".so")).replace("_", ".");
-    }
-
-    public static String getPackageNameFromSoName(String str) {
-        return str.substring(str.indexOf("lib") + "lib".length(), str.indexOf(".so")).replace("_", ".");
-    }
-
-    public static String getBaseFileName(String str) {
-        int lastIndexOf = str.lastIndexOf(".");
-        if (lastIndexOf > 0) {
-            return str.substring(0, lastIndexOf);
-        }
-        return str;
-    }
-
-    public static PackageInfo getPackageInfo(Application application) {
-        try {
-            return application.getPackageManager().getPackageInfo(application.getPackageName(), 0);
-        } catch (Throwable e) {
-            Log.e("Utils", "Error to get PackageInfo >>>", e);
-            return new PackageInfo();
-        }
-    }
-
-    public static void saveAtlasInfoBySharedPreferences(Application application) {
-        Map<String,String> concurrentHashMap = new ConcurrentHashMap<String,String>();
-        concurrentHashMap.put(getPackageInfo(application).versionName, "dexopt");
-        SharedPreferences sharedPreferences = application.getSharedPreferences("atlas_configs", 0);
-        if (sharedPreferences == null) {
-            sharedPreferences = application.getSharedPreferences("atlas_configs", 0);
-        }
-        Editor edit = sharedPreferences.edit();
-        for (String str : concurrentHashMap.keySet()) {
-            edit.putString(str, concurrentHashMap.get(str));
-        }
-        edit.commit();
-    }
-
-    public static void UpdatePackageVersion(Application application) {
-        PackageInfo packageInfo = getPackageInfo(application);
-        Editor edit = application.getSharedPreferences("atlas_configs", 0).edit();
-        edit.putInt("last_version_code", packageInfo.versionCode);
-        edit.putString("last_version_name", packageInfo.versionName);
-        edit.putString(packageInfo.versionName, "dexopt");
-        edit.commit();
-    }
-
-    public static void notifyBundleInstalled(Application application) {
-        System.setProperty("BUNDLES_INSTALLED", "true");
-        application.sendBroadcast(new Intent(PlatformConfigure.ACTION_BROADCAST_BUNDLES_INSTALLED));
-    }
-
-    public static boolean searchFile(String str, String str2) {
-        if (str == null || str2 == null) {
-            Log.e("Utils", "error in search File, direcoty or keyword is null");
-            return false;
-        }
-        File file = new File(str);
-        if (file == null || !file.exists()) {
-            Log.e("Utils", "error in search File, can not open directory " + str);
-            return false;
-        }
-        File[] listFiles = new File(str).listFiles();
-        if (listFiles == null || listFiles.length <= 0) {
-            return false;
-        }
-        for (File file2 : listFiles) {
-            if (file2.getName().indexOf(str2) >= 0) {
-               Log.d("Util",  "the file search success " + file2.getName() + " keyword is " + str2);
-                return true;
-            }
-        }
-    Log.e("Util",    "the file search failed directory is " + str + " keyword is " + str2);
-        return false;
-    }
+	public static void saveAtlasInfoBySharedPreferences(Application application) {
+		Map<String,String> concurrentHashMap = new ConcurrentHashMap<String,String>();
+		concurrentHashMap.put(getPackageInfo(application).versionName, "dexopt");
+		SharedPreferences sharedPreferences = application.getSharedPreferences("atlas_configs", Context.MODE_PRIVATE);
+		if (sharedPreferences == null) {
+			sharedPreferences = application.getSharedPreferences("atlas_configs",  Context.MODE_PRIVATE);
+		}
+		Editor edit = sharedPreferences.edit();
+		for (String key : concurrentHashMap.keySet()) {
+			edit.putString(key, concurrentHashMap.get(key));
+		}
+		edit.commit();
+	}
+	/****更新版本信息***/
+	public static void UpdatePackageVersion(Application application) {
+		PackageInfo packageInfo = getPackageInfo(application);
+		Editor edit = application.getSharedPreferences("atlas_configs", 0).edit();
+		edit.putInt("last_version_code", packageInfo.versionCode);
+		edit.putString("last_version_name", packageInfo.versionName);
+		edit.putString(packageInfo.versionName, "dexopt");
+		edit.commit();
+	}
+	/*****通知UI安装插件完成*****/
+	public static void notifyBundleInstalled(Application application) {
+		System.setProperty("BUNDLES_INSTALLED", "true");
+		application.sendBroadcast(new Intent(PlatformConfigure.ACTION_BROADCAST_BUNDLES_INSTALLED));
+	}
+	/*****从指定目录查找文件
+	 * @param direcotyPath 文件夹路径
+	 * @param keyword 要查找的文件名
+	 * *******/
+	public static boolean searchFile(String direcotyPath, String keyword) {
+		if (direcotyPath == null || keyword == null) {
+			Log.e("Utils", "error in search File, direcoty or keyword is null");
+			return false;
+		}
+		File direcotyFile = new File(direcotyPath);
+		if (direcotyFile == null || !direcotyFile.exists()) {
+			Log.e("Utils", "error in search File, can not open directory " + direcotyPath);
+			return false;
+		}
+		File[] listFiles = new File(direcotyPath).listFiles();
+		if (listFiles == null || listFiles.length <= 0) {
+			return false;
+		}
+		for (File file2 : listFiles) {
+			if (file2.getName().indexOf(keyword) >= 0) {
+				Log.d("Util",  "the file search success " + file2.getName() + " keyword is " + keyword);
+				return true;
+			}
+		}
+		Log.e("Util",    "the file search failed directory is " + direcotyPath + " keyword is " + keyword);
+		return false;
+	}
 }

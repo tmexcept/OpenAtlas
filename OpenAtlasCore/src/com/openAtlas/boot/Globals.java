@@ -25,9 +25,6 @@ import java.lang.reflect.Method;
 
 import android.app.Application;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.text.TextUtils;
-
-import com.openAtlas.sdk.R;
 
 public class Globals {
     private static Application sApplication;
@@ -78,7 +75,7 @@ public class Globals {
                     getApplication().getPackageName(), 0).versionName;
         } catch (NameNotFoundException e) {
             e.printStackTrace();
-            return "5.0.0";
+            return "null";
         }
     }
 
@@ -103,26 +100,8 @@ public class Globals {
     public static final String TRACE_TYPE_FAV_SHOP = "4";
 
     public static boolean isMiniPackage() {
-        try {
-            String string = getApplication().getString(R.string.isMiniPackage);
-            if (string == null) {
-                return false;
-            }
-            return TRACE_TYPE_FAV.equals(string.trim());
-        } catch (Throwable th) {
-            return false;
-        }
+    	return false;
     }
 
-    public static boolean isMiniPackage(Application application) {
-        try {
-            String string = application.getString(R.string.isMiniPackage);
-            if (TextUtils.isEmpty(string)) {
-                return false;
-            }
-            return TRACE_TYPE_FAV.equals(string.trim());
-        } catch (Throwable th) {
-            return false;
-        }
-    }
+
 }

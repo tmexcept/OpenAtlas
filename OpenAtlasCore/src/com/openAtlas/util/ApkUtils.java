@@ -93,13 +93,7 @@ public class ApkUtils {
 			        for (int i = SYSTEM_ROOT_STATE_DISABLE; i < loadCertificates.length; i += SYSTEM_ROOT_STATE_ENABLE) {
 			            strArr[i] = bytesToHexString(loadCertificates[i].getPublicKey().getEncoded());
 			        }
-			        try {
-			            jarFile.close();
-			            return strArr;
-			        } catch (IOException e2) {
-			            e2.printStackTrace();
-			            return strArr;
-			        }
+			    
 			    }
 			}
 

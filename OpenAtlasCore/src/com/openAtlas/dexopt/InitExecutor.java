@@ -26,31 +26,31 @@ import com.openAtlas.log.Logger;
 import com.openAtlas.log.LoggerFactory;
 
 public class InitExecutor {
-    static final Logger log;
-    private static boolean sDexOptLoaded;
+	static final Logger log;
+	private static boolean sDexOptLoaded;
 
-    private static native void dexopt(String srcDexPath, String oDexFilePath, String args);
+	private static native void dexopt(String srcDexPath, String oDexFilePath, String args);
 
-    static {
-        log = LoggerFactory.getInstance("InitExecutor");
-        sDexOptLoaded = false;
-        try {
-            System.loadLibrary("dexopt");
-            sDexOptLoaded = true;
-        } catch (UnsatisfiedLinkError e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static boolean optDexFile(String srcDexPath, String oDexFilePath) {
-        try {
-            if (sDexOptLoaded && VERSION.SDK_INT <= 18) {
-                dexopt(srcDexPath, oDexFilePath, "v=n,o=v");
-                return true;
-            }
-        } catch (Throwable e) {
-            log.error("Exception while try to call native dexopt >>>", e);
-        }
-        return false;
-    }
+	static {
+		log = LoggerFactory.getInstance("InitExecutor");
+		sDexOptLoaded = false;
+		try {
+			System.loadLibrary("dexopt");
+			sDexOptLoaded = true;
+		} catch (UnsatisfiedLinkError e) {
+			e.printStackTrace();
+		}
+	}
+	/****在低于Android 4.4的系统上调用dexopt进行优化Bundle****/
+	public static boolean optDexFile(String srcDexPath, String oDexFilePath) {
+		try {
+			if (sDexOptLoaded && VERSION.SDK_INT <= 18) {
+				dexopt(srcDexPath, oDexFilePath, "v=n,o=v");
+				return true;
+			}
+		} catch (Throwable e) {
+			log.error("Exception while try to call native dexopt >>>", e);
+		}
+		return false;
+	}
 }

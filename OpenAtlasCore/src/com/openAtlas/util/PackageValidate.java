@@ -127,7 +127,8 @@ public class PackageValidate {
         return false;
     }
 
-    public boolean collectCertificates(Package pkg) {
+    public boolean collectCertificates() {
+    	Package pkg=parsePackage();
         pkg.mSignatures = null;
 
         WeakReference<byte[]> readBufferRef;
