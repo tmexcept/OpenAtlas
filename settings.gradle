@@ -1,0 +1,2 @@
+include ':Samples:OpenAtlasLauncher'
+include ':OpenAtlasCore'
