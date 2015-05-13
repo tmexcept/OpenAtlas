@@ -41,7 +41,6 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleEvent;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.BundleListener;
-import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkListener;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
@@ -51,6 +50,7 @@ import com.openAtlas.framework.bundlestorage.BundleArchive;
 import com.openAtlas.log.Logger;
 import com.openAtlas.log.LoggerFactory;
 import com.openAtlas.util.AtlasFileLock;
+import com.openAtlas.util.Constants;
 import com.openAtlas.util.StringUtils;
 
 public final class BundleImpl implements Bundle {

@@ -31,11 +31,12 @@ import java.util.List;
 import java.util.Stack;
 import java.util.Vector;
 
-import org.osgi.framework.Constants;
 import org.osgi.framework.Filter;
 import org.osgi.framework.GetUserInfoRequest;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
+
+import com.openAtlas.util.Constants;
 
 final class RFC1960Filter implements Filter {
     private static final int AND_OPERATOR = 1;

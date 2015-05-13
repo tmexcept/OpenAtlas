@@ -7,6 +7,8 @@ import java.security.BasicPermission;
 import java.security.Permission;
 import java.security.PermissionCollection;
 
+import com.openAtlas.util.Constants;
+
 public final class PackagePermission extends BasicPermission {
     private static final int ACTION_ALL = 3;
     private static final int ACTION_ERROR = Integer.MIN_VALUE;

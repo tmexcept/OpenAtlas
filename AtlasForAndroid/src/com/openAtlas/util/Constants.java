@@ -1,31 +1,7 @@
-package org.osgi.framework;
+package com.openAtlas.util;
 
 public interface Constants {
-    public static final int ACTIVITY_ID_ALIPAY = 12;
-    public static final int ACTIVITY_ID_BOUGHTLIST = 13;
-    public static final int ACTIVITY_ID_BROWSER = 1;
-    public static final int ACTIVITY_ID_CART = 22;
-    public static final int ACTIVITY_ID_CATEGROY = 7;
-    public static final int ACTIVITY_ID_CHANGEPASSWORD = 5;
-    public static final int ACTIVITY_ID_CHARGE = 6;
-    public static final int ACTIVITY_ID_COMPLAIN = 3;
-    public static final int ACTIVITY_ID_COOLNAVIGATION = 14;
-    public static final int ACTIVITY_ID_DETAIL = 10;
-    public static final int ACTIVITY_ID_FAVORITE = 23;
-    public static final int ACTIVITY_ID_JU = 19;
-    public static final int ACTIVITY_ID_LOGIN = 4;
-    public static final int ACTIVITY_ID_LOGISTICS = 24;
-    public static final int ACTIVITY_ID_MAIN = 0;
-    public static final int ACTIVITY_ID_MYTAOBAO = 25;
-    public static final int ACTIVITY_ID_ORDER = 11;
-    public static final int ACTIVITY_ID_RCGRID = 17;
-    public static final int ACTIVITY_ID_RCTOP = 16;
-    public static final int ACTIVITY_ID_RClIST = 18;
-    public static final int ACTIVITY_ID_REDPACKET = 15;
-    public static final int ACTIVITY_ID_SCANRESULT = 20;
-    public static final int ACTIVITY_ID_SCANRESULTURL = 21;
-    public static final int ACTIVITY_ID_SEARCHLIST = 9;
-    public static final int ACTIVITY_ID_SHOWTEXT = 2;
+
     public static final String ALIPAYUPDATEPATH = "alipayupdatapath";
     public static final String ALIPAY_APK_NAME = "mobile_sp.apk";
     public static final String ALIPAY_PARNER = "";
@@ -34,9 +10,7 @@ public interface Constants {
     public static final String ANDROID001_SHARED = "android001_shared";
     public static final String ANDROIDTMALL = "tmall";
     public static final String ANDROIDTMALL_SHARED = "androidtmall_shared";
-    public static final String APKNAME = "/tao.apk";
-    public static final String APKNEWCHANGE = "tao.apk-change";
-    public static final String APKSIZE = "tao.apk-size";
+
 
     public static String APP_DIR = null;
     public static final String ATLAS = "atlas";
@@ -186,23 +160,7 @@ public interface Constants {
     public static final int ITEM_DELETE_THIS = 123;
     public static final String JAE_URL_PATTERN = "^(http|https)://([^/\\?#]+\\.)*((jae\\.(m|wapa|waptest)\\.taobao\\.com)|(jaeapp\\.com)|(aliapp-inc\\.com)|(amap\\.com)|(jaecdn\\.com))(/.*)?$";
     public static final String JSON_SHAREDPREFERENCES = "json_sharedpreferences";
-    public static final String JUCITYGROUP_SHARED = "jucitygroup_shared";
-    public static final String JULOCATIONCITY_SHARED = "julocationcity_shared";
-    public static final String JU_GROUP_ACTIVITY_PRICE = "activity_price";
-    public static final String JU_GROUP_BIG_PIC_URL = "big_pic_url";
-    public static final String JU_GROUP_DISCOUNT = "discount";
-    public static final String JU_GROUP_GROUP_ID = "group_id";
-    public static final String JU_GROUP_ITEM_ID = "item_id";
-    public static final String JU_GROUP_ITEM_STATUS = "item_status";
-    public static final String JU_GROUP_LONG_NAME = "long_name";
-    public static final String JU_GROUP_ONLINE_END_TIME = "online_end_time";
-    public static final String JU_GROUP_ONLINE_START_TIME = "online_start_time";
-    public static final String JU_GROUP_ORIGINAL_PRICE = "original_price";
-    public static final String JU_GROUP_PIC_URL = "pic_url";
-    public static final String JU_GROUP_PIC_URL_FROM_IC = "pic_url_from_ic";
-    public static final String JU_GROUP_SHORT_NAME = "short_name";
-    public static final String JU_GROUP_SOLD_COUNT = "sold_count";
-    public static final String JU_GROUP_THUMBNAIL = "image_url";
+
     public static String JU_LIST_IMAGE_SIZE = null;
     public static final String JU_LIST_IMAGE_SIZE2 = "_250x250.jpg";
     public static final String KEY_AD_BANNER_URL = "ad_banner_url";

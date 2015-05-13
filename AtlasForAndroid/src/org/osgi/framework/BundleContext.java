@@ -20,6 +20,8 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.Dictionary;
 
+import com.openAtlas.util.Constants;
+
 /**
  * A bundle's execution context within the Framework. The context is used to
  * grant access to other methods so that this bundle can interact with the

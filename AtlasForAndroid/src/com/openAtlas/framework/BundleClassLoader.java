@@ -44,7 +44,6 @@ import java.util.jar.Manifest;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleEvent;
 import org.osgi.framework.BundleException;
-import org.osgi.framework.Constants;
 
 import com.openAtlas.boot.PlatformConfigure;
 import com.openAtlas.framework.bundlestorage.Archive;
@@ -52,6 +51,7 @@ import com.openAtlas.framework.bundlestorage.BundleArchiveRevision.DexLoadExcept
 import com.openAtlas.hack.AtlasHacks;
 import com.openAtlas.log.Logger;
 import com.openAtlas.log.LoggerFactory;
+import com.openAtlas.util.Constants;
 
 public final class BundleClassLoader extends ClassLoader {
 	private static final List<URL> EMPTY_LIST;

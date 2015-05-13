@@ -31,7 +31,6 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.BundleListener;
-import org.osgi.framework.Constants;
 import org.osgi.framework.Filter;
 import org.osgi.framework.FrameworkListener;
 import org.osgi.framework.InvalidSyntaxException;
@@ -43,6 +42,7 @@ import org.osgi.framework.SynchronousBundleListener;
 import com.openAtlas.framework.Framework.ServiceListenerEntry;
 import com.openAtlas.log.Logger;
 import com.openAtlas.log.LoggerFactory;
+import com.openAtlas.util.Constants;
 
 public class BundleContextImpl implements BundleContext {
     static final Logger log;
