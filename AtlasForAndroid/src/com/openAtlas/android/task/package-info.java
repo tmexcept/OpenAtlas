@@ -23,4 +23,4 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEAL
  * @author BunnyBlue
  *
  */
-package com.openAtlas.launcher.android.task;
+package com.openAtlas.android.task;

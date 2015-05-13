@@ -22,7 +22,7 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEAL
 /**
  * @author BunnyBlue
  */
-package com.openAtlas.launcher.Atlaswrapper;
+package com.openAtlas.android.initializer;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -42,18 +42,15 @@ import android.os.Process;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.openAtlas.android.task.Coordinator;
+import com.openAtlas.android.task.Coordinator.TaggedRunnable;
 import com.openAtlas.boot.Globals;
 import com.openAtlas.boot.PlatformConfigure;
 import com.openAtlas.bundleInfo.BundleInfoList;
 import com.openAtlas.bundleInfo.BundleInfoList.BundleInfo;
+import com.openAtlas.bundleInfo.BundleListing;
 import com.openAtlas.framework.Atlas;
-import com.openAtlas.launcher.ClassNotFoundInterceptor;
-import com.openAtlas.launcher.android.task.Coordinator;
-import com.openAtlas.launcher.android.task.Coordinator.TaggedRunnable;
-import com.openAtlas.launcher.lightapk.BundleListing;
 import com.openAtlas.util.ApkUtils;
-
-
 public class AtlasInitializer {
 	private static long time;
 	private static boolean isAppPkg;

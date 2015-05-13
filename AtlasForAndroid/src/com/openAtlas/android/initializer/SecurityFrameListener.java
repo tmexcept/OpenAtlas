@@ -22,7 +22,7 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEAL
 /**
  * @author BunnyBlue
  */
-package com.openAtlas.launcher.Atlaswrapper;
+package com.openAtlas.android.initializer;
 
 import java.io.File;
 import java.util.List;

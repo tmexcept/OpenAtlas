@@ -19,7 +19,7 @@ FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TOR
 ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 @author BunnyBlue
  * **/
-package com.openAtlas.launcher.Atlaswrapper;
+package com.openAtlas.android.initializer;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,7 +33,8 @@ import android.content.Context;
 
 import com.openAtlas.bundleInfo.BundleInfoList;
 import com.openAtlas.bundleInfo.BundleInfoList.BundleInfo;
-import com.openAtlas.launcher.lightapk.BundleListing;
+import com.openAtlas.bundleInfo.BundleListing;
+
 
 /**
  * @author BunnyBlue
@@ -43,8 +44,8 @@ public class BundleParser {
 	public static void parser(Context mContext) {
 		InputStream is;
 		ArrayList<BundleInfoList.BundleInfo> bundleInfos=new ArrayList<BundleInfoList.BundleInfo>();
-	ArrayList<BundleListing.Component> mComponents=new ArrayList<BundleListing.Component>();
-	
+		ArrayList<BundleListing.Component> mComponents=new ArrayList<BundleListing.Component>();
+
 		try {
 			is = mContext.getAssets().open("bundle-info.json");
 			int size = is.available();  
@@ -63,13 +64,13 @@ public class BundleParser {
 				mComponent.setPkgName(mBundleInfo.bundleName);
 				mComponent.setHasSO(mBundleInfo.hasSO);
 				ArrayList<String> components=new ArrayList<String>();
-				
+
 				JSONArray activities=tmp.optJSONArray("activities");
 				for (int j = 0; j < activities.length(); j++) {
 					components.add(activities.getString(j));
 					mComponent.getActivities().add(activities.getString(j));
 				}
-				
+
 				JSONArray receivers=tmp.optJSONArray("receivers");
 				for (int j = 0; j < receivers.length(); j++) {
 					components.add(receivers.getString(j));
@@ -86,12 +87,12 @@ public class BundleParser {
 				for (int j = 0; j < contentProviders.length(); j++) {
 					components.add(contentProviders.getString(j));
 					mComponent.getContentProviders().add(contentProviders.getString(j));
-				
+
 				}
 				mBundleInfo.Components=components;
 				bundleInfos.add(mBundleInfo);
 				mComponents.add(mComponent);
-				 BundleInfoList.getInstance().init(bundleInfos);
+				BundleInfoList.getInstance().init(bundleInfos);
 			}
 			BundleListing.getInstance().setBundles(mComponents);
 			//BundleInfoList.getInstance().init(bundleInfos);

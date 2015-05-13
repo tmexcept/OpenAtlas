@@ -25,9 +25,10 @@ import android.content.pm.PackageInfo;
 import android.os.Bundle;
 import android.view.Menu;
 
+import com.openAtlas.android.lifecycle.PanguActivity;
 import com.openAtlas.boot.Globals;
 import com.openAtlas.launcher.R;
-import com.openAtlas.launcher.android.lifecycle.PanguActivity;
+
 
 
 public class Welcome extends PanguActivity {
