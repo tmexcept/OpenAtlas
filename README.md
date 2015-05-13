@@ -13,11 +13,11 @@ you can define your package id at Manifest by "versionName",such as versionName:
 also you can define package change packageName "com.myapp.pkgname" to " com.myapp.pkgname0x7a".
 
 ##Sample & Art
-<a href="https://github.com/bunnyblue/AtlasForAndroid/raw/bunny/Dist/AtlasLauncher.apk">
+<a href="https://github.com/bunnyblue/OpenAtlas/raw/bunny/Dist/AtlasLauncher.apk">
   Sample Apk,you can download from here
 </a>
 
-![Sample Gif](https://github.com/bunnyblue/AtlasForAndroid/raw/bunny/art/demo.gif)
+![Sample Gif](https://github.com/bunnyblue/OpenAtlas/raw/bunny/art/demo.gif)
 
 ## License
 The MIT License (MIT) Copyright (c) 2015 Bunny Blue,achellies
