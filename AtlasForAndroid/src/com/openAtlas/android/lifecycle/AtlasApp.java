@@ -26,14 +26,28 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteDatabase.CursorFactory;
+import android.database.sqlite.SQLiteException;
+import android.os.Build.VERSION;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
+import android.util.Log;
 
 import com.openAtlas.android.compat.ApplicationCompat;
+import com.openAtlas.android.initializer.BundleParser;
+import com.openAtlas.boot.Globals;
+import com.openAtlas.runtime.ContextImplHook;
+import com.openAtlas.util.Utils;
 
 
 
-public class PanguApplication extends ApplicationCompat {
+public class AtlasApp extends ApplicationCompat {
     private static final Handler mAppHandler;
     private final AtomicInteger mCreationCount;
     private final List<CrossActivityLifecycleCallback> mCrossActivityLifecycleCallbacks;
@@ -51,11 +65,11 @@ public class PanguApplication extends ApplicationCompat {
     }
 
     class CallbackRunable implements Runnable {
-        final  PanguApplication mApplication;
+        final  AtlasApp mApplication;
         private CrossActivityLifecycleCallback mCrossActivityLifecycleCallback;
         private String name;
 
-        public CallbackRunable(PanguApplication panguApplication, CrossActivityLifecycleCallback crossActivityLifecycleCallback, String str) {
+        public CallbackRunable(AtlasApp panguApplication, CrossActivityLifecycleCallback crossActivityLifecycleCallback, String str) {
             this.mApplication = panguApplication;
             this.mCrossActivityLifecycleCallback = crossActivityLifecycleCallback;
             this.name = str;
@@ -79,9 +93,9 @@ public class PanguApplication extends ApplicationCompat {
     }
 
     class ActivityLifecycleCallbacksCompatImpl implements ActivityLifecycleCallbacksCompat {
-        final  PanguApplication mApplication;
+        final  AtlasApp mApplication;
 
-        ActivityLifecycleCallbacksCompatImpl(PanguApplication panguApplication) {
+        ActivityLifecycleCallbacksCompatImpl(AtlasApp panguApplication) {
             this.mApplication = panguApplication;
         }
 
@@ -135,7 +149,7 @@ public class PanguApplication extends ApplicationCompat {
         }
     }
 
-    public PanguApplication() {
+    public AtlasApp() {
         this.mCrossActivityLifecycleCallbacks = new CopyOnWriteArrayList<CrossActivityLifecycleCallback>();
         this.mCreationCount = new AtomicInteger();
         this.mStartCount = new AtomicInteger();
@@ -164,13 +178,73 @@ public class PanguApplication extends ApplicationCompat {
         mAppHandler.post(runnable);
     }
 
+    /* (non-Javadoc)
+     * @see android.content.ContextWrapper#attachBaseContext(android.content.Context)
+     */
+    @Override
+    protected void attachBaseContext(Context base) {
+    	// TODO Auto-generated method stub
+    	super.attachBaseContext(base);
+    	BundleParser.parser(getBaseContext());
+    }
     @Override
 	public void onCreate() {
         super.onCreate();
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacksCompatImpl(this));
      
     }
+	@Override
+	public boolean bindService(Intent intent,
+			ServiceConnection serviceConnection, int i) {
+		return new ContextImplHook(getBaseContext(), null).bindService(intent,
+				serviceConnection, i);
+	}
 
+	@Override
+	public void startActivity(Intent intent) {
+		// TODO Auto-generated method stub
+		// super.startActivity(intent);
+		new ContextImplHook(getBaseContext(), getClassLoader())
+		.startActivity(intent);
+	}
+
+
+
+	@Override
+	public ComponentName startService(Intent intent) {
+		return new ContextImplHook(getBaseContext(), null).startService(intent);
+	}
+	@Override
+	public SQLiteDatabase openOrCreateDatabase(String str, int i, CursorFactory cursorFactory) {
+		String processName =Utils.getProcessName();
+		if (!TextUtils.isEmpty(processName)) {
+			Log.i("SQLiteDatabase", processName);
+			if (!processName.equals(getPackageName())) {
+				String[] split = processName.split(":");
+				if (split != null && split.length > 1) {
+					processName = split[1] + "_" + str;
+					Log.i("SQLiteDatabase", "openOrCreateDatabase:" + processName);
+					return hookDatabase(processName, i, cursorFactory);
+				}
+			}
+		}
+		return hookDatabase(str, i, cursorFactory);
+	}
+	public SQLiteDatabase hookDatabase(String name, int mode, CursorFactory cursorFactory) {
+		if (VERSION.SDK_INT >= 11) {
+			return super.openOrCreateDatabase(name, mode, cursorFactory);
+		}
+		SQLiteDatabase sQLiteDatabase = null;
+		try {
+			return super.openOrCreateDatabase(name, mode, cursorFactory);
+		} catch (SQLiteException e) {
+			e.printStackTrace();
+			if (Globals.getApplication().deleteDatabase(name)) {
+				return super.openOrCreateDatabase(name, mode, cursorFactory);
+			}
+			return sQLiteDatabase;
+		}
+	}
     static {
         mAppHandler = new Handler();
     }
