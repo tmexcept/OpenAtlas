@@ -20,7 +20,9 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.Dictionary;
 
-import com.openAtlas.util.Constants;
+import android.provider.SyncStateContract.Constants;
+
+
 
 /**
  * A bundle's execution context within the Framework. The context is used to

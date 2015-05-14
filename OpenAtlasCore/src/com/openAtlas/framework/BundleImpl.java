@@ -45,12 +45,12 @@ import org.osgi.framework.FrameworkListener;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
 
+import com.openAtlas.boot.PlatformConfigure;
 import com.openAtlas.framework.bundlestorage.Archive;
 import com.openAtlas.framework.bundlestorage.BundleArchive;
 import com.openAtlas.log.Logger;
 import com.openAtlas.log.LoggerFactory;
 import com.openAtlas.util.AtlasFileLock;
-import com.openAtlas.util.Constants;
 import com.openAtlas.util.StringUtils;
 
 public final class BundleImpl implements Bundle {
@@ -381,7 +381,7 @@ public final class BundleImpl implements Bundle {
 
     @Override
 	public synchronized void update() throws BundleException {
-        String str = this.headers.get(Constants.BUNDLE_UPDATELOCATION);
+        String str = this.headers.get(PlatformConfigure.BUNDLE_UPDATELOCATION);
         try {
             String str2;
             if (str == null) {
