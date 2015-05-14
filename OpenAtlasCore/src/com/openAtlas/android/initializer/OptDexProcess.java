@@ -24,7 +24,6 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEAL
  */
 package com.openAtlas.android.initializer;
 
-
 import org.osgi.framework.Bundle;
 
 import android.app.Application;
@@ -36,7 +35,6 @@ import com.openAtlas.framework.Atlas;
 import com.openAtlas.framework.BundleImpl;
 import com.openAtlas.framework.bundlestorage.BundleArchiveRevision.DexLoadException;
 
-
 public class OptDexProcess {
 	private static OptDexProcess mOptDexProcess;
 	private Application mApplication;
@@ -47,7 +45,7 @@ public class OptDexProcess {
 	}
 
 	public static synchronized OptDexProcess getInstance() {
-		if (mOptDexProcess!=null) {
+		if (mOptDexProcess != null) {
 
 			return mOptDexProcess;
 		}
@@ -59,15 +57,21 @@ public class OptDexProcess {
 		}
 		return mOptDexProcess;
 	}
-/***初始化OptDexProcess***/
+
+	/*** 初始化OptDexProcess ***/
 	void init(Application application) {
 		this.mApplication = application;
 		this.isInitialized = true;
 	}
-/**处理Bundles
- * @param optAuto  是否只处理安装方式为AUTO的Bundle
- * @param notifyResult 通知UI安装结果
- * ******/
+
+	/**
+	 * 处理Bundles
+	 * 
+	 * @param optAuto
+	 *            是否只处理安装方式为AUTO的Bundle
+	 * @param notifyResult
+	 *            通知UI安装结果
+	 * ******/
 	public synchronized void processPackages(boolean optAuto, boolean notifyResult) {
 		if (!this.isInitialized) {
 			Log.e("OptDexProcess", "Bundle Installer not initialized yet, process abort!");
@@ -79,7 +83,7 @@ public class OptDexProcess {
 				if (!notifyResult) {
 					finishInstalled();
 				}
-				Log.e("debug",  "dexopt auto start bundles cost time = " + (System.currentTimeMillis() - currentTimeMillis) + " ms");
+				Log.e("debug", "dexopt auto start bundles cost time = " + (System.currentTimeMillis() - currentTimeMillis) + " ms");
 			} else {
 				currentTimeMillis = System.currentTimeMillis();
 				optStoreDex();
@@ -90,20 +94,22 @@ public class OptDexProcess {
 				}
 				currentTimeMillis = System.currentTimeMillis();
 				getInstance().optStoreDex2();
-				Log.e("debug",  "dexopt delayed bundles cost time = " + (System.currentTimeMillis() - currentTimeMillis) + " ms");
+				Log.e("debug", "dexopt delayed bundles cost time = " + (System.currentTimeMillis() - currentTimeMillis) + " ms");
 			}
 			if (!notifyResult) {
 				this.isExecuted = true;
 			}
 		}
 	}
-	/**通知UI安装完成**/
+
+	/** 通知UI安装完成 **/
 	private void finishInstalled() {
 		Utils.saveAtlasInfoBySharedPreferences(this.mApplication);
 		System.setProperty("BUNDLES_INSTALLED", "true");
 		this.mApplication.sendBroadcast(new Intent(PlatformConfigure.ACTION_BROADCAST_BUNDLES_INSTALLED));
 	}
-	/****对已安装并且安装方式为STORE的Bundle进行dexopt操作****/
+
+	/**** 对已安装并且安装方式为STORE的Bundle进行dexopt操作 ****/
 	private void optStoreDex() {
 		for (Bundle bundle : Atlas.getInstance().getBundles()) {
 			if (!(bundle == null || contains(PlatformConfigure.STORE, bundle.getLocation()))) {
@@ -118,7 +124,8 @@ public class OptDexProcess {
 			}
 		}
 	}
-	/****对全部安装方式为Store的Bundle进行dexopt操作***/
+
+	/**** 对全部安装方式为Store的Bundle进行dexopt操作 ***/
 	private void optStoreDex2() {
 		for (String bundle : PlatformConfigure.STORE) {
 			Bundle bundle2 = Atlas.getInstance().getBundle(bundle);
@@ -134,7 +141,8 @@ public class OptDexProcess {
 			}
 		}
 	}
-	/**对随宿主启动的插件进行dexopt操作****/
+
+	/** 对随宿主启动的插件进行dexopt操作 ****/
 	private void optAUTODex() {
 		for (String bundleName : PlatformConfigure.AUTO) {
 			Bundle bundle = Atlas.getInstance().getBundle(bundleName);
@@ -151,12 +159,12 @@ public class OptDexProcess {
 		}
 	}
 
-	private boolean contains(String[] strArr, String str) {
-		if (strArr == null || str == null) {
+	private boolean contains(String[] bundleNames, String location) {
+		if (bundleNames == null || location == null) {
 			return false;
 		}
-		for (String str2 : strArr) {
-			if (str2 != null && str2.equals(str)) {
+		for (String bundleName : bundleNames) {
+			if (bundleName != null && bundleName.equals(location)) {
 				return true;
 			}
 		}

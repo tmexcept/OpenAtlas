@@ -50,7 +50,7 @@ import com.openAtlas.framework.bundlestorage.Archive;
 import com.openAtlas.framework.bundlestorage.BundleArchive;
 import com.openAtlas.log.Logger;
 import com.openAtlas.log.LoggerFactory;
-import com.openAtlas.util.AtlasFileLock;
+import com.openAtlas.util.OpenAtlasFileLock;
 import com.openAtlas.util.StringUtils;
 
 public final class BundleImpl implements Bundle {
@@ -129,7 +129,7 @@ public final class BundleImpl implements Bundle {
         this.staleExportedPackages = null;
         long currentTimeMillis = System.currentTimeMillis();
         File file2 = new File(file, "meta");
-        if (AtlasFileLock.getInstance().LockExclusive(file2)) {
+        if (OpenAtlasFileLock.getInstance().LockExclusive(file2)) {
             DataInputStream dataInputStream = new DataInputStream(
                     new FileInputStream(file2));
             this.location = dataInputStream.readUTF();
@@ -137,7 +137,7 @@ public final class BundleImpl implements Bundle {
             this.state = BundleEvent.STARTED;
             this.persistently = dataInputStream.readBoolean();
             dataInputStream.close();
-            AtlasFileLock.getInstance().unLock(file2);
+            OpenAtlasFileLock.getInstance().unLock(file2);
             bundleContextImpl.bundle = this;
             this.context = bundleContextImpl;
             this.bundleDir = file;
@@ -360,9 +360,9 @@ public final class BundleImpl implements Bundle {
         }
         this.state = BundleEvent.INSTALLED;
         File file = new File(this.bundleDir, "meta");
-        if (AtlasFileLock.getInstance().LockExclusive(file)) {
+        if (OpenAtlasFileLock.getInstance().LockExclusive(file)) {
             file.delete();
-            AtlasFileLock.getInstance().unLock(file);
+            OpenAtlasFileLock.getInstance().unLock(file);
             if (this.classloader.originalExporter != null) {
                 this.classloader.originalExporter.cleanup(true);
                 this.classloader.originalExporter = null;
@@ -506,7 +506,7 @@ public final class BundleImpl implements Bundle {
             if (!file.getParentFile().exists()) {
                 file.getParentFile().mkdirs();
             }
-            if (AtlasFileLock.getInstance().LockExclusive(file)) {
+            if (OpenAtlasFileLock.getInstance().LockExclusive(file)) {
                 OutputStream fileOutputStream = new FileOutputStream(file);
                 DataOutputStream dataOutputStream2 = new DataOutputStream(
                         fileOutputStream);
@@ -516,7 +516,7 @@ public final class BundleImpl implements Bundle {
                     dataOutputStream2.writeBoolean(this.persistently);
                     dataOutputStream2.flush();
                     ((FileOutputStream) fileOutputStream).getFD().sync();
-                    AtlasFileLock.getInstance().unLock(file);
+                    OpenAtlasFileLock.getInstance().unLock(file);
                     if (dataOutputStream2 != null) {
                         try {
                             dataOutputStream2.close();
@@ -534,7 +534,7 @@ public final class BundleImpl implements Bundle {
                         log.error(
                                 "Could not save meta data "
                                         + file.getAbsolutePath(), e);
-                        AtlasFileLock.getInstance().unLock(file);
+                        OpenAtlasFileLock.getInstance().unLock(file);
                         if (dataOutputStream != null) {
                             try {
                                 dataOutputStream.close();
@@ -545,7 +545,7 @@ public final class BundleImpl implements Bundle {
                         }
                     } catch (Throwable th) {
                         e = th;
-                        AtlasFileLock.getInstance().unLock(file);
+                        OpenAtlasFileLock.getInstance().unLock(file);
                         if (dataOutputStream != null) {
                             try {
                                 dataOutputStream.close();
@@ -558,7 +558,7 @@ public final class BundleImpl implements Bundle {
                 } catch (Throwable th2) {
                     e = th2;
                     dataOutputStream = dataOutputStream2;
-                    AtlasFileLock.getInstance().unLock(file);
+                    OpenAtlasFileLock.getInstance().unLock(file);
                     if (dataOutputStream != null) {
                         dataOutputStream.close();
                     }
@@ -566,7 +566,7 @@ public final class BundleImpl implements Bundle {
                 }
             }
             log.error("Failed to get file lock for " + file.getAbsolutePath());
-            AtlasFileLock.getInstance().unLock(file);
+            OpenAtlasFileLock.getInstance().unLock(file);
             if (dataOutputStream != null) {
                 try {
                     dataOutputStream.close();
@@ -577,7 +577,7 @@ public final class BundleImpl implements Bundle {
         } catch (IOException e5) {
             e = e5;
             log.error("Could not save meta data " + file.getAbsolutePath(), e);
-            AtlasFileLock.getInstance().unLock(file);
+            OpenAtlasFileLock.getInstance().unLock(file);
             if (dataOutputStream != null) {
                 try {
                     dataOutputStream.close();

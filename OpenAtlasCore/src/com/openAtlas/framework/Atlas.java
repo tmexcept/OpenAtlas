@@ -38,7 +38,7 @@ import android.content.res.Resources;
 
 import com.openAtlas.hack.AndroidHack;
 import com.openAtlas.hack.AssertionArrayException;
-import com.openAtlas.hack.AtlasHacks;
+import com.openAtlas.hack.OpenAtlasHacks;
 import com.openAtlas.log.Logger;
 import com.openAtlas.log.LoggerFactory;
 import com.openAtlas.runtime.BundleLifecycleHandler;
@@ -82,7 +82,7 @@ public class Atlas {
     public void init(Application application)
             throws AssertionArrayException, Exception {
         String packageName = application.getPackageName();
-        AtlasHacks.defineAndVerify();
+        OpenAtlasHacks.defineAndVerify();
         ClassLoader classLoader = Atlas.class.getClassLoader();
         DelegateClassLoader delegateClassLoader = new DelegateClassLoader(
                 classLoader);
@@ -105,7 +105,7 @@ public class Atlas {
 
     public void injectApplication(Application application, String packageName)
             throws Exception {
-        AtlasHacks.defineAndVerify();
+        OpenAtlasHacks.defineAndVerify();
         AndroidHack.injectApplication(packageName, application);
     }
     public void startup(Properties properties) throws BundleException {

@@ -89,8 +89,8 @@ public class Coordinator {
     public static abstract class TaggedRunnable implements Runnable {
         public final String tag;
 
-        public TaggedRunnable(String str) {
-            this.tag = str;
+        public TaggedRunnable(String tag) {
+            this.tag = tag;
         }
 
         @Override
@@ -99,33 +99,33 @@ public class Coordinator {
         }
     }
 
-    static class axx extends AsyncTask<Void, Void, Void> {
-        private final TaggedRunnable a;
+    static class PostTask extends AsyncTask<Void, Void, Void> {
+        private final TaggedRunnable mTaggedRunnable;
 
         @Override
 		protected Void doInBackground(Void... params) {
-            return a(params);
+            return process(params);
         }
 
-        public axx(TaggedRunnable taggedRunnable) {
-            this.a = taggedRunnable;
+        public PostTask(TaggedRunnable taggedRunnable) {
+            this.mTaggedRunnable = taggedRunnable;
         }
 
-        protected Void a(Void... voidArr) {
-            Coordinator.runWithTiming(this.a);
+        protected Void process(Void... params) {
+            Coordinator.runWithTiming(this.mTaggedRunnable);
             return null;
         }
 
         @Override
 		public String toString() {
-            return getClass().getSimpleName() + "@" + this.a;
+            return getClass().getSimpleName() + "@" + this.mTaggedRunnable;
         }
 
     }
 
     @TargetApi(11)
     public static void postTask(TaggedRunnable taggedRunnable) {
-        axx aVar = new axx(taggedRunnable);
+        PostTask aVar = new PostTask(taggedRunnable);
         if (VERSION.SDK_INT < 11) {
             aVar.execute(new Void[0]);
         } else {

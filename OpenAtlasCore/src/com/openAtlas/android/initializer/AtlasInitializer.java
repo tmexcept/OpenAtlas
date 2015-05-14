@@ -277,12 +277,12 @@ public class AtlasInitializer {
 			CharSequence last_version_name = sharedPreferences.getString("last_version_name", "");
 			SharedPreferences sharedPreferences2 = this.mApp.getSharedPreferences("atlas_configs", 0);
 			CharSequence string2 = sharedPreferences2.getString("isMiniPackage", "");
-			this.isMiniPackage = !String.valueOf(Globals.isMiniPackage()).equals(string2);
+			this.isMiniPackage = false;
 			System.out.println("resetForOverrideInstall = " + this.isMiniPackage);
 			if (TextUtils.isEmpty(string2) || this.isMiniPackage) {
 				Editor edit = sharedPreferences2.edit();
 				edit.clear();
-				edit.putString("isMiniPackage", String.valueOf(Globals.isMiniPackage()));
+				edit.putString("isMiniPackage", "false");
 				edit.commit();
 			}
 			if (packageInfo.versionCode > last_version_code || ((packageInfo.versionCode == last_version_code && !TextUtils.equals(Globals.getInstalledVersionName(), last_version_name)) || this.isMiniPackage)) {

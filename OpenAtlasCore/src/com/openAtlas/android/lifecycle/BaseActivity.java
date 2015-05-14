@@ -26,7 +26,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import android.app.Activity;
 import android.os.Bundle;
 
-public class PanguActivity extends Activity {
+public class BaseActivity extends Activity {
     private final List<IndividualActivityLifecycleCallback> mIndividualActivityLifecycleCallbacks;
 
     public static interface IndividualActivityLifecycleCallback {
@@ -43,7 +43,7 @@ public class PanguActivity extends Activity {
         void onStopped(Activity activity);
     }
 
-    public PanguActivity() {
+    public BaseActivity() {
         this.mIndividualActivityLifecycleCallbacks = new CopyOnWriteArrayList<IndividualActivityLifecycleCallback>();
     }
 

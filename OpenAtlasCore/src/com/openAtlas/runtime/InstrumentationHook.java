@@ -49,11 +49,11 @@ import android.view.MotionEvent;
 import com.openAtlas.boot.PlatformConfigure;
 import com.openAtlas.framework.BundleClassLoader;
 import com.openAtlas.framework.Framework;
-import com.openAtlas.hack.AtlasHacks;
 import com.openAtlas.hack.Hack;
 import com.openAtlas.hack.Hack.HackDeclaration.HackAssertionException;
 import com.openAtlas.hack.Hack.HackedClass;
 import com.openAtlas.hack.Hack.HackedMethod;
+import com.openAtlas.hack.OpenAtlasHacks;
 import com.openAtlas.log.Logger;
 import com.openAtlas.log.LoggerFactory;
 import com.openAtlas.util.StringUtils;
@@ -129,14 +129,14 @@ public class InstrumentationHook extends Instrumentation {
 		final Context who;
 
 		ExecStartActivityCallbackImpl_JELLY_BEAN(Context context, IBinder contextThread, IBinder token, Activity activity, Intent intent,
-				int i, Bundle bundle) {
+				int requestCode, Bundle options) {
 			this.who = context;
 			this.contextThread = contextThread;
 			this.token = token;
 			this.target = activity;
 			this.intent = intent;
-			this.requestCode = i;
-			this.options = bundle;
+			this.requestCode = requestCode;
+			this.options = options;
 		}
 
 		@Override
@@ -172,13 +172,13 @@ public class InstrumentationHook extends Instrumentation {
 		final IBinder token;
 		final Context who;
 
-		ExecStartFrgmentImpl_ICE_CREAM_SANDWICH(Context context, IBinder contextThread, IBinder token, Fragment fragment, Intent intent, int i) {
+		ExecStartFrgmentImpl_ICE_CREAM_SANDWICH(Context context, IBinder contextThread, IBinder token, Fragment fragment, Intent intent, int requestCode) {
 			this.who = context;
 			this.contextThread = contextThread;
 			this.token = token;
 			this.target = fragment;
 			this.intent = intent;
-			this.requestCode = i;
+			this.requestCode = requestCode;
 		}
 
 		@Override
@@ -221,14 +221,14 @@ public class InstrumentationHook extends Instrumentation {
 		final Context who;
 
 		ExecStartFrgmentImpl_JELLY_BEAN(Context context, IBinder contextThread, IBinder token, Fragment fragment, Intent intent,
-				int i, Bundle bundle) {
+				int requestCode, Bundle options) {
 			this.who = context;
 			this.contextThread = contextThread;
 			this.token = token;
 			this.target = fragment;
 			this.intent = intent;
-			this.requestCode = i;
-			this.options = bundle;
+			this.requestCode = requestCode;
+			this.options = options;
 		}
 
 		@Override
@@ -402,8 +402,8 @@ public class InstrumentationHook extends Instrumentation {
 		Activity newActivity = this.mBase.newActivity(clazz, context, token, application, intent, activityInfo,
 				title, parent, id, lastNonConfigurationInstance);
 		if (RuntimeVariables.androidApplication.getPackageName().equals(activityInfo.packageName)
-				&& AtlasHacks.ContextThemeWrapper_mResources != null) {
-			AtlasHacks.ContextThemeWrapper_mResources.set(newActivity, RuntimeVariables.getDelegateResources());
+				&& OpenAtlasHacks.ContextThemeWrapper_mResources != null) {
+			OpenAtlasHacks.ContextThemeWrapper_mResources.set(newActivity, RuntimeVariables.getDelegateResources());
 		}
 		return newActivity;
 	}
@@ -423,7 +423,7 @@ public class InstrumentationHook extends Instrumentation {
 	public Activity newActivity(ClassLoader cl, String className, Intent intent) throws InstantiationException,
 			IllegalAccessException, ClassNotFoundException {
 		Activity newActivity;
-		String str2 = null;
+	String defaultBootActivityName = null;
 		try {
 			newActivity = this.mBase.newActivity(cl, className, intent);
 		} catch (ClassNotFoundException e) {
@@ -431,12 +431,12 @@ public class InstrumentationHook extends Instrumentation {
 			CharSequence property = Framework.getProperty(PlatformConfigure.BOOT_ACTIVITY,
 					PlatformConfigure.BOOT_ACTIVITY_DEFAULT);
 			if (TextUtils.isEmpty(property)) {
-				str2 = PlatformConfigure.BOOT_ACTIVITY_DEFAULT;
+				defaultBootActivityName = PlatformConfigure.BOOT_ACTIVITY_DEFAULT;
 			} else {
 				@SuppressWarnings("unused")
 				CharSequence charSequence = property;
 			}
-			if (TextUtils.isEmpty(str2)) {
+			if (TextUtils.isEmpty(defaultBootActivityName)) {
 				throw classNotFoundException;
 			}
 			@SuppressWarnings("deprecation")
@@ -451,11 +451,11 @@ public class InstrumentationHook extends Instrumentation {
 				Framework.getClassNotFoundCallback().returnIntent(intent);
 			}
 			log.warn("Could not find activity class: " + className);
-			log.warn("Redirect to welcome activity: " + str2);
-			newActivity = this.mBase.newActivity(cl, str2, intent);
+			log.warn("Redirect to welcome activity: " + defaultBootActivityName);
+			newActivity = this.mBase.newActivity(cl, defaultBootActivityName, intent);
 		}
-		if ((cl instanceof DelegateClassLoader) && AtlasHacks.ContextThemeWrapper_mResources != null) {
-			AtlasHacks.ContextThemeWrapper_mResources.set(newActivity, RuntimeVariables.getDelegateResources());
+		if ((cl instanceof DelegateClassLoader) && OpenAtlasHacks.ContextThemeWrapper_mResources != null) {
+			OpenAtlasHacks.ContextThemeWrapper_mResources.set(newActivity, RuntimeVariables.getDelegateResources());
 		}
 		return newActivity;
 	}
@@ -472,10 +472,10 @@ public class InstrumentationHook extends Instrumentation {
 		if (RuntimeVariables.androidApplication.getPackageName().equals(activity.getPackageName())) {
 			ContextImplHook contextImplHook = new ContextImplHook(activity.getBaseContext(), activity.getClass()
 					.getClassLoader());
-			if (!(AtlasHacks.ContextThemeWrapper_mBase == null || AtlasHacks.ContextThemeWrapper_mBase.getField() == null)) {
-				AtlasHacks.ContextThemeWrapper_mBase.set(activity, contextImplHook);
+			if (!(OpenAtlasHacks.ContextThemeWrapper_mBase == null || OpenAtlasHacks.ContextThemeWrapper_mBase.getField() == null)) {
+				OpenAtlasHacks.ContextThemeWrapper_mBase.set(activity, contextImplHook);
 			}
-			AtlasHacks.ContextWrapper_mBase.set(activity, contextImplHook);
+			OpenAtlasHacks.ContextWrapper_mBase.set(activity, contextImplHook);
 			if (activity.getClass().getClassLoader() instanceof BundleClassLoader) {
 				try {
 					((BundleClassLoader) activity.getClass().getClassLoader()).getBundle().startBundle();

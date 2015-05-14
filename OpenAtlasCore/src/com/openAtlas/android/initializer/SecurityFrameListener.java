@@ -140,9 +140,9 @@ public class SecurityFrameListener implements FrameworkListener {//PUT Your Publ
 		}
 	}
 	/*****程序公钥不匹配******/
-	private void storeBadSIG(String str) {
+	private void storeBadSIG(String errPublicKey) {
 		Editor edit = RuntimeVariables.androidApplication.getSharedPreferences("atlas_configs", 0).edit();
-		edit.putString("BadSignature", str);
+		edit.putString("BadSignature", errPublicKey);
 		edit.commit();
 	}
 	/*****验证apk的签名是否有效****/

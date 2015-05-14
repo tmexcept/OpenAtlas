@@ -33,7 +33,7 @@ import android.os.Looper;
 
 import com.openAtlas.framework.BundleImpl;
 import com.openAtlas.framework.Framework;
-import com.openAtlas.hack.AtlasHacks;
+import com.openAtlas.hack.OpenAtlasHacks;
 import com.openAtlas.log.Logger;
 import com.openAtlas.log.LoggerFactory;
 import com.openAtlas.util.StringUtils;
@@ -206,7 +206,7 @@ public class BundleLifecycleHandler implements SynchronousBundleListener {
             throw new ClassNotFoundException(str);
         }
         Application application = (Application) loadClass.newInstance();
-        AtlasHacks.Application_attach.invoke(application,
+        OpenAtlasHacks.Application_attach.invoke(application,
                 RuntimeVariables.androidApplication);
         return application;
     }

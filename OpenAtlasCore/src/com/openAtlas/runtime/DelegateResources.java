@@ -45,7 +45,7 @@ import android.util.DisplayMetrics;
 import com.openAtlas.framework.BundleImpl;
 import com.openAtlas.framework.Framework;
 import com.openAtlas.hack.AndroidHack;
-import com.openAtlas.hack.AtlasHacks;
+import com.openAtlas.hack.OpenAtlasHacks;
 import com.openAtlas.log.Logger;
 import com.openAtlas.log.LoggerFactory;
 
@@ -119,7 +119,7 @@ public class DelegateResources extends Resources {
 			Resources delegateResources;
 			AssetManager assetManager = AssetManager.class.newInstance();
 			for (String assetPath : generateNewAssetPaths) {
-				AtlasHacks.AssetManager_addAssetPath.invoke(assetManager, assetPath);
+				OpenAtlasHacks.AssetManager_addAssetPath.invoke(assetManager, assetPath);
 			}
 			if (resources == null || !resources.getClass().getName().equals("android.content.res.MiuiResources")) {//如果是翔米UI需要使用MiuiResources
 				delegateResources = new DelegateResources(assetManager, resources);

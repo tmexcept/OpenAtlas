@@ -71,7 +71,7 @@ import com.openAtlas.log.Logger;
 import com.openAtlas.log.LoggerFactory;
 import com.openAtlas.runtime.ClassNotFoundInterceptorCallback;
 import com.openAtlas.runtime.RuntimeVariables;
-import com.openAtlas.util.AtlasFileLock;
+import com.openAtlas.util.OpenAtlasFileLock;
 import com.openAtlas.util.BundleLock;
 import com.openAtlas.util.StringUtils;
 
@@ -143,11 +143,11 @@ public final class Framework {
 		private final ServiceReference[] registeredServices;
 		int state;
 
-		class AnonymousClass_1 extends Thread {
+		class ShutdownThread extends Thread {
 			final boolean restart;
 
-			AnonymousClass_1(boolean z) {
-				this.restart = z;
+			ShutdownThread(boolean restart) {
+				this.restart = restart;
 			}
 
 			@Override
@@ -156,10 +156,10 @@ public final class Framework {
 			}
 		}
 
-		class AnonymousClass_2 extends Thread {
+		class UpdateLevelThread extends Thread {
 			final int targetLevel;
 
-			AnonymousClass_2(int i) {
+			UpdateLevelThread(int i) {
 				this.targetLevel = i;
 			}
 
@@ -173,10 +173,10 @@ public final class Framework {
 		}
 
 		// TODO this is Component old version impl
-		class AnonymousClass_3 extends Thread {
+		class RefreshBundlesThread extends Thread {
 			final Bundle[] bundleArray;
 
-			AnonymousClass_3(Bundle[] bundleArr) {
+			RefreshBundlesThread(Bundle[] bundleArr) {
 				this.bundleArray = bundleArr;
 			}
 
@@ -342,7 +342,7 @@ public final class Framework {
 		}
 
 		private void shutdownThread(boolean z) {
-			new AnonymousClass_1(z).start();
+			new ShutdownThread(z).start();
 		}
 
 		@Override
@@ -435,7 +435,7 @@ public final class Framework {
 			if (i <= 0) {
 				throw new IllegalArgumentException("Start level " + i + " is not Component valid level");
 			}
-			new AnonymousClass_2(i).start();
+			new UpdateLevelThread(i).start();
 		}
 
 		@SuppressLint({ "UseSparseArrays" })
@@ -566,7 +566,7 @@ public final class Framework {
 
 		@Override
 		public void refreshPackages(Bundle[] bundleArr) {
-			new AnonymousClass_3(bundleArr).start();
+			new RefreshBundlesThread(bundleArr).start();
 		}
 
 		@Override
@@ -648,7 +648,7 @@ public final class Framework {
 		int property;
 		frameworkStartupShutdown = true;
 		System.out.println("---------------------------------------------------------");
-		System.out.println("  Atlas OSGi 0.9.0 on " + Build.MODEL + "/" + Build.CPU_ABI + "/" + VERSION.RELEASE + " starting ...");
+		System.out.println("  OpenAtlas OSGi 0.9.0 on " + Build.MODEL + "/" + Build.CPU_ABI + "/" + VERSION.RELEASE + " starting ...");
 		System.out.println("---------------------------------------------------------");
 		long currentTimeMillis = System.currentTimeMillis();
 		initialize();
@@ -864,11 +864,11 @@ public final class Framework {
 		try {
 			file = new File(STORAGE_LOCATION, "meta");
 			try {
-				if (!AtlasFileLock.getInstance().LockExclusive(file)) {
+				if (!OpenAtlasFileLock.getInstance().LockExclusive(file)) {
 					log.error("Failed to get fileLock for " + file.getAbsolutePath());
-					AtlasFileLock.getInstance().unLock(file);
+					OpenAtlasFileLock.getInstance().unLock(file);
 				} else if (file.length() > 0) {
-					AtlasFileLock.getInstance().unLock(file);
+					OpenAtlasFileLock.getInstance().unLock(file);
 				} else {
 					DataOutputStream dataOutputStream = new DataOutputStream(new FileOutputStream(file));
 					dataOutputStream.writeInt(startlevel);
@@ -879,16 +879,16 @@ public final class Framework {
 					dataOutputStream.writeUTF(join);
 					dataOutputStream.flush();
 					dataOutputStream.close();
-					AtlasFileLock.getInstance().unLock(file);
+					OpenAtlasFileLock.getInstance().unLock(file);
 				}
 			} catch (IOException e2) {
 				e = e2;
 				try {
 					log.error("Could not save meta data.", e);
-					AtlasFileLock.getInstance().unLock(file);
+					OpenAtlasFileLock.getInstance().unLock(file);
 				} catch (Throwable th) {
 					e = th;
-					AtlasFileLock.getInstance().unLock(file);
+					OpenAtlasFileLock.getInstance().unLock(file);
 					throw e;
 				}
 			}
@@ -896,11 +896,11 @@ public final class Framework {
 			e = e3;
 			file = null;
 			log.error("Could not save meta data.", e);
-			AtlasFileLock.getInstance().unLock(file);
+			OpenAtlasFileLock.getInstance().unLock(file);
 		} catch (Throwable th2) {
 			e = th2;
 			file = null;
-			AtlasFileLock.getInstance().unLock(file);
+			OpenAtlasFileLock.getInstance().unLock(file);
 
 		}
 	}
@@ -1067,20 +1067,20 @@ public final class Framework {
 		}
 	}
 
-	static void notifyBundleListeners(int i, Bundle bundle) {
-		int i2 = 0;
+	static void notifyBundleListeners(int event, Bundle bundle) {
+
 		if (!syncBundleListeners.isEmpty() || !bundleListeners.isEmpty()) {
-			BundleEvent bundleEvent = new BundleEvent(i, bundle);
+			BundleEvent bundleEvent = new BundleEvent(event, bundle);
 			BundleListener[] bundleListenerArr = syncBundleListeners.toArray(new BundleListener[syncBundleListeners.size()]);
 			for (BundleListener bundleChanged : bundleListenerArr) {
 				bundleChanged.bundleChanged(bundleEvent);
 			}
 			if (!bundleListeners.isEmpty()) {
 				bundleListenerArr = bundleListeners.toArray(new BundleListener[bundleListeners.size()]);
-				while (i2 < bundleListenerArr.length) {
-					bundleListenerArr[i2].bundleChanged(bundleEvent);
-					i2++;
+				for (BundleListener bundleListener : bundleListenerArr) {
+					bundleListener.bundleChanged(bundleEvent);
 				}
+		
 			}
 		}
 	}
@@ -1105,8 +1105,8 @@ public final class Framework {
 		if (!frameworkListeners.isEmpty()) {
 			FrameworkEvent frameworkEvent = new FrameworkEvent(event, bundle, th);
 			FrameworkListener[] frameworkListenerArr = frameworkListeners.toArray(new FrameworkListener[frameworkListeners.size()]);
-			for (FrameworkListener frameworkEvent2 : frameworkListenerArr) {
-				frameworkEvent2.frameworkEvent(frameworkEvent);
+			for (FrameworkListener frameworkListener : frameworkListenerArr) {
+				frameworkListener.frameworkEvent(frameworkEvent);
 			}
 		}
 	}
@@ -1115,18 +1115,17 @@ public final class Framework {
 		if (!serviceListeners.isEmpty()) {
 			ServiceEvent serviceEvent = new ServiceEvent(event, serviceReference);
 			ServiceListenerEntry[] serviceListenerEntryArr = serviceListeners.toArray(new ServiceListenerEntry[serviceListeners.size()]);
-			int i2 = 0;
-			while (i2 < serviceListenerEntryArr.length) {
-				if (serviceListenerEntryArr[i2].filter == null || serviceListenerEntryArr[i2].filter.match(((ServiceReferenceImpl) serviceReference).properties)) {
-					serviceListenerEntryArr[i2].listener.serviceChanged(serviceEvent);
+			for (int i = 0; i < serviceListenerEntryArr.length; i++) {
+				if (serviceListenerEntryArr[i].filter == null || serviceListenerEntryArr[i].filter.match(((ServiceReferenceImpl) serviceReference).properties)) {
+					serviceListenerEntryArr[i].listener.serviceChanged(serviceEvent);
 				}
-				i2++;
 			}
+
 		}
 	}
 
 	static void clearBundleTrace(BundleImpl bundleImpl) {
-		int i = 0;
+		
 		if (bundleImpl.registeredFrameworkListeners != null) {
 			frameworkListeners.removeAll(bundleImpl.registeredFrameworkListeners);
 			bundleImpl.registeredFrameworkListeners = null;
@@ -1142,17 +1141,18 @@ public final class Framework {
 		}
 		ServiceReference[] registeredServices = bundleImpl.getRegisteredServices();
 		if (registeredServices != null) {
-			for (int i2 = 0; i2 < registeredServices.length; i2++) {
-				unregisterService(registeredServices[i2]);
-				((ServiceReferenceImpl) registeredServices[i2]).invalidate();
+			for (ServiceReference serviceReference : registeredServices) {
+				unregisterService(serviceReference);
+				((ServiceReferenceImpl) serviceReference).invalidate();
 			}
+		
 			bundleImpl.registeredServices = null;
 		}
 		ServiceReference[] servicesInUse = bundleImpl.getServicesInUse();
-		while (i < servicesInUse.length) {
-			((ServiceReferenceImpl) servicesInUse[i]).ungetService(bundleImpl);
-			i++;
+		for (ServiceReference serviceReference : servicesInUse) {
+			((ServiceReferenceImpl) serviceReference).ungetService(bundleImpl);
 		}
+
 	}
 
 	static void addValue(Map map, Object obj, Object obj2) {
@@ -1178,13 +1178,13 @@ public final class Framework {
 		}
 	}
 
-	static void export(BundleClassLoader bundleClassLoader, String[] strArr, boolean z) {
+	static void export(BundleClassLoader bundleClassLoader, String[] packageNames, boolean resolved) {
 		synchronized (exportedPackages) {
 			if (DEBUG_PACKAGES && log.isDebugEnabled()) {
-				log.debug("Bundle " + bundleClassLoader.bundle + " registers " + (z ? "resolved" : "unresolved") + " packages " + Arrays.asList(strArr));
+				log.debug("Bundle " + bundleClassLoader.bundle + " registers " + (resolved ? "resolved" : "unresolved") + " packages " + Arrays.asList(packageNames));
 			}
-			for (String str : strArr) {
-				Package packageR = new Package(str, bundleClassLoader, z);
+			for (String packageName : packageNames) {
+				Package packageR = new Package(packageName, bundleClassLoader, resolved);
 				Package packageR2 = exportedPackages.get(packageR);
 				if (packageR2 == null) {
 					exportedPackages.put(packageR, packageR);
@@ -1202,21 +1202,21 @@ public final class Framework {
 		}
 	}
 
-	static BundleClassLoader getImport(BundleImpl bundleImpl, String str, boolean z, HashSet<BundleClassLoader> hashSet) {
+	static BundleClassLoader getImport(BundleImpl bundleImpl, String packageName, boolean resolve, HashSet<BundleClassLoader> hashSet) {
 		if (DEBUG_PACKAGES && log.isDebugEnabled()) {
-			log.debug("Bundle " + bundleImpl + " requests package " + str);
+			log.debug("Bundle " + bundleImpl + " requests package " + packageName);
 		}
 		synchronized (exportedPackages) {
 			try {
-				Package packageR = exportedPackages.get(new Package(str, null, false));
-				if (packageR == null || !(packageR.resolved || z)) {
+				Package packageR = exportedPackages.get(new Package(packageName, null, false));
+				if (packageR == null || !(packageR.resolved || resolve)) {
 					return null;
 				}
 				BundleClassLoader bundleClassLoader = packageR.classloader;
 				if (bundleClassLoader == bundleImpl.classloader) {
 					return bundleClassLoader;
 				}
-				if (!(!z || packageR.resolved || hashSet.contains(packageR.classloader))) {
+				if (!(!resolve || packageR.resolved || hashSet.contains(packageR.classloader))) {
 					hashSet.add(bundleImpl.classloader);
 					packageR.classloader.resolveBundle(true, hashSet);
 				}
@@ -1227,7 +1227,7 @@ public final class Framework {
 					packageR.importingBundles.add(bundleImpl);
 				}
 				if (DEBUG_PACKAGES && log.isDebugEnabled()) {
-					log.debug("REQUESTED PACKAGE " + str + ", RETURNED DELEGATION TO " + bundleClassLoader.bundle);
+					log.debug("REQUESTED PACKAGE " + packageName + ", RETURNED DELEGATION TO " + bundleClassLoader.bundle);
 				}
 				return bundleClassLoader;
 			} catch (Exception e) {

@@ -71,12 +71,7 @@ public class StringUtils {
         return str.equals(str2);
     }
 
-    public static boolean contains(String str, String str2) {
-        if (str == null || str2 == null || str.indexOf(str2) < 0) {
-            return false;
-        }
-        return true;
-    }
+
 
     public static boolean contains(String[] strArr, String str) {
         if (strArr == null || str == null) {

@@ -94,14 +94,8 @@ public class Globals {
         }
     }
 
-    public static final String TRACE_TYPE_BUY = "3";
-    public static final String TRACE_TYPE_CART = "2";
-    public static final String TRACE_TYPE_FAV = "1";
-    public static final String TRACE_TYPE_FAV_SHOP = "4";
 
-    public static boolean isMiniPackage() {
-    	return false;
-    }
+
 
 
 }
