@@ -56,10 +56,10 @@ final class RFC1960Filter implements Filter {
         private final String id;
         private final String value;
 
-        private RFC1960SimpleFilter(String str, int i, String str2) {
-            this.id = str;
-            this.comparator = i;
-            this.value = str2;
+        private RFC1960SimpleFilter(String id, int comparator, String value) {
+            this.id = id;
+            this.comparator = comparator;
+            this.value = value;
         }
 
         @Override
@@ -200,11 +200,11 @@ final class RFC1960Filter implements Filter {
             }
         }
 
-        private static boolean compareNumber(String str, int i, Number number) {
+        private static boolean compareNumber(String id, int comparator, Number number) {
             if (number instanceof Integer) {
                 int intValue = ((Integer) number).intValue();
-                int parseInt = Integer.parseInt(str);
-                switch (i) {
+                int parseInt = Integer.parseInt(id);
+                switch (comparator) {
                 case NOT_OPERATOR:
                     return intValue >= parseInt;
                 case LESS:
@@ -214,8 +214,8 @@ final class RFC1960Filter implements Filter {
                 }
             } else if (number instanceof Long) {
                 long longValue = ((Long) number).longValue();
-                long parseLong = Long.parseLong(str);
-                switch (i) {
+                long parseLong = Long.parseLong(id);
+                switch (comparator) {
                 case NOT_OPERATOR:
                     return longValue >= parseLong;
                 case LESS:
@@ -225,8 +225,8 @@ final class RFC1960Filter implements Filter {
                 }
             } else if (number instanceof Short) {
                 short shortValue = ((Short) number).shortValue();
-                short parseShort = Short.parseShort(str);
-                switch (i) {
+                short parseShort = Short.parseShort(id);
+                switch (comparator) {
                 case NOT_OPERATOR:
                     return shortValue >= parseShort;
                 case LESS:
@@ -236,8 +236,8 @@ final class RFC1960Filter implements Filter {
                 }
             } else if (number instanceof Double) {
                 double doubleValue = ((Double) number).doubleValue();
-                double parseDouble = Double.parseDouble(str);
-                switch (i) {
+                double parseDouble = Double.parseDouble(id);
+                switch (comparator) {
                 case NOT_OPERATOR:
                     return doubleValue >= parseDouble;
                 case LESS:
@@ -247,8 +247,8 @@ final class RFC1960Filter implements Filter {
                 }
             } else if (number instanceof Float) {
                 float floatValue = ((Float) number).floatValue();
-                float parseFloat = Float.parseFloat(str);
-                switch (i) {
+                float parseFloat = Float.parseFloat(id);
+                switch (comparator) {
                 case NOT_OPERATOR:
                     return floatValue >= parseFloat;
                 case LESS:
@@ -259,17 +259,17 @@ final class RFC1960Filter implements Filter {
             } else {
                 if (number instanceof Byte) {
                     try {
-                        return compareTyped(Byte.decode(str), i, (Byte) number);
+                        return compareTyped(Byte.decode(id), comparator, (Byte) number);
                     } catch (Throwable th) {
                     }
                 }
-                return compareReflective(str, i, (Comparable) number);
+                return compareReflective(id, comparator, (Comparable) number);
             }
         }
 
-        private static boolean compareTyped(Object obj, int i,
+        private static boolean compareTyped(Object obj, int comparator,
                 Comparable comparable) {
-            switch (i) {
+            switch (comparator) {
             case EQUALS:
             case OR_OPERATOR:
                 return comparable.equals(obj);
@@ -282,31 +282,31 @@ final class RFC1960Filter implements Filter {
             }
         }
 
-        private static boolean compareArray(String str, int i, Object[] objArr) {
+        private static boolean compareArray(String str, int comparator, Object[] objArr) {
             for (int i2 = 0; i2 < objArr.length; i2++) {
                 Object obj = objArr[i2];
                 if (obj instanceof String) {
-                    if (compareString(str, i, (String) obj)) {
+                    if (compareString(str, comparator, (String) obj)) {
                         return true;
                     }
                 } else if (obj instanceof Number) {
-                    if (compareNumber(str, i, (Number) obj)) {
+                    if (compareNumber(str, comparator, (Number) obj)) {
                         return true;
                     }
                 } else if ((obj instanceof Comparable)
-                        && compareReflective(str, i, (Comparable) obj)) {
+                        && compareReflective(str, comparator, (Comparable) obj)) {
                     return true;
                 }
             }
             return false;
         }
 
-        private static boolean compareReflective(String str, int i,
+        private static boolean compareReflective(String str, int comparator,
                 Comparable comparable) {
             try {
                 return compareTyped(
                         comparable.getClass().getConstructor(STRINGCLASS)
-                                .newInstance(new Object[] { str }), i,
+                                .newInstance(new Object[] { str }), comparator,
                         comparable);
             } catch (Exception e) {
                 return false;
@@ -317,30 +317,30 @@ final class RFC1960Filter implements Filter {
             return str.replace(' ', '\u0000');
         }
 
-        private static int stringCompare(char[] cArr, int i, char[] cArr2,
+        private static int stringCompare(char[] cArr, int comparator, char[] cArr2,
                 int i2) {
-            if (i == cArr.length) {
+            if (comparator == cArr.length) {
                 return 0;
             }
             int length = cArr.length;
             int length2 = cArr2.length;
             int i3 = i2;
-            while (i < length && i3 < length2) {
-                if (cArr[i] == cArr2[i3]) {
-                    i++;
+            while (comparator < length && i3 < length2) {
+                if (cArr[comparator] == cArr2[i3]) {
+                    comparator++;
                     i3++;
                 } else {
-                    if (cArr[i] > 'A' && cArr[i] < 'Z') {
-                        cArr[i] = (char) (cArr[i] + 32);
+                    if (cArr[comparator] > 'A' && cArr[comparator] < 'Z') {
+                        cArr[comparator] = (char) (cArr[comparator] + 32);
                     }
                     if (cArr2[i3] > 'A' && cArr2[i3] < 'Z') {
                         cArr2[i3] = (char) (cArr2[i3] + 32);
                     }
-                    if (cArr[i] == cArr2[i3]) {
-                        i++;
+                    if (cArr[comparator] == cArr2[i3]) {
+                        comparator++;
                         i3++;
-                    } else if (cArr[i] == '*') {
-                        length = i + 1;
+                    } else if (cArr[comparator] == '*') {
+                        length = comparator + 1;
                         while (stringCompare(cArr, length, cArr2, i3) != 0) {
                             i3++;
                             if (length2 - i3 <= -1) {
@@ -348,19 +348,19 @@ final class RFC1960Filter implements Filter {
                             }
                         }
                         return 0;
-                    } else if (cArr[i] < cArr2[i3]) {
+                    } else if (cArr[comparator] < cArr2[i3]) {
                         return -1;
                     } else {
-                        if (cArr[i] > cArr2[i3]) {
+                        if (cArr[comparator] > cArr2[i3]) {
                             return PRESENT;
                         }
                     }
                 }
             }
-            if (i == length && i3 == length2 && cArr[i - 1] == cArr2[i3 - 1]) {
+            if (comparator == length && i3 == length2 && cArr[comparator - 1] == cArr2[i3 - 1]) {
                 return 0;
             }
-            if (cArr[i - 1] == '*' && i == length && i3 == length2) {
+            if (cArr[comparator - 1] == '*' && comparator == length && i3 == length2) {
                 return 0;
             }
             if (length < length2) {
@@ -604,47 +604,6 @@ final class RFC1960Filter implements Filter {
         }
     }
 
-    // public boolean match(ServiceReference serviceReference) {
-    // try {
-    // return match(((ServiceReferenceImpl) serviceReference).properties);
-    // } catch (Exception e) {
-    // Dictionary hashtable = new Hashtable();
-    // String[] propertyKeys = serviceReference.getPropertyKeys();
-    // for (int i = EQUALS; i < propertyKeys.length; i++) {
-    // hashtable.put(propertyKeys[i],
-    // serviceReference.getProperty(propertyKeys[i]));
-    // }
-    // return match(hashtable);
-    // }
-    // }
-
-    // public boolean match(Dictionary dictionary) {
-    // Filter[] filterArr;
-    // int i;
-    // if (this.operator == 1) {
-    // filterArr = (Filter[]) this.operands.toArray(new
-    // Filter[this.operands.size()]);
-    // for (i = 0; i < filterArr.length; i++) {
-    // if (!filterArr[i].match(dictionary)) {
-    // return false;
-    // }
-    // }
-    // return true;
-    // } else if (this.operator == 2) {
-    // filterArr = (Filter[]) this.operands.toArray(new
-    // Filter[this.operands.size()]);
-    // for (i = 0; i < filterArr.length; i++) {
-    // if (filterArr[i].match(dictionary)) {
-    // return true;
-    // }
-    // }
-    // return false;
-    // } else if (this.operator == 3) {
-    // return !((Filter) this.operands.get(EQUALS)).match(dictionary);
-    // } else {
-    // throw new IllegalStateException("PARSER ERROR");
-    // }
-    // }
 
     @Override
 	public String toString() {
@@ -695,7 +654,7 @@ final class RFC1960Filter implements Filter {
         try {
             return match(((ServiceReferenceImpl) reference).properties);
         } catch (Exception e) {
-            Dictionary hashtable = new Hashtable();
+            Dictionary<String, Object> hashtable = new Hashtable<String, Object>();
             String[] propertyKeys = reference.getPropertyKeys();
             for (int i = EQUALS; i < propertyKeys.length; i++) {
                 hashtable.put(propertyKeys[i],

@@ -177,8 +177,8 @@ public class SaturativeExecutor extends ThreadPoolExecutor {
         this(determineBestMinPoolSize());
     }
 
-    public SaturativeExecutor(int i) {
-        super(i, 128, 1, TimeUnit.SECONDS, new SaturationAwareBlockingQueue(
+    public SaturativeExecutor(int corePoolSize) {
+        super(corePoolSize, 128, 1, TimeUnit.SECONDS, new SaturationAwareBlockingQueue(
                 1024), sThreadFactory, new CallerRunsPolicy());
         // BlockingQueue saturationAwareBlockingQueue = new
         // SaturationAwareBlockingQueue(1024);

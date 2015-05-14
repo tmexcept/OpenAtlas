@@ -45,11 +45,11 @@ public class AndroidHack {
     private static Object _mLoadedApk;
     private static Object _sActivityThread;
 
-    static final class AnonymousClass_1 implements Callback {
+    static final class HandlerHack implements Callback {
         final Object activityThread;
         final Handler handler;
 
-        AnonymousClass_1(Handler handler, Object obj) {
+        HandlerHack(Handler handler, Object obj) {
             this.handler = handler;
             this.activityThread = obj;
         }
@@ -76,7 +76,7 @@ public class AndroidHack {
                             runtimeException = new RuntimeException(
                                     "loadedapk is null");
                         } else {
-                            ClassLoader classLoader = AtlasHacks.LoadedApk_mClassLoader
+                            ClassLoader classLoader = OpenAtlasHacks.LoadedApk_mClassLoader
                                     .get(loadedApk);
                             if (classLoader instanceof DelegateClassLoader) {
                                 runtimeException = new RuntimeException(
@@ -107,14 +107,14 @@ public class AndroidHack {
         @Override
 		public void run() {
             try {
-                AndroidHack._sActivityThread = AtlasHacks.ActivityThread_currentActivityThread
-                        .invoke(AtlasHacks.ActivityThread.getmClass(),
+                AndroidHack._sActivityThread = OpenAtlasHacks.ActivityThread_currentActivityThread
+                        .invoke(OpenAtlasHacks.ActivityThread.getmClass(),
                                 new Object[0]);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            synchronized (AtlasHacks.ActivityThread_currentActivityThread) {
-                AtlasHacks.ActivityThread_currentActivityThread.notify();
+            synchronized (OpenAtlasHacks.ActivityThread_currentActivityThread) {
+                OpenAtlasHacks.ActivityThread_currentActivityThread.notify();
             }
         }
     }
@@ -128,13 +128,13 @@ public class AndroidHack {
         if (_sActivityThread == null) {
             if (Thread.currentThread().getId() == Looper.getMainLooper()
                     .getThread().getId()) {
-                _sActivityThread = AtlasHacks.ActivityThread_currentActivityThread
+                _sActivityThread = OpenAtlasHacks.ActivityThread_currentActivityThread
                         .invoke(null, new Object[0]);
             } else {
                 Handler handler = new Handler(Looper.getMainLooper());
-                synchronized (AtlasHacks.ActivityThread_currentActivityThread) {
+                synchronized (OpenAtlasHacks.ActivityThread_currentActivityThread) {
                     handler.post(new ActvityThreadGetter());
-                    AtlasHacks.ActivityThread_currentActivityThread.wait();
+                    OpenAtlasHacks.ActivityThread_currentActivityThread.wait();
                 }
             }
         }
@@ -148,13 +148,13 @@ public class AndroidHack {
                     "Failed to get ActivityThread.sCurrentActivityThread");
         }
         try {
-            Handler handler = (Handler) AtlasHacks.ActivityThread
+            Handler handler = (Handler) OpenAtlasHacks.ActivityThread
                     .field("mH")
                     .ofType(Hack.into("android.app.ActivityThread$H")
                             .getmClass()).get(activityThread);
             Field declaredField = Handler.class.getDeclaredField("mCallback");
             declaredField.setAccessible(true);
-            declaredField.set(handler, new AnonymousClass_1(handler,
+            declaredField.set(handler, new HandlerHack(handler,
                     activityThread));
         } catch (HackAssertionException e) {
             e.printStackTrace();
@@ -179,18 +179,18 @@ public class AndroidHack {
             }
         }
         activityThread = loadedApk;
-        if (!((AtlasHacks.LoadedApk_mClassLoader
+        if (!((OpenAtlasHacks.LoadedApk_mClassLoader
                 .get(activityThread)) instanceof DelegateClassLoader)) {
-            AtlasHacks.LoadedApk_mClassLoader.set(activityThread,
+            OpenAtlasHacks.LoadedApk_mClassLoader.set(activityThread,
                     RuntimeVariables.delegateClassLoader);
-            AtlasHacks.LoadedApk_mResources.set(activityThread,
+            OpenAtlasHacks.LoadedApk_mResources.set(activityThread,
                     RuntimeVariables.getDelegateResources());
         }
     }
 
     public static Object getLoadedApk(Application application, Object obj,
             String str) {
-        WeakReference weakReference = (WeakReference) ((Map) AtlasHacks.ActivityThread_mPackages
+        WeakReference weakReference = (WeakReference) ((Map) OpenAtlasHacks.ActivityThread_mPackages
                 .get(obj)).get(str);
         if (weakReference == null || weakReference.get() == null) {
             return null;
@@ -219,7 +219,7 @@ public class AndroidHack {
             Class cls = Class.forName("android.content.res.CompatibilityInfo");
             Object invoke = declaredMethod.invoke(application.getResources(),
                     new Object[0]);
-            Method declaredMethod2 = AtlasHacks.ActivityThread.getmClass()
+            Method declaredMethod2 = OpenAtlasHacks.ActivityThread.getmClass()
                     .getDeclaredMethod("getPackageInfoNoCheck",
                             new Class[] { ApplicationInfo.class, cls });
             declaredMethod2.setAccessible(true);
@@ -249,7 +249,7 @@ public class AndroidHack {
         if (loadedApk == null) {
             throw new Exception("Failed to get ActivityThread.mLoadedApk");
         }
-        AtlasHacks.LoadedApk_mClassLoader.set(loadedApk, classLoader);
+        OpenAtlasHacks.LoadedApk_mClassLoader.set(loadedApk, classLoader);
     }
 
     public static void injectApplication(String str, Application application)
@@ -264,8 +264,8 @@ public class AndroidHack {
         if (loadedApk == null) {
             throw new Exception("Failed to get ActivityThread.mLoadedApk");
         }
-        AtlasHacks.LoadedApk_mApplication.set(loadedApk, application);
-        AtlasHacks.ActivityThread_mInitialApplication.set(activityThread,
+        OpenAtlasHacks.LoadedApk_mApplication.set(loadedApk, application);
+        OpenAtlasHacks.ActivityThread_mInitialApplication.set(activityThread,
                 application);
     }
 
@@ -284,23 +284,23 @@ public class AndroidHack {
                 throw new RuntimeException(
                         "Failed to get ActivityThread.mLoadedApk");
             }
-            if (!((AtlasHacks.LoadedApk_mClassLoader
+            if (!((OpenAtlasHacks.LoadedApk_mClassLoader
                     .get(activityThread)) instanceof DelegateClassLoader)) {
-                AtlasHacks.LoadedApk_mClassLoader.set(activityThread,
+                OpenAtlasHacks.LoadedApk_mClassLoader.set(activityThread,
                         RuntimeVariables.delegateClassLoader);
             }
             loadedApk = activityThread;
         }
-        AtlasHacks.LoadedApk_mResources.set(loadedApk, resources);
-        AtlasHacks.ContextImpl_mResources.set(application.getBaseContext(),
+        OpenAtlasHacks.LoadedApk_mResources.set(loadedApk, resources);
+        OpenAtlasHacks.ContextImpl_mResources.set(application.getBaseContext(),
                 resources);
-        AtlasHacks.ContextImpl_mTheme.set(application.getBaseContext(), null);
+        OpenAtlasHacks.ContextImpl_mTheme.set(application.getBaseContext(), null);
     }
 
     public static Instrumentation getInstrumentation() throws Exception {
         Object activityThread = getActivityThread();
         if (activityThread != null) {
-            return AtlasHacks.ActivityThread_mInstrumentation
+            return OpenAtlasHacks.ActivityThread_mInstrumentation
                     .get(activityThread);
         }
         throw new Exception(
@@ -314,12 +314,12 @@ public class AndroidHack {
             throw new Exception(
                     "Failed to get ActivityThread.sCurrentActivityThread");
         }
-        AtlasHacks.ActivityThread_mInstrumentation.set(activityThread,
+        OpenAtlasHacks.ActivityThread_mInstrumentation.set(activityThread,
                 instrumentation);
     }
 
     public static void injectContextHook(ContextWrapper contextWrapper,
             ContextWrapper contextWrapper2) {
-        AtlasHacks.ContextWrapper_mBase.set(contextWrapper, contextWrapper2);
+        OpenAtlasHacks.ContextWrapper_mBase.set(contextWrapper, contextWrapper2);
     }
 }

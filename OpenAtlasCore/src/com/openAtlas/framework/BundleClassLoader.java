@@ -48,7 +48,7 @@ import org.osgi.framework.BundleException;
 import com.openAtlas.boot.PlatformConfigure;
 import com.openAtlas.framework.bundlestorage.Archive;
 import com.openAtlas.framework.bundlestorage.BundleArchiveRevision.DexLoadException;
-import com.openAtlas.hack.AtlasHacks;
+import com.openAtlas.hack.OpenAtlasHacks;
 import com.openAtlas.log.Logger;
 import com.openAtlas.log.LoggerFactory;
 
@@ -205,12 +205,12 @@ public final class BundleClassLoader extends ClassLoader {
 		}
 	}
 
-	boolean resolveBundle(boolean z, HashSet<BundleClassLoader> hashSet)
+	boolean resolveBundle(boolean resolve, HashSet<BundleClassLoader> hashSet)
 			throws BundleException {
 		int i;
 		if (Framework.DEBUG_CLASSLOADING && log.isInfoEnabled()) {
 			log.info("BundleClassLoader: Resolving " + this.bundle
-					+ (z ? " (critical)" : " (not critical)"));
+					+ (resolve ? " (critical)" : " (not critical)"));
 		}
 		HashSet hashSet2;
 		if (this.exports.length > 0) {
@@ -232,12 +232,12 @@ public final class BundleClassLoader extends ClassLoader {
 						&& this.importDelegations.get(obj) == null
 						&& (hashSet2 == null || !hashSet2.contains(obj))) {
 					BundleClassLoader bundleClassLoader = Framework.getImport(
-							this.bundle, this.imports[i2], z, hashSet);
+							this.bundle, this.imports[i2], resolve, hashSet);
 					if (bundleClassLoader != null) {
 						if (bundleClassLoader != this) {
 							this.importDelegations.put(obj, bundleClassLoader);
 						}
-					} else if (z) {
+					} else if (resolve) {
 						throw new BundleException("Unsatisfied import "
 								+ this.imports[i2] + " for bundle "
 								+ this.bundle.toString(),
@@ -479,7 +479,7 @@ public final class BundleClassLoader extends ClassLoader {
 			return findLibrary.getAbsolutePath();
 		}
 		try {
-			return (String) AtlasHacks.ClassLoader_findLibrary.invoke(
+			return (String) OpenAtlasHacks.ClassLoader_findLibrary.invoke(
 					Framework.systemClassLoader, nickname);
 		} catch (Exception e) {
 			e.printStackTrace();

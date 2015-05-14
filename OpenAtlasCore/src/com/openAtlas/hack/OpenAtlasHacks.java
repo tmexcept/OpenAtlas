@@ -43,7 +43,7 @@ import android.os.Build.VERSION;
 import android.view.ContextThemeWrapper;
 import dalvik.system.DexClassLoader;
 
-public class AtlasHacks extends HackDeclaration implements
+public class OpenAtlasHacks extends HackDeclaration implements
         AssertionFailureHandler {
     public static HackedClass<Object> ActivityThread;
     public static HackedMethod ActivityThread_currentActivityThread;
@@ -92,12 +92,12 @@ public class AtlasHacks extends HackDeclaration implements
     public static boolean sIsReflectChecked;
     private AssertionArrayException mExceptionArray;
 
-    public AtlasHacks() {
+    public OpenAtlasHacks() {
         this.mExceptionArray = null;
     }
 
     static {
-        log = LoggerFactory.getInstance(AtlasHacks.class);
+        log = LoggerFactory.getInstance(OpenAtlasHacks.class);
         sIsReflectAvailable = false;
         sIsReflectChecked = false;
         sIsIgnoreFailure = false;
@@ -109,7 +109,7 @@ public class AtlasHacks extends HackDeclaration implements
         if (sIsReflectChecked) {
             return sIsReflectAvailable;
         }
-        AtlasHacks atlasHacks = new AtlasHacks();
+        OpenAtlasHacks atlasHacks = new OpenAtlasHacks();
         try {
             Hack.setAssertionFailureHandler(atlasHacks);
             if (VERSION.SDK_INT == 11) {

@@ -51,11 +51,9 @@ public class DelegateClassLoader extends ClassLoader {
         List<Bundle> bundles = Framework.getBundles();
         if (!(bundles == null || bundles.isEmpty())) {
             for (Bundle bundle : Framework.getBundles()) {
-                if (bundle.getLocation().contains("com.ut")) {
-                    stringBuilder.append(bundle.getLocation().toUpperCase());
-                } else {
+            
                     stringBuilder.append(bundle.getLocation());
-                }
+                
                 stringBuilder.append(":");
             }
         }

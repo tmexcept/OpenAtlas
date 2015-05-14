@@ -28,30 +28,30 @@ import java.nio.channels.FileLock;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.openAtlas.runtime.RuntimeVariables;
-
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
 import android.os.Process;
 import android.util.Log;
 
-public class AtlasFileLock {
-    private static final String TAG = "AtlasFileLock";
+import com.openAtlas.runtime.RuntimeVariables;
+
+public class OpenAtlasFileLock {
+    private static final String TAG = "OpenAtlasFileLock";
     private static String processName;
-    private static AtlasFileLock singleton;
+    private static OpenAtlasFileLock singleton;
     private Map<String, FileLockCount> mRefCountMap;
 
     private class FileLockCount {
         FileLock mFileLock;
         int mRefCount;
 
-        FileLockCount(FileLock fileLock, int i) {
-            this.mFileLock = fileLock;
-            this.mRefCount = i;
+        FileLockCount(FileLock mFileLock, int mRefCount) {
+            this.mFileLock = mFileLock;
+            this.mRefCount = mRefCount;
         }
     }
 
-    public AtlasFileLock() {
+    public OpenAtlasFileLock() {
         this.mRefCountMap = new HashMap();
     }
 
@@ -68,40 +68,40 @@ public class AtlasFileLock {
         }
     }
 
-    public static AtlasFileLock getInstance() {
+    public static OpenAtlasFileLock getInstance() {
         if (singleton == null) {
-            singleton = new AtlasFileLock();
+            singleton = new OpenAtlasFileLock();
         }
         return singleton;
     }
 
-    private int RefCntInc(String str, FileLock fileLock) {
+    private int RefCntInc(String filePath, FileLock fileLock) {
         Integer valueOf;
         Integer.valueOf(0);
-        if (this.mRefCountMap.containsKey(str)) {
+        if (this.mRefCountMap.containsKey(filePath)) {
             FileLockCount fileLockCount = this.mRefCountMap
-                    .get(str);
+                    .get(filePath);
             int i = fileLockCount.mRefCount;
             fileLockCount.mRefCount = i + 1;
             valueOf = Integer.valueOf(i);
         } else {
             valueOf = Integer.valueOf(1);
-            this.mRefCountMap.put(str,
+            this.mRefCountMap.put(filePath,
                     new FileLockCount(fileLock, valueOf.intValue()));
         }
         return valueOf.intValue();
     }
 
-    private int RefCntDec(String str) {
+    private int RefCntDec(String filePath) {
         Integer valueOf = Integer.valueOf(0);
-        if (this.mRefCountMap.containsKey(str)) {
+        if (this.mRefCountMap.containsKey(filePath)) {
             FileLockCount fileLockCount = this.mRefCountMap
-                    .get(str);
+                    .get(filePath);
             int i = fileLockCount.mRefCount - 1;
             fileLockCount.mRefCount = i;
             valueOf = Integer.valueOf(i);
             if (valueOf.intValue() <= 0) {
-                this.mRefCountMap.remove(str);
+                this.mRefCountMap.remove(filePath);
             }
         }
         return valueOf.intValue();
@@ -112,7 +112,8 @@ public class AtlasFileLock {
             return false;
         }
         try {
-            FileChannel channel = new RandomAccessFile(file.getAbsolutePath(),
+            @SuppressWarnings("resource")
+			FileChannel channel = new RandomAccessFile(file.getAbsolutePath(),
                     "rw").getChannel();
             if (channel == null) {
                 return false;

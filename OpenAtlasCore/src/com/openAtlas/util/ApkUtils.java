@@ -35,7 +35,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 
 import com.openAtlas.hack.AssertionArrayException;
-import com.openAtlas.hack.AtlasHacks;
+import com.openAtlas.hack.OpenAtlasHacks;
 import com.openAtlas.log.Logger;
 import com.openAtlas.log.LoggerFactory;
 import com.openAtlas.runtime.PackageLite;
@@ -54,7 +54,7 @@ public class ApkUtils {
 
     private static boolean assertAtlasHacks() {
         try {
-            return AtlasHacks.defineAndVerify();
+            return OpenAtlasHacks.defineAndVerify();
         } catch (AssertionArrayException e) {
             e.printStackTrace();
             return false;

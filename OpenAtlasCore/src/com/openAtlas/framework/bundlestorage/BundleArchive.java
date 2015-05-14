@@ -76,33 +76,33 @@ public class BundleArchive implements Archive {
         this.currentRevision = bundleArchiveRevision;
     }
 
-    public BundleArchive(String location, File bundleDir, File file2) throws IOException {
+    public BundleArchive(String location, File bundleDir, File archiveFile) throws IOException {
         this.revisions = new TreeMap<Long, BundleArchiveRevision>();
         this.bundleDir = bundleDir;
         BundleArchiveRevision bundleArchiveRevision = new BundleArchiveRevision(
-                location, 1, new File(bundleDir, "version." + String.valueOf(1)), file2);
+                location, 1, new File(bundleDir, "version." + String.valueOf(1)), archiveFile);
         this.revisions.put(Long.valueOf(1), bundleArchiveRevision);
         this.currentRevision = bundleArchiveRevision;
     }
 
     @Override
-	public BundleArchiveRevision newRevision(String str, File file,
+	public BundleArchiveRevision newRevision(String location, File bundleDir,
             InputStream inputStream) throws IOException {
         long longValue = 1 + this.revisions.lastKey().longValue();
         BundleArchiveRevision bundleArchiveRevision = new BundleArchiveRevision(
-                str, longValue, new File(file, "version."
+                location, longValue, new File(bundleDir, "version."
                         + String.valueOf(longValue)), inputStream);
         this.revisions.put(Long.valueOf(longValue), bundleArchiveRevision);
         return bundleArchiveRevision;
     }
 
     @Override
-	public BundleArchiveRevision newRevision(String packageName, File file, File file2)
+	public BundleArchiveRevision newRevision(String packageName, File bundleDir, File archiveFile)
             throws IOException {
         long revision = 1 + this.revisions.lastKey().longValue();
         BundleArchiveRevision bundleArchiveRevision = new BundleArchiveRevision(
-                packageName, revision, new File(file, "version."
-                        + String.valueOf(revision)), file2);
+                packageName, revision, new File(bundleDir, "version."
+                        + String.valueOf(revision)), archiveFile);
         this.revisions.put(Long.valueOf(revision), bundleArchiveRevision);
         return bundleArchiveRevision;
     }
@@ -132,13 +132,13 @@ public class BundleArchive implements Archive {
     }
 
     @Override
-	public InputStream openAssetInputStream(String str) throws IOException {
-        return this.currentRevision.openAssetInputStream(str);
+	public InputStream openAssetInputStream(String name) throws IOException {
+        return this.currentRevision.openAssetInputStream(name);
     }
 
     @Override
-	public InputStream openNonAssetInputStream(String str) throws IOException {
-        return this.currentRevision.openNonAssetInputStream(str);
+	public InputStream openNonAssetInputStream(String name) throws IOException {
+        return this.currentRevision.openNonAssetInputStream(name);
     }
 
     @Override
@@ -147,19 +147,19 @@ public class BundleArchive implements Archive {
     }
 
     @Override
-	public Class<?> findClass(String str, ClassLoader classLoader)
+	public Class<?> findClass(String clazz, ClassLoader classLoader)
             throws ClassNotFoundException {
-        return this.currentRevision.findClass(str, classLoader);
+        return this.currentRevision.findClass(clazz, classLoader);
     }
 
     @Override
-	public File findLibrary(String str) {
-        return this.currentRevision.findSoLibrary(str);
+	public File findLibrary(String name) {
+        return this.currentRevision.findSoLibrary(name);
     }
 
     @Override
-	public List<URL> getResources(String str) throws IOException {
-        return this.currentRevision.getResources(str);
+	public List<URL> getResources(String name) throws IOException {
+        return this.currentRevision.getResources(name);
     }
 
     @Override
