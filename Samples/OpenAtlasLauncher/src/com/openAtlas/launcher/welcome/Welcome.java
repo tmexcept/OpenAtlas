@@ -25,13 +25,13 @@ import android.content.pm.PackageInfo;
 import android.os.Bundle;
 import android.view.Menu;
 
-import com.openAtlas.android.lifecycle.PanguActivity;
+import com.openAtlas.android.lifecycle.BaseActivity;
 import com.openAtlas.boot.Globals;
 import com.openAtlas.launcher.R;
 
 
 
-public class Welcome extends PanguActivity {
+public class Welcome extends BaseActivity {
 	WelcomeFragment mFragment;
     public static boolean isAtlasDexopted() {
         PackageInfo packageInfo = null;
