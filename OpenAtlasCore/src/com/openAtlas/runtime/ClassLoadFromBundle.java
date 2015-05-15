@@ -293,7 +293,7 @@ public class ClassLoadFromBundle {
             }
             String bundleForComponet = BundleInfoList.getInstance().getBundleNameForComponet(bundleName);
             if (TextUtils.isEmpty(bundleForComponet)) {
-               // "Failed to find the bundle in BundleInfoList for component " + str;
+               Log.e(TAG, "Failed to find the bundle in BundleInfoList for component " + bundleForComponet);
                 insertToReasonList(bundleName, "not found in BundleInfoList!");
             }
             if (sInternalBundles == null || sInternalBundles.contains(bundleForComponet)) {
