@@ -14,8 +14,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.openAtlas.framework.Atlas;
-import com.openAtlas.runtime.PackageLite;
+import com.openatlas.framework.Atlas;
+import com.openatlas.runtime.PackageLite;
 import com.openatlas.homelauncher.R;
 
 import java.util.ArrayList;

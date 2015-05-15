@@ -20,7 +20,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.Dictionary;
 
-import com.openAtlas.boot.PlatformConfigure;
+import com.openatlas.boot.PlatformConfigure;
 
 
 
