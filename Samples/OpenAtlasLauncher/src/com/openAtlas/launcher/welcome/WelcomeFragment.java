@@ -281,18 +281,6 @@ public class WelcomeFragment extends Fragment implements Callback {
 
 
 
-    private void afterTrafficPrompt() {
-        alertWelcomeTip();
-    }
-
-    private void alertWelcomeTip() {}
-
-
-
-    private void afterWelcomeTip() {
-        init();
-    }
-
     private void init() {
       
     	
@@ -320,30 +308,7 @@ public class WelcomeFragment extends Fragment implements Callback {
     	System.out.println("WelcomeFragment.gotoMainActivity()");
       //  boolean z2 = false;.//com.openatlas.homelauncher.MainActivity
         if (getActivity().getClass() == Welcome.class) {
-//            Object stringExtra = getActivity().getIntent().getStringExtra(ShopConstants.PARAM_UID);
-//            Object stringExtra2 = getActivity().getIntent().getStringExtra(Constant.S_SHOP_ID_ATTR);
-//            boolean launchToExplore = SecurityFrameListener.launchToExplore();
-//            Bundle bundle = new Bundle();
-//            if (!TextUtils.isEmpty(stringExtra)) {
-//                bundle.putString(ShopConstants.PARAM_UID, stringExtra);
-//                launchToExplore = false;
-//            }
-//            if (TextUtils.isEmpty(stringExtra2)) {
-//                z2 = launchToExplore;
-//            } else {
-//                bundle.putString(Constant.S_SHOP_ID_ATTR, stringExtra2);
-//            }
-//            bundle.putBoolean("show_welcome", z);
-//            if (z2) {
-//                Nav.from(getActivity()).withExtras(bundle).disableTransition().withFlags(67108864).toUri(NavUrls.NAV_URL_FIND);
-//            } else {
-//                Nav.from(getActivity()).withExtras(bundle).withFlags(67108864).toUri(NavUrls.NAV_URL_MAIN);
-//            }
-//            this.mHandler.sendEmptyMessageDelayed(MSG_FINISH_WELCOME, 600);
-//            if (!z) {
-//                getActivity().overridePendingTransition(a.push_left_in, a.push_left_out);
-//                a.getInstance().startCheckBootImageUpdate();
-//            }
+
         	Intent mIntent=new Intent();
     		mIntent.setClassName(getActivity(), "com.openatlas.homelauncher.MainActivity");
     		startActivity(mIntent);
@@ -351,25 +316,6 @@ public class WelcomeFragment extends Fragment implements Callback {
             getActivity().finish();
         }
     }
-
-//    private void alertAvailableSizeDialog() {
-//        if (10240 >= TaoHelper.getSystemAvailableMemorySize()) {
-//            View linearLayout = new LinearLayout(getActivity());
-//            linearLayout.setOrientation(1);
-//            linearLayout.setPadding(10, 10, 10, 10);
-//            View textView = new TextView(getActivity());
-//            textView.setTextColor(ViewCompat.MEASURED_STATE_MASK);
-//            textView.setTextSize(18.0f);
-//            textView.setText(e.wl_available_size_msg);
-//            linearLayout.addView(textView);
-//            TBDialog create = new Builder(getActivity()).setTitle(e.wl_available_size_title).setCancelable(false).setPositiveButton(e.wl_AvailableSizeDialogBottonOK, new i(this)).create();
-//            create.setOnKeyListener(new OptDexProcess(this));
-//            create.setCustomView(linearLayout);
-//            create.show();
-//            return;
-//        }
-//        alertTrafficPrompt();
-//    }
 
 
 
