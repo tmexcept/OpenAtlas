@@ -999,8 +999,8 @@ public final class Framework {
 		}
 	}
 
-	public static void deleteDirectory(File file) {
-		File[] listFiles = file.listFiles();
+	public static void deleteDirectory(File mDirectory) {
+		File[] listFiles = mDirectory.listFiles();
 		for (int i = 0; i < listFiles.length; i++) {
 			if (listFiles[i].isDirectory()) {
 				deleteDirectory(listFiles[i]);
@@ -1008,7 +1008,7 @@ public final class Framework {
 				listFiles[i].delete();
 			}
 		}
-		file.delete();
+		mDirectory.delete();
 	}
 
 	static void checkAdminPermission() {
@@ -1024,27 +1024,27 @@ public final class Framework {
 		}
 	}
 
-	static void installOrUpdate(String[] strArr, File[] fileArr) throws BundleException {
-		if (strArr == null || fileArr == null || strArr.length != fileArr.length) {
+	static void installOrUpdate(String[] locations, File[] archiveFiles) throws BundleException {
+		if (locations == null || archiveFiles == null || locations.length != archiveFiles.length) {
 			throw new IllegalArgumentException("locations and files must not be null and must be same length");
 		}
 		String valueOf = String.valueOf(System.currentTimeMillis());
 		File file = new File(new File(STORAGE_LOCATION, "wal"), valueOf);
 		file.mkdirs();
 		int i = 0;
-		while (i < strArr.length) {
-			if (!(strArr[i] == null || fileArr[i] == null)) {
+		while (i < locations.length) {
+			if (!(locations[i] == null || archiveFiles[i] == null)) {
 				try {
-					BundleLock.WriteLock(strArr[i]);
-					Bundle bundle = getBundle(strArr[i]);
+					BundleLock.WriteLock(locations[i]);
+					Bundle bundle = getBundle(locations[i]);
 					if (bundle != null) {
-						bundle.update(fileArr[i]);
+						bundle.update(archiveFiles[i]);
 					} else {
-						BundleImpl bundleImpl = new BundleImpl(new File(file, strArr[i]), strArr[i], new BundleContextImpl(), null, fileArr[i], false);
+						BundleImpl bundleImpl = new BundleImpl(new File(file, locations[i]), locations[i], new BundleContextImpl(), null, archiveFiles[i], false);
 					}
-					BundleLock.WriteUnLock(strArr[i]);
+					BundleLock.WriteUnLock(locations[i]);
 				} catch (Throwable th) {
-					BundleLock.WriteUnLock(strArr[i]);
+					BundleLock.WriteUnLock(locations[i]);
 				}
 			}
 			i++;
