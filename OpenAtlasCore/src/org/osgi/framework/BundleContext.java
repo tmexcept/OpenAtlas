@@ -20,7 +20,9 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.Dictionary;
 
-import android.provider.SyncStateContract.Constants;
+import com.openAtlas.boot.PlatformConfigure;
+
+
 
 
 
@@ -226,7 +228,7 @@ public interface BundleContext {
 	 * <p>
 	 * The listener is called if the filter criteria is met. To filter based
 	 * upon the class of the service, the filter should reference the
-	 * {@link Constants#OBJECTCLASS} property. If <code>filter</code> is
+	 * {@link OBJECTCLASS} property. If <code>filter</code> is
 	 * <code>null</code>, all services are considered to match the filter.
 	 * 
 	 * <p>
@@ -404,7 +406,7 @@ public interface BundleContext {
 	 * <code>null</code>, the service must have been registered with the
 	 * specified class name. The complete list of class names with which a
 	 * service was registered is available from the service's
-	 * {@link Constants#OBJECTCLASS objectClass} property.
+	 * {@link OBJECTCLASS objectClass} property.
 	 * <li>If the specified <code>filter</code> is not <code>null</code>, the
 	 * filter expression must match the service.
 	 * <li>If the Java Runtime Environment supports permissions, the caller must
@@ -448,10 +450,10 @@ public interface BundleContext {
 	 * specified class.
 	 * <p>
 	 * If multiple such services exist, the service with the highest ranking (as
-	 * specified in its {@link Constants#SERVICE_RANKING} property) is returned.
+	 * specified in its {@link SERVICE_RANKING} property) is returned.
 	 * <p>
 	 * If there is a tie in ranking, the service with the lowest service ID (as
-	 * specified in its {@link Constants#SERVICE_ID} property); that is, the
+	 * specified in its {@link SERVICE_ID} property); that is, the
 	 * service that was registered first is returned.
 	 * 
 	 * @param clazz The class name with which the service was registered.
@@ -637,9 +639,9 @@ public interface BundleContext {
 	 * <li>The Framework adds the following service properties to the service
 	 * properties from the specified <code>Dictionary</code> (which may be
 	 * <code>null</code>): <br/>
-	 * A property named {@link Constants#SERVICE_ID} identifying the
+	 * A property named {@link PlatformConfigure#SERVICE_ID} identifying the
 	 * registration number of the service <br/>
-	 * A property named {@link Constants#OBJECTCLASS} containing all the
+	 * A property named {@link PlatformConfigure#OBJECTCLASS} containing all the
 	 * specified classes. <br/>
 	 * Properties with these names in the specified <code>Dictionary</code> will
 	 * be ignored.
@@ -652,12 +654,12 @@ public interface BundleContext {
 	 * 
 	 * @param clazzes The class names under which the service can be located.
 	 *        The class names in this array will be stored in the service's
-	 *        properties under the key {@link Constants#OBJECTCLASS}.
+	 *        properties under the key {@link PlatformConfigure#OBJECTCLASS}.
 	 * @param service The service object or a <code>ServiceFactory</code>
 	 *        object.
 	 * @param properties The properties for this service. The keys in the
 	 *        properties object must all be <code>String</code> objects. See
-	 *        {@link Constants} for a list of standard service property keys.
+	 *        {@link PlatformConfigure} for a list of standard service property keys.
 	 *        Changes should not be made to this object after calling this
 	 *        method. To update the service's properties the
 	 *        {@link ServiceRegistration#setProperties} method must be called.
@@ -693,7 +695,7 @@ public interface BundleContext {
 	 * {@link #registerService(String[], Object, Dictionary)} and is provided as
 	 * a convenience when <code>service</code> will only be registered under a
 	 * single class name. Note that even in this case the value of the service's
-	 * {@link Constants#OBJECTCLASS} property will be an array of string, rather
+	 * {@link PlatformConfigure#OBJECTCLASS} property will be an array of string, rather
 	 * than just a single string.
 	 * 
 	 * @param clazz The class name under which the service can be located.
