@@ -29,10 +29,10 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Process;
 
-import com.openAtlas.android.initializer.AtlasInitializer;
-import com.openAtlas.android.lifecycle.AtlasApp;
-import com.openAtlas.boot.Globals;
-import com.openAtlas.boot.PlatformConfigure;
+import com.openatlas.android.initializer.AtlasInitializer;
+import com.openatlas.android.lifecycle.AtlasApp;
+import com.openatlas.boot.Globals;
+import com.openatlas.boot.PlatformConfigure;
 
 public class BootApp extends AtlasApp {
 

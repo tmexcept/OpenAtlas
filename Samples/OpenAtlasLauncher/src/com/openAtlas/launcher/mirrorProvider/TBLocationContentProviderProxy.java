@@ -25,7 +25,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 
-import com.openAtlas.boot.ProviderProxy;
+import com.openatlas.boot.ProviderProxy;
 
 public class TBLocationContentProviderProxy extends ProviderProxy {
     /**

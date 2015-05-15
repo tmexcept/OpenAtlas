@@ -24,9 +24,9 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.os.Bundle;
 
-import com.openAtlas.android.lifecycle.BaseActivity;
-import com.openAtlas.boot.Globals;
 import com.openAtlas.launcher.R;
+import com.openatlas.android.lifecycle.BaseActivity;
+import com.openatlas.boot.Globals;
 
 
 

@@ -47,9 +47,9 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AnimationUtils;
 
 import com.eftimoff.androipathview.PathView;
-import com.openAtlas.boot.Globals;
-import com.openAtlas.boot.PlatformConfigure;
 import com.openAtlas.launcher.R;
+import com.openatlas.boot.Globals;
+import com.openatlas.boot.PlatformConfigure;
 
 
 public class WelcomeFragment extends Fragment implements Callback {
