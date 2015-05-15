@@ -18,7 +18,7 @@ extern "C" {
  * Method:    dexopt
  * Signature: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
  */
-JNIEXPORT void JNICALL Java_com_openAtlas_dexopt_InitExecutor_dexopt
+JNIEXPORT void JNICALL Java_com_openatlas_dexopt_InitExecutor_dexopt
   (JNIEnv *, jclass, jstring, jstring, jstring);
 
 #ifdef __cplusplus
