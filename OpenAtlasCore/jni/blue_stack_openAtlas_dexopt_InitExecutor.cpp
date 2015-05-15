@@ -15,7 +15,7 @@ void dexopt(const char* apkPath,const char* dexPath,const char* args );
  * Method:    dexopt
  * Signature: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
  */
-JNIEXPORT void JNICALL Java_com_openAtlas_dexopt_InitExecutor_dexopt
+JNIEXPORT void JNICALL Java_com_openatlas_dexopt_InitExecutor_dexopt
 (JNIEnv *env, jclass clazz, jstring japkPtah , jstring jdexPtah, jstring jargs){
 
 	const char* apkPath = env->GetStringUTFChars(japkPtah, 0);
