@@ -18,7 +18,9 @@ package org.osgi.framework;
 
 import java.util.EventObject;
 
-import android.provider.SyncStateContract.Constants;
+
+
+
 
 
 
@@ -141,7 +143,7 @@ public class BundleEvent extends EventObject {
 	/**
 	 * The bundle will be lazily activated.
 	 * <p>
-	 * The bundle has a {@link Constants#ACTIVATION_LAZY lazy activation policy}
+	 * The bundle has a {@link CTIVATION_LAZY lazy activation policy}
 	 * and is waiting to be activated. It is now in the
 	 * {@link Bundle#STARTING STARTING} state and has a valid
 	 * <code>BundleContext</code>. This event is only delivered to

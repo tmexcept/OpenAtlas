@@ -188,7 +188,7 @@ public class InstrumentationHook extends Instrumentation {
 			}
 			try {
 				return (ActivityResult) mExecStartActivityFragment.invoke(mBase, this.who, this.contextThread, this.token,
-						this.target, this.intent, this.requestCode, null);
+						this.target, this.intent, this.requestCode);
 			} catch (IllegalArgumentException e) {
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
