@@ -5,6 +5,12 @@ OpenAtlas ,a Android Component Plugin Framework<br>The MIT License (MIT) Copyrig
 
 ### Simple Project Moved to https://github.com/bunnyblue/OpenAtlasExt
 
+### Simple Project Moved to https://github.com/bunnyblue/OpenAtlasExt
+### Contributors
+[achellies](https://github.com/achellies)<br>
+[BunnyBlue](https://github.com/bunnyblue)<br>
+[SuperSanders](https://github.com/SuperSanders)<br>
+
 ## plugin start
 download aapt from repo,and  you should use build-tool @R22,
 write your plugin as normal app, ant build  with  hacked aapt.
