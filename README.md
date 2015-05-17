@@ -1,9 +1,9 @@
 # OpenAtlas
-OpenAtlas ,a Android plugin framework，The MIT License (MIT) Copyright (c) 2015 Bunny Blue,achellies
-This is A Plugin Framework run like Taobao.
+OpenAtlas ,a Android Component Plugin Framework<br>The MIT License (MIT) Copyright (c) 2015 Bunny Blue,achellies
+
   <br>至于资源这块处理仁者见仁智者见智。代码遵循MIT License，目前使用patch aapt进行资源分区，虽然现在这个项目带有插件的名字，严格意义上说这个已经从插件里面出来了，跟系统一样管理各个组件，叫做component更合适。对于项目的分析，正在进行，有bug的话可以在issue里面提交，QQ群不太适合讨论技术。</br>
 
-
+### Simple Project Moved to https://github.com/bunnyblue/OpenAtlasExt
 
 ## plugin start
 download aapt from repo,and  you should use build-tool @R22,
