@@ -32,8 +32,8 @@ import org.json.JSONObject;
 import android.content.Context;
 
 import com.openatlas.bundleInfo.BundleInfoList;
-import com.openatlas.bundleInfo.BundleListing;
 import com.openatlas.bundleInfo.BundleInfoList.BundleInfo;
+import com.openatlas.bundleInfo.BundleListing;
 
 
 /**
@@ -87,6 +87,14 @@ public class BundleParser {
 				for (int j = 0; j < contentProviders.length(); j++) {
 					components.add(contentProviders.getString(j));
 					mComponent.getContentProviders().add(contentProviders.getString(j));
+
+				}
+				
+				JSONArray dependencys=tmp.optJSONArray("dependency");
+				for (int j = 0; j < dependencys.length(); j++) {
+					mBundleInfo.DependentBundles.add(dependencys.getString(j));
+					mComponent.getDependency().add(dependencys.getString(j));
+
 
 				}
 				mBundleInfo.Components=components;
