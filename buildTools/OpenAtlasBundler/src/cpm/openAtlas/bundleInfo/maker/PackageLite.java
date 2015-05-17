@@ -55,6 +55,7 @@ public class PackageLite {
 	public final Set<String> providers;
 	public final Set<String> receivers;
 	public final Set<String> services;
+	public final Set<String> dependency;
 	//public final Set<String> activitys;
 	public final Set<String> disableComponents;
 
@@ -70,6 +71,7 @@ public class PackageLite {
 		this.receivers = new HashSet<String>();
 		this.providers = new HashSet<String>();
 		this.services = new HashSet<String>();
+		this.dependency = new HashSet<String>();
 		this.disableComponents = new HashSet<String>();
 	}
 
@@ -397,8 +399,8 @@ public class PackageLite {
 			} else if (tagName.equals("activity-alias")) {
 			} else if (xmlPullParser.getName().equals("meta-data")) {
 
-				//				packageLite.metaData = parseMetaData(xmlPullParser,
-				//						attributeSet, packageLite.metaData);
+				parseMetaData(xmlPullParser,
+						attributeSet,packageLite);
 
 
 			} else if (tagName.equals("uses-library")) {
@@ -410,35 +412,40 @@ public class PackageLite {
 		return true;
 	}
 
-	//	private static Bundle parseMetaData(XmlPullParser xmlPullParser,
-	//			AttributeSet attributeSet, Bundle bundle)
-	//					throws XmlPullParserException, IOException {
-	//		int i = 0;
-	//		if (bundle == null) {
-	//			bundle = new Bundle();
-	//		}
-	//		String str = null;
-	//		String str2 = null;
-	//		int i2 = 0;
-	//		while (i < attributeSet.getAttributeCount()) {
-	//			String attributeName = attributeSet.getAttributeName(i);
-	//			if (attributeName.equals("name")) {
-	//				str2 = attributeSet.getAttributeValue(i);
-	//				i2++;
-	//			} else if (attributeName.equals("value")) {
-	//				str = attributeSet.getAttributeValue(i);
-	//				i2++;
-	//			}
-	//			if (i2 >= 2) {
-	//				break;
-	//			}
-	//			i++;
-	//		}
-	//		if (!(str2 == null || str == null)) {
-	//			bundle.putString(str2, str);
-	//		}
-	//		return bundle;
-	//	}
+	private static  void parseMetaData(XmlPullParser xmlPullParser,
+			AttributeSet attributeSet,PackageLite mPackageLite)
+					throws XmlPullParserException, IOException {
+		int i = 0;
+
+		String mTagValue = null;
+		String mTagName = null;
+		int i2 = 0;
+		while (i < attributeSet.getAttributeCount()) {
+			String attributeName = attributeSet.getAttributeName(i);
+			if (attributeName.equals("name")) {
+				mTagName = attributeSet.getAttributeValue(i);
+				i2++;
+			} else if (attributeName.equals("value")) {
+				mTagValue = attributeSet.getAttributeValue(i);
+				i2++;
+			}
+			if (i2 >= 2) {
+				break;
+			}
+			i++;
+		}
+		if (!(mTagName == null || mTagValue == null)) {
+			if (mTagName.equals("dependency")) {
+				String[] 	dependencys=mTagValue.split(",");
+				for (String string : dependencys) {
+					mPackageLite.dependency.add(string);
+				}
+				//	System.out.println("PackageLite.parseMetaData()"+mTagValue);
+			}
+			//bundle.putString(str2, str);
+		}
+		//return bundle;
+	}
 
 	private static String buildClassName(String str, CharSequence charSequence) {
 		if (charSequence == null || charSequence.length() <= 0) {
@@ -545,6 +552,11 @@ public class PackageLite {
 			providersArray.put(name);
 		}
 		jsonObject.put("contentProviders", providersArray);
+		JSONArray dependencyArray=new JSONArray();
+		for (String name:dependency) {
+			dependencyArray.put(name);
+		}
+		jsonObject.put("dependency", dependencyArray);
 		jsonObject.put("md5", apkMD5);
 		jsonObject.put("size", size);
 		jsonObject.put("hasSO", hasSO);
