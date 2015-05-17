@@ -44,7 +44,7 @@ public static BundleListing		 getInstance() {
         private String desc;
         private String mUrl;
         private String md5;
-        private List<String> mdependency;
+        private List<String> mdependency=new ArrayList<String>();
         private List<String> mActivitiyList=new ArrayList<String>();
         private List<String> mServiceList=new ArrayList<String>();
         private List<String> msetReceiverList=new ArrayList<String>();
