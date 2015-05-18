@@ -32,7 +32,7 @@ public class GameProviderProxy extends ProviderProxy {
 	 * @param mTargetProvider
 	 */
 	public GameProviderProxy() {
-		super("com.openatlas.android.appcenter.AppProvider");
+		super("com.openatlas.android.game2.GameProvider");
 		// TODO Auto-generated constructor stub
 	}
 

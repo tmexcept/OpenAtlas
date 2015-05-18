@@ -21,26 +21,27 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEAL
 package com.openatlas.runtime;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleException;
 
 import android.content.pm.PackageInfo;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.openatlas.boot.Globals;
 import com.openatlas.boot.PlatformConfigure;
 import com.openatlas.bundleInfo.BundleInfoList;
 import com.openatlas.framework.Atlas;
 import com.openatlas.framework.BundleImpl;
 import com.openatlas.framework.Framework;
-import com.openatlas.framework.bundlestorage.BundleArchiveRevision.DexLoadException;
 
 public class ClassLoadFromBundle {
     private static final String TAG = "ClassLoadFromBundle";
@@ -186,10 +187,10 @@ public class ClassLoadFromBundle {
         return cls;
     }
     public static void checkInstallBundleAndDependency(String location) {
-        List dependencyForBundle = BundleInfoList.getInstance().getDependencyForBundle(location);
+        List<String> dependencyForBundle = BundleInfoList.getInstance().getDependencyForBundle(location);
         if (dependencyForBundle != null && dependencyForBundle.size() > 0) {
             for (int i = 0; i < dependencyForBundle.size(); i++) {
-                checkInstallBundleAndDependency((String) dependencyForBundle.get(i));
+                checkInstallBundleAndDependency(dependencyForBundle.get(i));
             }
         }
         if (Atlas.getInstance().getBundle(location) == null) {
@@ -200,7 +201,35 @@ public class ClassLoadFromBundle {
                 } catch (Throwable e) {
                     throw new RuntimeException("failed to install bundle " + location, e);
                 }
-            }
+            }else {//TODO  分离此部分代码 
+            	Log.e(TAG, "file  not found " + file.getAbsolutePath()+" try install from Host");
+            	ZipFile zipFile=null;
+				try {
+					String archiveName="lib/armeabi/lib"+location.replaceAll("\\.", "_")+".so";
+					zipFile = new ZipFile(Globals.getApplication().getApplicationInfo().sourceDir);
+					  Atlas.getInstance().installBundle(location, zipFile.getInputStream(zipFile.getEntry(archiveName)));
+				} catch (IOException e) {
+			
+					e.printStackTrace();
+				} catch (BundleException e) {
+				
+					e.printStackTrace();
+				}finally{
+					if (zipFile!=null) {
+						try {
+							zipFile.close();
+						} catch (IOException e) {
+						
+							e.printStackTrace();
+						}
+					}
+					
+				}
+            	 
+            	
+            	
+            	
+			}
         }
     }
     public static void checkInstallBundleIfNeed(String bundleName) {
