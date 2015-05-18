@@ -50,10 +50,10 @@ import com.openatlas.boot.PlatformConfigure;
 import com.openatlas.framework.BundleClassLoader;
 import com.openatlas.framework.Framework;
 import com.openatlas.hack.Hack;
-import com.openatlas.hack.OpenAtlasHacks;
+import com.openatlas.hack.Hack.HackDeclaration.HackAssertionException;
 import com.openatlas.hack.Hack.HackedClass;
 import com.openatlas.hack.Hack.HackedMethod;
-import com.openatlas.hack.Hack.HackDeclaration.HackAssertionException;
+import com.openatlas.hack.OpenAtlasHacks;
 import com.openatlas.log.Logger;
 import com.openatlas.log.LoggerFactory;
 import com.openatlas.util.StringUtils;
@@ -322,79 +322,89 @@ public class InstrumentationHook extends Instrumentation {
 				fragment, intent, requestCode, bundle));
 	}
 
-	private ActivityResult execStartActivityInternal(Context context, Intent intent,
-			ExecStartActivityCallback execStartActivityCallback) {
-		String packageName;
-		@SuppressWarnings("unused")
-		String tmpString = context.getPackageName();
-		String className;
+
+
+	private ActivityResult execStartActivityInternal(Context context, Intent intent, ExecStartActivityCallback execStartActivityCallback) {
+		String packageName = null;
+		String className = null;
+		ActivityResult activityResult = null;
 		if (intent.getComponent() != null) {
 			packageName = intent.getComponent().getPackageName();
 			className = intent.getComponent().getClassName();
 		} else {
 			ResolveInfo resolveActivity = context.getPackageManager().resolveActivity(intent, 0);
 			if (resolveActivity == null || resolveActivity.activityInfo == null) {
-				className = null;
-				packageName = null;
+				Object obj = activityResult;
+				Object obj2 = activityResult;
 			} else {
 				packageName = resolveActivity.activityInfo.packageName;
 				className = resolveActivity.activityInfo.name;
 			}
 		}
-		if (!StringUtils.equals(context.getPackageName(), packageName)) {
-			return execStartActivityCallback.execStartActivity();
-		}
-		if (DelegateComponent.locateComponent(className) != null) {
-			return execStartActivityCallback.execStartActivity();
+		if (className == null) {
+			try {
+				return execStartActivityCallback.execStartActivity();
+			} catch (Exception e) {
+				log.error("Failed to start Activity for " + packageName + " " + className + e);
+				return activityResult;
+			}
 		}
 		try {
-			if (ClassLoadFromBundle.loadFromUninstalledBundles(className) != null) {
+			ClassLoadFromBundle.checkInstallBundleIfNeed(className);
+			if (!StringUtils.equals(context.getPackageName(), packageName)) {
 				return execStartActivityCallback.execStartActivity();
 			}
-		} catch (ClassNotFoundException e) {
-			log.info("Can't find class " + className + " in all bundles.");
-		}
-		try {
-			if (Framework.getSystemClassLoader().loadClass(className) != null) {
+			if (DelegateComponent.locateComponent(className) != null) {
 				return execStartActivityCallback.execStartActivity();
 			}
-			return null;
-		} catch (ClassNotFoundException e2) {
-			log.error("Can't find class " + className);
-			if (Framework.getClassNotFoundCallback() == null) {
-				return null;
+			try {
+				if (Framework.getSystemClassLoader().loadClass(className) != null) {
+					return execStartActivityCallback.execStartActivity();
+				}
+				return activityResult;
+			} catch (ClassNotFoundException e2) {
+				log.error("Can't find class " + className);
+				fallBackToClassNotFoundCallback(context, intent, className);
+				return activityResult;
 			}
-			if (intent.getComponent() == null && !TextUtils.isEmpty(className)) {
-				intent.setClassName(context, className);
-			}
-			if (intent.getComponent() == null) {
-				return null;
-			}
-			Framework.getClassNotFoundCallback().returnIntent(intent);
-			return null;
+		} catch (Exception e3) {
+			log.error("Failed to load bundle for " + className + e3);
+			fallBackToClassNotFoundCallback(context, intent, className);
+			return activityResult;
 		}
 	}
-    /**
-     * Perform instantiation of an {@link Activity} object.  This method is intended for use with
-     * unit tests, such as android.test.ActivityUnitTestCase.  The activity will be useable
-     * locally but will be missing some of the linkages necessary for use within the sytem.
-     * 
-     * @param clazz The Class of the desired Activity
-     * @param context The base context for the activity to use
-     * @param token The token for this activity to communicate with
-     * @param application The application object (if any)
-     * @param intent The intent that started this Activity
-     * @param info ActivityInfo from the manifest
-     * @param title The title, typically retrieved from the ActivityInfo record
-     * @param parent The parent Activity (if any)
-     * @param id The embedded Id (if any)
-     * @param lastNonConfigurationInstance Arbitrary object that will be
-     * available via {@link Activity#getLastNonConfigurationInstance()
-     * Activity.getLastNonConfigurationInstance()}.
-     * @return Returns the instantiated activity
-     * @throws InstantiationException
-     * @throws IllegalAccessException
-     */
+
+	private void fallBackToClassNotFoundCallback(Context context, Intent intent, String str) {
+		if (Framework.getClassNotFoundCallback() != null) {
+			if (intent.getComponent() == null && !TextUtils.isEmpty(str)) {
+				intent.setClassName(context, str);
+			}
+			if (intent.getComponent() != null) {
+				Framework.getClassNotFoundCallback().returnIntent(intent);
+			}
+		}
+	}
+	/**
+	 * Perform instantiation of an {@link Activity} object.  This method is intended for use with
+	 * unit tests, such as android.test.ActivityUnitTestCase.  The activity will be useable
+	 * locally but will be missing some of the linkages necessary for use within the sytem.
+	 * 
+	 * @param clazz The Class of the desired Activity
+	 * @param context The base context for the activity to use
+	 * @param token The token for this activity to communicate with
+	 * @param application The application object (if any)
+	 * @param intent The intent that started this Activity
+	 * @param info ActivityInfo from the manifest
+	 * @param title The title, typically retrieved from the ActivityInfo record
+	 * @param parent The parent Activity (if any)
+	 * @param id The embedded Id (if any)
+	 * @param lastNonConfigurationInstance Arbitrary object that will be
+	 * available via {@link Activity#getLastNonConfigurationInstance()
+	 * Activity.getLastNonConfigurationInstance()}.
+	 * @return Returns the instantiated activity
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 */
 	@Override
 	public Activity newActivity(Class<?> clazz, Context context, IBinder token, Application application,
 			Intent intent, ActivityInfo activityInfo, CharSequence title, Activity parent, String id,
@@ -407,23 +417,23 @@ public class InstrumentationHook extends Instrumentation {
 		}
 		return newActivity;
 	}
-    /**
-     * Perform instantiation of the process's {@link Activity} object.  The
-     * default implementation provides the normal system behavior.
-     * 
-     * @param cl The ClassLoader with which to instantiate the object.
-     * @param className The name of the class implementing the Activity
-     *                  object.
-     * @param intent The Intent object that specified the activity class being
-     *               instantiated.
-     * 
-     * @return The newly instantiated Activity object.
-     */
+	/**
+	 * Perform instantiation of the process's {@link Activity} object.  The
+	 * default implementation provides the normal system behavior.
+	 * 
+	 * @param cl The ClassLoader with which to instantiate the object.
+	 * @param className The name of the class implementing the Activity
+	 *                  object.
+	 * @param intent The Intent object that specified the activity class being
+	 *               instantiated.
+	 * 
+	 * @return The newly instantiated Activity object.
+	 */
 	@Override
 	public Activity newActivity(ClassLoader cl, String className, Intent intent) throws InstantiationException,
-			IllegalAccessException, ClassNotFoundException {
+	IllegalAccessException, ClassNotFoundException {
 		Activity newActivity;
-	String defaultBootActivityName = null;
+		String defaultBootActivityName = null;
 		try {
 			newActivity = this.mBase.newActivity(cl, className, intent);
 		} catch (ClassNotFoundException e) {
@@ -441,7 +451,7 @@ public class InstrumentationHook extends Instrumentation {
 			}
 			@SuppressWarnings("deprecation")
 			List<RunningTaskInfo> runningTasks = ((ActivityManager) this.context.getSystemService(Context.ACTIVITY_SERVICE))
-					.getRunningTasks(1);
+			.getRunningTasks(1);
 			if (runningTasks != null && runningTasks.size() > 0
 					&& runningTasks.get(0).numActivities > 1
 					&& Framework.getClassNotFoundCallback() != null) {
@@ -459,14 +469,14 @@ public class InstrumentationHook extends Instrumentation {
 		}
 		return newActivity;
 	}
-    /**
-     * Perform calling of an activity's {@link Activity#onCreate}
-     * method.  The default implementation simply calls through to that method.
-     * 
-     * @param activity The activity being created.
-     * @param icicle The previously frozen state (or null) to pass through to
-     *               onCreate().
-     */
+	/**
+	 * Perform calling of an activity's {@link Activity#onCreate}
+	 * method.  The default implementation simply calls through to that method.
+	 * 
+	 * @param activity The activity being created.
+	 * @param icicle The previously frozen state (or null) to pass through to
+	 *               onCreate().
+	 */
 	@Override
 	public void callActivityOnCreate(Activity activity, Bundle icicle) {
 		if (RuntimeVariables.androidApplication.getPackageName().equals(activity.getPackageName())) {
@@ -583,15 +593,15 @@ public class InstrumentationHook extends Instrumentation {
 	public void stopProfiling() {
 		this.mBase.stopProfiling();
 	}
-    
-    /**
-     * Force the global system in or out of touch mode.  This can be used if
-     * your instrumentation relies on the UI being in one more or the other
-     * when it starts.
-     * 
-     * @param inTouch Set to true to be in touch mode, false to be in
-     * focus mode.
-     */
+
+	/**
+	 * Force the global system in or out of touch mode.  This can be used if
+	 * your instrumentation relies on the UI being in one more or the other
+	 * when it starts.
+	 * 
+	 * @param inTouch Set to true to be in touch mode, false to be in
+	 * focus mode.
+	 */
 	@Override
 	public void setInTouchMode(boolean inTouch) {
 		this.mBase.setInTouchMode(inTouch);
@@ -621,60 +631,60 @@ public class InstrumentationHook extends Instrumentation {
 	public void addMonitor(ActivityMonitor monitor) {
 		this.mBase.addMonitor(monitor);
 	}
-    /**
-     * A convenience wrapper for {@link #addMonitor(ActivityMonitor)} that 
-     * creates an intent filter matching {@link ActivityMonitor} for you and 
-     * returns it. 
-     *  
-     * @param filter The set of intents this monitor is responsible for.
-     * @param result A canned result to return if the monitor is hit; can 
-     *               be null.
-     * @param block Controls whether the monitor should block the activity 
-     *              start (returning its canned result) or let the call
-     *              proceed.
-     * 
-     * @return The newly created and added activity monitor. 
-     *  
-     * @see #addMonitor(ActivityMonitor) 
-     * @see #checkMonitorHit 
-     */
+	/**
+	 * A convenience wrapper for {@link #addMonitor(ActivityMonitor)} that 
+	 * creates an intent filter matching {@link ActivityMonitor} for you and 
+	 * returns it. 
+	 *  
+	 * @param filter The set of intents this monitor is responsible for.
+	 * @param result A canned result to return if the monitor is hit; can 
+	 *               be null.
+	 * @param block Controls whether the monitor should block the activity 
+	 *              start (returning its canned result) or let the call
+	 *              proceed.
+	 * 
+	 * @return The newly created and added activity monitor. 
+	 *  
+	 * @see #addMonitor(ActivityMonitor) 
+	 * @see #checkMonitorHit 
+	 */
 	@Override
 	public ActivityMonitor addMonitor(IntentFilter filter, ActivityResult result, boolean block) {
 		return this.mBase.addMonitor(filter, result, block);
 	}
-    /**
-     * A convenience wrapper for {@link #addMonitor(ActivityMonitor)} that 
-     * creates a class matching {@link ActivityMonitor} for you and returns it.
-     *  
-     * @param cls The activity class this monitor is responsible for.
-     * @param result A canned result to return if the monitor is hit; can 
-     *               be null.
-     * @param block Controls whether the monitor should block the activity 
-     *              start (returning its canned result) or let the call
-     *              proceed.
-     * 
-     * @return The newly created and added activity monitor. 
-     *  
-     * @see #addMonitor(ActivityMonitor) 
-     * @see #checkMonitorHit 
-     */
+	/**
+	 * A convenience wrapper for {@link #addMonitor(ActivityMonitor)} that 
+	 * creates a class matching {@link ActivityMonitor} for you and returns it.
+	 *  
+	 * @param cls The activity class this monitor is responsible for.
+	 * @param result A canned result to return if the monitor is hit; can 
+	 *               be null.
+	 * @param block Controls whether the monitor should block the activity 
+	 *              start (returning its canned result) or let the call
+	 *              proceed.
+	 * 
+	 * @return The newly created and added activity monitor. 
+	 *  
+	 * @see #addMonitor(ActivityMonitor) 
+	 * @see #checkMonitorHit 
+	 */
 	@Override
 	public ActivityMonitor addMonitor(String cls, ActivityResult result, boolean block) {
 		return this.mBase.addMonitor(cls, result, block);
 	}
-    /**
-     * Test whether an existing {@link ActivityMonitor} has been hit.  If the 
-     * monitor has been hit at least <var>minHits</var> times, then it will be 
-     * removed from the activity monitor list and true returned.  Otherwise it 
-     * is left as-is and false is returned. 
-     *  
-     * @param monitor The ActivityMonitor to check.
-     * @param minHits The minimum number of hits required.
-     * 
-     * @return True if the hit count has been reached, else false. 
-     *  
-     * @see #addMonitor 
-     */
+	/**
+	 * Test whether an existing {@link ActivityMonitor} has been hit.  If the 
+	 * monitor has been hit at least <var>minHits</var> times, then it will be 
+	 * removed from the activity monitor list and true returned.  Otherwise it 
+	 * is left as-is and false is returned. 
+	 *  
+	 * @param monitor The ActivityMonitor to check.
+	 * @param minHits The minimum number of hits required.
+	 * 
+	 * @return True if the hit count has been reached, else false. 
+	 *  
+	 * @see #addMonitor 
+	 */
 	@Override
 	public boolean checkMonitorHit(ActivityMonitor monitor, int minHits) {
 		return this.mBase.checkMonitorHit(monitor, minHits);
@@ -684,17 +694,17 @@ public class InstrumentationHook extends Instrumentation {
 	public Activity waitForMonitor(ActivityMonitor monitor) {
 		return this.mBase.waitForMonitor(monitor);
 	}
-    /**
-     * Wait for an existing {@link ActivityMonitor} to be hit till the timeout
-     * expires.  Once the monitor has been hit, it is removed from the activity 
-     * monitor list and the first created Activity object that matched it is 
-     * returned.  If the timeout expires, a null object is returned. 
-     *
-     * @param monitor The ActivityMonitor to wait for.
-     * @param timeOut The timeout value in secs.
-     *
-     * @return The Activity object that matched the monitor.
-     */
+	/**
+	 * Wait for an existing {@link ActivityMonitor} to be hit till the timeout
+	 * expires.  Once the monitor has been hit, it is removed from the activity 
+	 * monitor list and the first created Activity object that matched it is 
+	 * returned.  If the timeout expires, a null object is returned. 
+	 *
+	 * @param monitor The ActivityMonitor to wait for.
+	 * @param timeOut The timeout value in secs.
+	 *
+	 * @return The Activity object that matched the monitor.
+	 */
 	@Override
 	public Activity waitForMonitorWithTimeout(ActivityMonitor monitor, long timeOut) {
 		return this.mBase.waitForMonitorWithTimeout(monitor, timeOut);
@@ -704,39 +714,39 @@ public class InstrumentationHook extends Instrumentation {
 	public void removeMonitor(ActivityMonitor monitor) {
 		this.mBase.removeMonitor(monitor);
 	}
-    /**
-     * Execute a particular menu item.
-     * 
-     * @param targetActivity The activity in question.
-     * @param id The identifier associated with the menu item.
-     * @param flag Additional flags, if any.
-     * @return Whether the invocation was successful (for example, it could be
-     *         false if item is disabled).
-     */
+	/**
+	 * Execute a particular menu item.
+	 * 
+	 * @param targetActivity The activity in question.
+	 * @param id The identifier associated with the menu item.
+	 * @param flag Additional flags, if any.
+	 * @return Whether the invocation was successful (for example, it could be
+	 *         false if item is disabled).
+	 */
 	@Override
 	public boolean invokeMenuActionSync(Activity targetActivity, int id, int flag) {
 		return this.mBase.invokeMenuActionSync(targetActivity, id, flag);
 	}
-    /**
-     * Show the context menu for the currently focused view and executes a
-     * particular context menu item.
-     * 
-     * @param targetActivity The activity in question.
-     * @param id The identifier associated with the context menu item.
-     * @param flag Additional flags, if any.
-     * @return Whether the invocation was successful (for example, it could be
-     *         false if item is disabled).
-     */
+	/**
+	 * Show the context menu for the currently focused view and executes a
+	 * particular context menu item.
+	 * 
+	 * @param targetActivity The activity in question.
+	 * @param id The identifier associated with the context menu item.
+	 * @param flag Additional flags, if any.
+	 * @return Whether the invocation was successful (for example, it could be
+	 *         false if item is disabled).
+	 */
 	@Override
 	public boolean invokeContextMenuAction(Activity targetActivity, int id, int flag) {
 		return this.mBase.invokeContextMenuAction(targetActivity, id, flag);
 	}
-    /**
-     * Sends the key events corresponding to the text to the app being
-     * instrumented.
-     * 
-     * @param text The text to be sent. 
-     */
+	/**
+	 * Sends the key events corresponding to the text to the app being
+	 * instrumented.
+	 * 
+	 * @param text The text to be sent. 
+	 */
 	@Override
 	public void sendStringSync(String text) {
 		this.mBase.sendStringSync(text);
@@ -746,23 +756,23 @@ public class InstrumentationHook extends Instrumentation {
 	public void sendKeySync(KeyEvent keyEvent) {
 		this.mBase.sendKeySync(keyEvent);
 	}
-    /**
-     * Sends an up and down key event sync to the currently focused window.
-     * 
-     * @param key The integer keycode for the event.
-     */
+	/**
+	 * Sends an up and down key event sync to the currently focused window.
+	 * 
+	 * @param key The integer keycode for the event.
+	 */
 	@Override
 	public void sendKeyDownUpSync(int key) {
 		this.mBase.sendKeyDownUpSync(key);
 	}
-    /**
-     * Higher-level method for sending both the down and up key events for a
-     * particular character key code.  Equivalent to creating both KeyEvent
-     * objects by hand and calling {@link #sendKeySync}.  The event appears
-     * as if it came from keyboard 0, the built in one.
-     * 
-     * @param keyCode The key code of the character to send.
-     */
+	/**
+	 * Higher-level method for sending both the down and up key events for a
+	 * particular character key code.  Equivalent to creating both KeyEvent
+	 * objects by hand and calling {@link #sendKeySync}.  The event appears
+	 * as if it came from keyboard 0, the built in one.
+	 * 
+	 * @param keyCode The key code of the character to send.
+	 */
 	@Override
 	public void sendCharacterSync(int keyCode) {
 		this.mBase.sendCharacterSync(keyCode);
@@ -777,17 +787,17 @@ public class InstrumentationHook extends Instrumentation {
 	public void sendTrackballEventSync(MotionEvent motionEvent) {
 		this.mBase.sendTrackballEventSync(motionEvent);
 	}
-    /**
-     * Perform instantiation of the process's {@link Application} object.  The
-     * default implementation provides the normal system behavior.
-     * 
-     * @param cl The ClassLoader with which to instantiate the object.
-     * @param className The name of the class implementing the Application
-     *                  object.
-     * @param context The context to initialize the application with
-     * 
-     * @return The newly instantiated Application object.
-     */
+	/**
+	 * Perform instantiation of the process's {@link Application} object.  The
+	 * default implementation provides the normal system behavior.
+	 * 
+	 * @param cl The ClassLoader with which to instantiate the object.
+	 * @param className The name of the class implementing the Application
+	 *                  object.
+	 * @param context The context to initialize the application with
+	 * 
+	 * @return The newly instantiated Application object.
+	 */
 	@Override
 	public Application newApplication(ClassLoader classLoader, String className, Context context)
 			throws InstantiationException, IllegalAccessException, ClassNotFoundException {
