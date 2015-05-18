@@ -27,12 +27,12 @@ import android.net.Uri;
 
 import com.openatlas.boot.ProviderProxy;
 
-public class TBLocationContentProviderProxy extends ProviderProxy {
+public class AppProviderProxy extends ProviderProxy {
     /**
 	 * @param mTargetProvider
 	 */
-	public TBLocationContentProviderProxy() {
-		super("com.taobao.android.gamecenter.AppProvider");
+	public AppProviderProxy() {
+		super("com.openatlas.android.appcenter.AppProvider");
 		// TODO Auto-generated constructor stub
 	}
 
