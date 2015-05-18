@@ -58,8 +58,8 @@ public class PlatformConfigure {
 
 	static {
 		DELAY = new String[]{"com.openatlas.qrcode"};
-		AUTO = new String[]{"com.openatlas.homelauncher","com.openatlas.qrcode","com.taobao.android.game20x7a","com.taobao.universalimageloader.sample0x6a"};
-		STORE = new String[]{"com.taobao.android.game20x7a","com.taobao.android.gamecenter","com.taobao.universalimageloader.sample0x6a"};
+		AUTO = new String[]{"com.openatlas.homelauncher","com.openatlas.qrcode","com.openatlas.android.game2","com.taobao.universalimageloader.sample0x6a"};
+		STORE = new String[]{"com.openatlas.android.appcenter","com.taobao.universalimageloader.sample0x6a"};
 	}
 	
 	
