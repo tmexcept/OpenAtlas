@@ -38,6 +38,7 @@ import android.os.Build.VERSION;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Process;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -48,9 +49,10 @@ import com.openatlas.util.PackageValidate;
 import com.openatlas.util.StringUtils;
 
 
-public class SecurityFrameListener implements FrameworkListener {//PUT Your Public Key here
-	public static final String PUBLIC_KEY =null;//disable PUBLIC_KEY CHECK // "30819f300d06092a864886f70d010101050003818d003081890281810092392b1b4c16e6a29a7b37a3c8fb9829be812b07019d692f8160c40f4aed8cce72387052a372df984cf0cd7b8aee1c52984864caf68c7a3b85006621fb085e44e7573f952698cf9e052af1ae4627e7986b475f7ed5d277446323e716fe664a3f86546656520be2900199382f64df70ac8b10c5e45585cf51a66e470e670e5ddf0203010001";
-	//  public static final String PUBLIC_K2Y = "30819f300d06092a864886f70d010101050003818d003081890281810092392b1b4c16e6a29a7b37a3c8fb9829be812b07019d692f8160c40f4aed8cce72387052a372df984cf0cd7b8aee1c52984864caf68c7a3b85006621fb085e44e7573f952698cf9e052af1ae4627e7986b475f7ed5d277446323e716fe664a3f86546656520be2900199382f64df70ac8b10c5e45585cf51a66e470e670e5ddf0203010001";
+public class SecurityFrameListener implements FrameworkListener {
+	//PUT Your Public Key here
+	public static final String PUBLIC_KEY =""; 
+
 	ProcessHandler mHandler;
 
 
@@ -72,7 +74,7 @@ public class SecurityFrameListener implements FrameworkListener {//PUT Your Publ
 		}
 		/******验证签名和公钥是否有效*******/
 		protected Boolean process(String... args) {
-			if (SecurityFrameListener.PUBLIC_KEY == null || SecurityFrameListener.PUBLIC_KEY.isEmpty()) {
+			if (TextUtils.isEmpty(SecurityFrameListener.PUBLIC_KEY)) {
 				return Boolean.valueOf(true);
 			}
 			try {
