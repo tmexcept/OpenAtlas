@@ -18,48 +18,29 @@ PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS 
 FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
 ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 @author BunnyBlue
- * **/
+* **/
 package cpm.openAtlas.bundleInfo.maker;
 
 import java.io.File;
-import java.io.IOException;
-
-import org.json.JSONArray;
-import org.json.JSONException;
+import java.util.Collection;
 
 /**
  * @author BunnyBlue
  *
  */
-public class BundleMakeBooter {
-	public static void main(String[] args) throws JSONException, IOException {
-		if(args.length!=2){
-			throw new  IOException(" args to less , usage plugin_dir out_put_json_path");
-			
-			
-		}
+public class ApkPreProcess {
+	public static void preProcess(String mDir) {
+	Collection<File>  apkFiles=	org.apache.commons.io.FileUtils.listFiles(new File(mDir), new String[]{"apk"}	, true);
 		
-		String path=args[0];
-		ApkPreProcess.preProcess(path);
-		String targetFile=args[1];
-		File dirFile=new File(path);
-		JSONArray jsonArray=new JSONArray();
-		File[]files=	dirFile.listFiles();
-		for (File file : files) {
-			if (file.getAbsolutePath().contains("libcom")) {
-				PackageLite packageLit=PackageLite.parse(file.getAbsolutePath());
-				jsonArray.put(packageLit.getBundleInfo());
-//				try {
-//					 packageLit.getBundleInfo().toString();
-//				} catch (JSONException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-			}
-
+		for (File file : apkFiles) {
+		String pkgName=	PackageLite.parse(file.getAbsolutePath()).packageName;
+		
+		pkgName="lib"+pkgName.replaceAll("\\.", "_")+".so";
+		File  targetFile=new File(mDir+File.separator+pkgName);
+		targetFile.delete();
+		file.renameTo(targetFile);
+		System.out.println("ApkPreProcess.preProcess() processed "+pkgName);
 		}
-		org.apache.commons.io.FileUtils.writeStringToFile(new File(targetFile), jsonArray.toString());
-		System.out.println(jsonArray.toString());
 	}
 
 }
