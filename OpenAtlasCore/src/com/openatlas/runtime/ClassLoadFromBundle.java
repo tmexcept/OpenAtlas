@@ -105,89 +105,6 @@ public class ClassLoadFromBundle {
         }
     }
 
-    public static Class<?> loadFromUninstalledBundles(String componet)
-            throws ClassNotFoundException {
-        if (sInternalBundles == null) {
-            resolveInternalBundles();
-        }
-        BundleInfoList instance = BundleInfoList.getInstance();
-        String bundleForComponet = instance.getBundleNameForComponet(componet);
-        if (bundleForComponet == null) {
-            Log.e("me",
-                    "Failed to find the bundle in BundleInfoList for component "
-                            + componet);
-            insertToReasonList(componet, "not found in BundleInfoList!");
-            return null;
-        } else if (sInternalBundles != null
-                && !sInternalBundles.contains(bundleForComponet)) {
-            return null;
-        } else {
-            Bundle installBundle;
-            List<String> linkedList = new LinkedList<String>();
-            if (instance.getDependencyForBundle(bundleForComponet) != null) {
-                linkedList.addAll(instance
-                        .getDependencyForBundle(bundleForComponet));
-            }
-            linkedList.add(bundleForComponet);
-            for (String location : linkedList) {
-                File apkPath = new File(
-                        new File(
-                                Framework
-                                        .getProperty(PlatformConfigure.ATLAS_APP_DIRECTORY),
-                                "lib"), "lib".concat(location.replace(".", "_"))
-                                .concat(".so"));
-                if (Atlas.getInstance().getBundle(location) == null) {
-                    try {
-                        if (!apkPath.exists()) {
-                            return null;
-                        }
-                        installBundle = Atlas.getInstance().installBundle(location,
-                                apkPath);
-                        if (installBundle != null) {
-                            Log.e("me", "Succeed to install bundle " + location);
-                            try {
-                                long currentTimeMillis = System
-                                        .currentTimeMillis();
-                                ((BundleImpl) installBundle).optDexFile();
-                                Log.e("me",
-                                        "Succeed to dexopt bundle "
-                                                + location
-                                                + " cost time = "
-                                                + (System.currentTimeMillis() - currentTimeMillis)
-                                                + " ms");
-                            } catch (Throwable e) {
-                                Log.e(TAG, "Error while dexopt >>>", e);
-                                insertToReasonList(componet, "dexopt failed!");
-                                if (!(e instanceof DexLoadException)) {
-                                    return null;
-                                }
-                                throw ((RuntimeException) e);
-                            }
-                        }
-                    } catch (Throwable e2) {
-                        Log.e(TAG, "Could not install bundle.", e2);
-                        insertToReasonList(componet, "bundle installation failed");
-                        return null;
-                    }
-                }
-            }
-            installBundle = Atlas.getInstance().getBundle(bundleForComponet);
-            ClassLoader classLoader = ((BundleImpl) installBundle)
-                    .getClassLoader();
-            if (classLoader != null) {
-                try {
-                    Class<?> loadClass = classLoader.loadClass(componet);
-                    if (loadClass != null) {
-                        return loadClass;
-                    }
-                } catch (ClassNotFoundException e3) {
-                }
-            }
-            throw new ClassNotFoundException("Can't find class " + componet
-                    + " in BundleClassLoader: " + installBundle.getLocation());
-        }
-    }
-
     static Class<?> loadFromInstalledBundles(String componet)
             throws ClassNotFoundException {
         BundleImpl bundleImpl;
@@ -268,20 +185,20 @@ public class ClassLoadFromBundle {
         }
         return cls;
     }
-    public static void checkInstallBundleAndDependency(String bundleName) {
-        List dependencyForBundle = BundleInfoList.getInstance().getDependencyForBundle(bundleName);
+    public static void checkInstallBundleAndDependency(String location) {
+        List dependencyForBundle = BundleInfoList.getInstance().getDependencyForBundle(location);
         if (dependencyForBundle != null && dependencyForBundle.size() > 0) {
             for (int i = 0; i < dependencyForBundle.size(); i++) {
                 checkInstallBundleAndDependency((String) dependencyForBundle.get(i));
             }
         }
-        if (Atlas.getInstance().getBundle(bundleName) == null) {
-            File file = new File(new File(Framework.getProperty(PlatformConfigure.ATLAS_APP_DIRECTORY), "lib"), "lib".concat(bundleName.replace(".", "_")).concat(".so"));
+        if (Atlas.getInstance().getBundle(location) == null) {
+            File file = new File(new File(Framework.getProperty(PlatformConfigure.ATLAS_APP_DIRECTORY), "lib"), "lib".concat(location.replace(".", "_")).concat(".so"));
             if (file.exists()) {
                 try {
-                    Atlas.getInstance().installBundle(bundleName, file);
+                    Atlas.getInstance().installBundle(location, file);
                 } catch (Throwable e) {
-                    throw new RuntimeException("failed to install bundle " + bundleName, e);
+                    throw new RuntimeException("failed to install bundle " + location, e);
                 }
             }
         }
@@ -297,7 +214,7 @@ public class ClassLoadFromBundle {
                 insertToReasonList(bundleName, "not found in BundleInfoList!");
             }
             if (sInternalBundles == null || sInternalBundles.contains(bundleForComponet)) {
-                checkInstallBundleAndDependency(bundleForComponet);
+            	checkInstallBundleAndDependency(bundleForComponet);
                 return;
             }
         }
