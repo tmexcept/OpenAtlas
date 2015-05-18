@@ -18,48 +18,30 @@ PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS 
 FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
 ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 @author BunnyBlue
- * **/
-package cpm.openAtlas.bundleInfo.maker;
-
-import java.io.File;
-import java.io.IOException;
-
-import org.json.JSONArray;
-import org.json.JSONException;
+* **/
+package com.openAtlas.bundleInfo.maker;
 
 /**
  * @author BunnyBlue
  *
  */
-public class BundleMakeBooter {
-	public static void main(String[] args) throws JSONException, IOException {
-		if(args.length!=2){
-			throw new  IOException(" args to less , usage plugin_dir out_put_json_path");
-			
-			
-		}
-		
-		String path=args[0];
-		ApkPreProcess.preProcess(path);
-		String targetFile=args[1];
-		File dirFile=new File(path);
-		JSONArray jsonArray=new JSONArray();
-		File[]files=	dirFile.listFiles();
-		for (File file : files) {
-			if (file.getAbsolutePath().contains("libcom")) {
-				PackageLite packageLit=PackageLite.parse(file.getAbsolutePath());
-				jsonArray.put(packageLit.getBundleInfo());
-//				try {
-//					 packageLit.getBundleInfo().toString();
-//				} catch (JSONException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-			}
-
-		}
-		org.apache.commons.io.FileUtils.writeStringToFile(new File(targetFile), jsonArray.toString());
-		System.out.println(jsonArray.toString());
+public class TextUtils {
+	public static boolean isEmpty(String text) {
+		return text!=null&&text.length()>0;
 	}
-
+    public static boolean equals(CharSequence a, CharSequence b) {
+        if (a == b) return true;
+        int length;
+        if (a != null && b != null && (length = a.length()) == b.length()) {
+            if (a instanceof String && b instanceof String) {
+                return a.equals(b);
+            } else {
+                for (int i = 0; i < length; i++) {
+                    if (a.charAt(i) != b.charAt(i)) return false;
+                }
+                return true;
+            }
+        }
+        return false;
+    }
 }

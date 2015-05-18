@@ -18,30 +18,9 @@ PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS 
 FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
 ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 @author BunnyBlue
-* **/
-package cpm.openAtlas.bundleInfo.maker;
-
+ * **/
 /**
  * @author BunnyBlue
  *
  */
-public class TextUtils {
-	public static boolean isEmpty(String text) {
-		return text!=null&&text.length()>0;
-	}
-    public static boolean equals(CharSequence a, CharSequence b) {
-        if (a == b) return true;
-        int length;
-        if (a != null && b != null && (length = a.length()) == b.length()) {
-            if (a instanceof String && b instanceof String) {
-                return a.equals(b);
-            } else {
-                for (int i = 0; i < length; i++) {
-                    if (a.charAt(i) != b.charAt(i)) return false;
-                }
-                return true;
-            }
-        }
-        return false;
-    }
-}
+package com.openAtlas.bundleInfo.maker;
