@@ -308,7 +308,7 @@ public class WelcomeFragment extends Fragment implements Callback {
     public void gotoMainActivity(boolean z) {
     	System.out.println("WelcomeFragment.gotoMainActivity()");
       //  boolean z2 = false;.//com.openatlas.homelauncher.MainActivity
-        if (Welcome.class==getActivity().getClass() ) {
+        if (getActivity()!=null&&Welcome.class==getActivity().getClass() ) {
 
         	Intent mIntent=new Intent();
     		mIntent.setClassName(getActivity(), "com.openatlas.homelauncher.MainActivity");
