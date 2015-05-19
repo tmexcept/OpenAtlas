@@ -40,6 +40,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Handler.Callback;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -307,14 +308,16 @@ public class WelcomeFragment extends Fragment implements Callback {
     public void gotoMainActivity(boolean z) {
     	System.out.println("WelcomeFragment.gotoMainActivity()");
       //  boolean z2 = false;.//com.openatlas.homelauncher.MainActivity
-        if (getActivity().getClass() == Welcome.class) {
+        if (Welcome.class==getActivity().getClass() ) {
 
         	Intent mIntent=new Intent();
     		mIntent.setClassName(getActivity(), "com.openatlas.homelauncher.MainActivity");
     		startActivity(mIntent);
             Welcome.doLaunchoverUT();
             getActivity().finish();
-        }
+        }else {
+			Log.e(getClass().getSimpleName()	, "getActivity() is null");
+		}
     }
 
 
