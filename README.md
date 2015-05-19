@@ -1,25 +1,25 @@
 # OpenAtlas
 OpenAtlas ,a Android Component Plugin Framework<br>The MIT License (MIT) Copyright (c) 2015 Bunny Blue,achellies
 
-  <br>至于资源这块处理仁者见仁智者见智。代码遵循MIT License，目前使用patch aapt进行资源分区，虽然现在这个项目带有插件的名字，严格意义上说这个已经从插件里面出来了，跟系统一样管理各个组件，叫做component更合适。对于项目的分析，正在进行，有bug的话可以在issue里面提交，QQ群不太适合讨论技术。</br>
+  <br>至于资源这块处理仁者见仁智者见智。代码遵循MIT License，目前使用patch aapt进行资源分区，虽然现在这个项目带有插件的名字，严格意义上说这个已经从插件里面出来了，跟系统一样管理各个组件，叫做component更合适。对于项目的分析，正在进行，有bug的话可以在issue里面提交。</br>
 
 ### Simple Project Moved to https://github.com/bunnyblue/OpenAtlasExt
 
-### Simple Project Moved to https://github.com/bunnyblue/OpenAtlasExt
+
 ### Contributors
 [achellies](https://github.com/achellies)<br>
 [BunnyBlue](https://github.com/bunnyblue)<br>
 [SuperSanders](https://github.com/SuperSanders)<br>
 
 ## plugin start
-download aapt from repo,and  you should use build-tool @R22,
+download aapt from repo,and  you should use build-tool version 22.x.x,
 write your plugin as normal app, ant build  with  hacked aapt.
 ### plugin resource notice
 you can define your package id at Manifest by "versionName",such as versionName:"1.0.1" ,but as a plugin should be versionName:"1.0.10x7a",you will get apk which versionName is "1.0.0" but package id is 0x7a not 0x7f.you can use 0x2 to 0x7,
 also you can define package change packageName "com.myapp.pkgname" to " com.myapp.pkgname0x7a".
 
 ##Sample & Art
-<a href="https://github.com/bunnyblue/OpenAtlas/raw/bunny/Dist/AtlasLauncher.apk">
+<a href="https://github.com/bunnyblue/OpenAtlasExtension/blob/master/Dist/OpenAtlasLauncher.apk">
   Sample Apk,you can download from here
 </a>
 
