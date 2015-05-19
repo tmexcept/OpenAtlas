@@ -74,6 +74,7 @@ import com.openatlas.runtime.RuntimeVariables;
 import com.openatlas.util.BundleLock;
 import com.openatlas.util.OpenAtlasFileLock;
 import com.openatlas.util.StringUtils;
+import com.openatlas.util.Utils;
 
 public final class Framework {
 	private static final AdminPermission ADMIN_PERMISSION;
@@ -681,6 +682,7 @@ public final class Framework {
 			}
 		}
 		property = i;
+		notifyFrameworkListeners(0, systemBundle, null);
 		systemBundle.setLevel(getBundles().toArray(new Bundle[bundles.size()]), property, false);
 		frameworkStartupShutdown = false;
 		if (!restart) {
@@ -803,10 +805,8 @@ public final class Framework {
 			property2 = "en";
 		}
 		properties2.put(str, property2);
-		STORAGE_LOCATION = properties.getProperty(PlatformConfigure.INSTALL_LOACTION, properties.getProperty("org.osgi.framework.dir", BASEDIR + File.separatorChar + "storage"))
-				+ File.separatorChar;
-		launch();
-		notifyFrameworkListeners(0, systemBundle, null);
+
+
 	}
 
 	private static void launch() {
@@ -922,6 +922,7 @@ public final class Framework {
 				}
 				File file2 = new File(STORAGE_LOCATION);
 				mergeWalsDir(new File(STORAGE_LOCATION, "wal"), file2);
+				 MergeWirteAheads(file2);
 				File[] listFiles = file2.listFiles(new FilenameFilter() {
 					@Override
 					public boolean accept(File file, String str) {
@@ -1093,6 +1094,23 @@ public final class Framework {
 		frameworkListeners.remove(frameworkListener);
 	}
 
+    private static void MergeWirteAheads(File file) {
+        try {
+            File file2 = new File(STORAGE_LOCATION, "wal");
+            String curProcessName =Utils.getProcessName();
+            log.debug("restoreProfile in process " + curProcessName);
+            String packageName = RuntimeVariables.androidApplication.getPackageName();
+            if (curProcessName != null && packageName != null && curProcessName.equals(packageName)) {
+                mergeWalsDir(file2, file);
+            }
+        } catch (Throwable th) {
+            if (Build.MODEL == null || !Build.MODEL.equals("HTC 802w")) {
+                log.error(th.getMessage(), th.getCause());
+                return;
+            }
+            RuntimeException runtimeException = new RuntimeException(th);
+        }
+    }
 	static void addBundleListener(BundleListener bundleListener) {
 		bundleListeners.add(bundleListener);
 	}

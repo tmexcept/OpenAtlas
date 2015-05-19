@@ -39,6 +39,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ResolveInfo;
+import android.content.res.AssetManager;
+import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -295,6 +297,19 @@ public class InstrumentationHook extends Instrumentation {
 		}
 	}
 
+    private void HandleResourceNotFound(Activity activity, Bundle bundle, Exception exception) {
+        if (OpenAtlasHacks.ContextThemeWrapper_mResources != null) {
+            String str;
+            try {
+                List<?> assetPathFromResources = getAssetPathFromResources(OpenAtlasHacks.ContextThemeWrapper_mResources.get(activity));
+                str = "(1)Paths in ContextThemeWrapper_mResources:" + assetPathFromResources + " paths in runtime:" + DelegateResources.getAssetHistoryPaths();
+            } catch (Exception e) {
+                str = "(2)paths in runtime:" + DelegateResources.getAssetHistoryPaths() + " getAssetPath fail: " + e;
+            }
+            throw new RuntimeException(str, exception);
+        }
+        throw new RuntimeException("(3)ContextThemeWrapper_mResources is null paths in runtime:" + DelegateResources.getAssetHistoryPaths(), exception);
+    }
 	public ActivityResult execStartActivity(Context who, IBinder contextThread, IBinder token, Activity target,
 			Intent intent, int requestCode) {
 		return execStartActivityInternal(this.context, intent, new ExecStartActivityCallbackImpl(who, contextThread, token, target,
@@ -469,6 +484,14 @@ public class InstrumentationHook extends Instrumentation {
 		}
 		return newActivity;
 	}
+    private List<String> getAssetPathFromResources(Resources resources) {
+        try {
+            return DelegateResources.getOriginAssetsPath((AssetManager) OpenAtlasHacks.Resources_mAssets.get(resources));
+        } catch (Exception e) {
+            log.debug("DelegateResource" + e.getCause());
+            return null;
+        }
+    }
 	/**
 	 * Perform calling of an activity's {@link Activity#onCreate}
 	 * method.  The default implementation simply calls through to that method.
@@ -478,7 +501,7 @@ public class InstrumentationHook extends Instrumentation {
 	 *               onCreate().
 	 */
 	@Override
-	public void callActivityOnCreate(Activity activity, Bundle icicle) {
+	public void callActivityOnCreate(Activity activity, Bundle icicle)  {
 		if (RuntimeVariables.androidApplication.getPackageName().equals(activity.getPackageName())) {
 			ContextImplHook contextImplHook = new ContextImplHook(activity.getBaseContext(), activity.getClass()
 					.getClassLoader());
@@ -497,13 +520,17 @@ public class InstrumentationHook extends Instrumentation {
 			if (TextUtils.isEmpty(property)) {
 				property = PlatformConfigure.BOOT_ACTIVITY;
 			}
-			if (activity.getClass().getName().equals(property)) {
-				this.mBase.callActivityOnCreate(activity, null);
-				return;
-			} else {
-				this.mBase.callActivityOnCreate(activity, icicle);
-				return;
-			}
+		      try {
+	                ensureResourcesInjected(activity);
+	                this.mBase.callActivityOnCreate(activity, icicle);
+	                return;
+	            } catch (Exception e2) {
+	                if (!e2.toString().contains("android.content.res.Resources") || e2.toString().contains("OutOfMemoryError")) {
+	                	e2.printStackTrace();
+	                }
+	                HandleResourceNotFound(activity, icicle, e2);
+	                return;
+	            }
 		}
 		this.mBase.callActivityOnCreate(activity, icicle);
 	}
@@ -558,7 +585,16 @@ public class InstrumentationHook extends Instrumentation {
 	public void endPerformanceSnapshot() {
 		this.mBase.endPerformanceSnapshot();
 	}
-
+    private void ensureResourcesInjected(Activity activity) {
+        ContextImplHook contextImplHook = new ContextImplHook(activity.getBaseContext(), activity.getClass().getClassLoader());
+        if (OpenAtlasHacks.ContextThemeWrapper_mResources != null) {
+        	OpenAtlasHacks.ContextThemeWrapper_mResources.set(activity, RuntimeVariables.getDelegateResources());
+        }
+        if (!(OpenAtlasHacks.ContextThemeWrapper_mBase == null || OpenAtlasHacks.ContextThemeWrapper_mBase.getField() == null)) {
+        	OpenAtlasHacks.ContextThemeWrapper_mBase.set(activity, contextImplHook);
+        }
+        OpenAtlasHacks.ContextWrapper_mBase.set(activity, contextImplHook);
+    }
 	@Override
 	public void onDestroy() {
 		this.mBase.onDestroy();
