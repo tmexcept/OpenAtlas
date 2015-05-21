@@ -20,18 +20,7 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEAL
  * **/
 package com.openAtlas.launcher;
 
-import java.lang.reflect.Field;
-
-import android.app.ActivityManager;
-import android.app.ActivityManager.RunningAppProcessInfo;
-import android.content.Context;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.os.Process;
-
-import com.openatlas.android.initializer.AtlasInitializer;
 import com.openatlas.android.lifecycle.AtlasApp;
-import com.openatlas.boot.Globals;
 import com.openatlas.boot.PlatformConfigure;
 
 public class BootApp extends AtlasApp {
@@ -39,49 +28,49 @@ public class BootApp extends AtlasApp {
 
 	static final String TAG = "TestApp";
 
-	private String processName;
-
-
-	private Context mBaseContext;
-	AtlasInitializer mAtlasInitializer;
-	public static BootApp instaceApp;
-    private PackageManager mPackageManager;
-  //  private InvocationHandlerImpl mPackageManagerProxyhandler;
-    private PackageInfo mPackageInfo;
-	@Override
-	protected void attachBaseContext(Context context) {
-		super.attachBaseContext(context);
-		this.mBaseContext = context;
-		try {
-			Field declaredField = Globals.class
-					.getDeclaredField("sInstalledVersionName");
-			declaredField.setAccessible(true);
-			declaredField.set(null, this.mBaseContext.getPackageManager()
-					.getPackageInfo(context.getPackageName(), 0).versionName);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		int myPid = Process.myPid();
-		for (RunningAppProcessInfo runningAppProcessInfo : ((ActivityManager) getSystemService(Context.ACTIVITY_SERVICE))
-				.getRunningAppProcesses()) {
-			if (runningAppProcessInfo.pid == myPid) {
-				this.processName = runningAppProcessInfo.processName;
-				break;
-			}
-		}
-		this.mAtlasInitializer = new AtlasInitializer(this,getPackageName(), getApplicationContext());
-		// this.mAtlasInitializer.injectApplication();
-		// initCrashHandlerAndSafeMode(this.mBaseContext);
-		this.mAtlasInitializer.init();
-	
-	}
+//	private String processName;
+//
+//
+//	private Context mBaseContext;
+//	AtlasInitializer mAtlasInitializer;
+//	//public static BootApp instaceApp;
+//    private PackageManager mPackageManager;
+//  //  private InvocationHandlerImpl mPackageManagerProxyhandler;
+//    private PackageInfo mPackageInfo;
+//@Override
+//	protected void attachBaseContext(Context context) {
+//		super.attachBaseContext(context);
+//		this.mBaseContext = context;
+//		try {
+//			Field declaredField = Globals.class
+//					.getDeclaredField("sInstalledVersionName");
+//			declaredField.setAccessible(true);
+//			declaredField.set(null, this.mBaseContext.getPackageManager()
+//					.getPackageInfo(context.getPackageName(), 0).versionName);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		int myPid = Process.myPid();
+//		for (RunningAppProcessInfo runningAppProcessInfo : ((ActivityManager) getSystemService(Context.ACTIVITY_SERVICE))
+//				.getRunningAppProcesses()) {
+//			if (runningAppProcessInfo.pid == myPid) {
+//				this.processName = runningAppProcessInfo.processName;
+//				break;
+//			}
+//		}
+//		this.mAtlasInitializer = new AtlasInitializer(this,getPackageName(), getApplicationContext());
+//		// this.mAtlasInitializer.injectApplication();
+//		// initCrashHandlerAndSafeMode(this.mBaseContext);
+//		this.mAtlasInitializer.init();
+//	
+//	}
 
 	@Override
 	public void onCreate() {
 
 		super.onCreate();
-		instaceApp = this;
-		this.mAtlasInitializer.startUp();
+		//instaceApp = this;
+	
 		PlatformConfigure.BundleNotFoundActivity=BundleNotFoundActivity.class;
 	}
 
