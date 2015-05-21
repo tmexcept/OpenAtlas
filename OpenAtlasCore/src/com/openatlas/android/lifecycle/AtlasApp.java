@@ -21,11 +21,14 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEAL
 package com.openatlas.android.lifecycle;
 
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningAppProcessInfo;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -36,10 +39,12 @@ import android.database.sqlite.SQLiteException;
 import android.os.Build.VERSION;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Process;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.openatlas.android.compat.AtlasCompat;
+import com.openatlas.android.initializer.AtlasInitializer;
 import com.openatlas.android.initializer.BundleParser;
 import com.openatlas.boot.Globals;
 import com.openatlas.runtime.ContextImplHook;
@@ -53,7 +58,9 @@ public class AtlasApp extends AtlasCompat {
     private final List<CrossActivityLifecycleCallback> mCrossActivityLifecycleCallbacks;
     private final AtomicInteger mStartCount;
     private WeakReference<Activity> mWeakActivity;
-
+	private Context mBaseContext;
+	private String processName;
+	AtlasInitializer mAtlasInitializer;
     public static interface CrossActivityLifecycleCallback {
         void onCreated(Activity activity);
 
@@ -186,11 +193,34 @@ public class AtlasApp extends AtlasCompat {
     	// TODO Auto-generated method stub
     	super.attachBaseContext(base);
     	BundleParser.parser(getBaseContext());
+    	
+		try {
+			Field declaredField = Globals.class
+					.getDeclaredField("sInstalledVersionName");
+			declaredField.setAccessible(true);
+			declaredField.set(null, this.mBaseContext.getPackageManager()
+					.getPackageInfo(base.getPackageName(), 0).versionName);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		int myPid = Process.myPid();
+		for (RunningAppProcessInfo runningAppProcessInfo : ((ActivityManager) getSystemService(Context.ACTIVITY_SERVICE))
+				.getRunningAppProcesses()) {
+			if (runningAppProcessInfo.pid == myPid) {
+				this.processName = runningAppProcessInfo.processName;
+				break;
+			}
+		}
+		this.mAtlasInitializer = new AtlasInitializer(this,getPackageName(), getApplicationContext());
+		// this.mAtlasInitializer.injectApplication();
+		// initCrashHandlerAndSafeMode(this.mBaseContext);
+		this.mAtlasInitializer.init();
     }
     @Override
 	public void onCreate() {
         super.onCreate();
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacksCompatImpl(this));
+    	this.mAtlasInitializer.startUp();
      
     }
 	@Override
