@@ -61,8 +61,7 @@ public class Atlas {
         log = LoggerFactory.getInstance("Atlas");
     }
 
-    private Atlas() {
-    }
+
 
     public static  Atlas getInstance() {
       
@@ -295,4 +294,5 @@ public class Atlas {
             ClassNotFoundInterceptorCallback classNotFoundInterceptorCallback) {
         Framework.setClassNotFoundCallback(classNotFoundInterceptorCallback);
     }
+
 }

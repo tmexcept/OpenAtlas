@@ -42,8 +42,8 @@ import android.os.StatFs;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.openatlas.boot.PlatformConfigure;
 import com.openatlas.framework.Atlas;
+import com.openatlas.framework.AtlasConfig;
 import com.openatlas.runtime.RuntimeVariables;
 
 
@@ -103,7 +103,7 @@ public class BundlesInstaller {
 				if (installAuto) {
 				    List<String> arrayList = new ArrayList<String>();
 				    for (String str : bundleList) {
-				        for (String replace : PlatformConfigure.AUTO) {
+				        for (String replace : AtlasConfig.AUTO) {
 				            if (str.contains(replace.replace(".", "_"))) {
 				                arrayList.add(str);
 				            }
@@ -176,7 +176,7 @@ public class BundlesInstaller {
             installBundle(zipFile, a, application);
         }
         if (autoStart) {
-            for (String bundle : PlatformConfigure.AUTO) {
+            for (String bundle : AtlasConfig.AUTO) {
                 Bundle bundle2 = Atlas.getInstance().getBundle(bundle);
                 if (bundle2 != null) {
                     try {
@@ -191,7 +191,7 @@ public class BundlesInstaller {
 
     private void installDelayBundles(ZipFile zipFile, List<String> bundleList, Application application) {
         int i = 0;
-        for (String replace : PlatformConfigure.DELAY) {
+        for (String replace : AtlasConfig.DELAY) {
             String replace2 = contains(bundleList, replace.replace(".", "_"));
             if (replace2 != null && replace2.length() > 0) {
                 installBundle(zipFile, replace2, application);
@@ -202,7 +202,7 @@ public class BundlesInstaller {
             installBundle(zipFile, a, application);
         }
         if (autoStart) {
-            String[] strArr = PlatformConfigure.DELAY;
+            String[] strArr = AtlasConfig.DELAY;
             int length = strArr.length;
             while (i < length) {
                 Bundle bundle = Atlas.getInstance().getBundle(strArr[i]);
