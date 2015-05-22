@@ -18,7 +18,7 @@ FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TOR
 ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 @author BunnyBlue
  * **/
-package com.openAtlas.launcher.mirrorProvider;
+package com.openatlas.launcher.mirrorProvider;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;

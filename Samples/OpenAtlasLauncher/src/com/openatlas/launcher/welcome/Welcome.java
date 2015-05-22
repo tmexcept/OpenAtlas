@@ -18,15 +18,15 @@ FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TOR
 ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 @author BunnyBlue
  * **/
-package com.openAtlas.launcher.welcome;
+package com.openatlas.launcher.welcome;
 
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.os.Bundle;
 
-import com.openAtlas.launcher.R;
 import com.openatlas.android.lifecycle.BaseActivity;
 import com.openatlas.boot.Globals;
+import com.openatlas.launcher.R;
 
 
 
