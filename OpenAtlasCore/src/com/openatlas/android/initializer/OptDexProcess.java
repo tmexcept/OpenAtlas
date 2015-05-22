@@ -32,6 +32,7 @@ import android.util.Log;
 
 import com.openatlas.boot.PlatformConfigure;
 import com.openatlas.framework.Atlas;
+import com.openatlas.framework.AtlasConfig;
 import com.openatlas.framework.BundleImpl;
 import com.openatlas.framework.bundlestorage.BundleArchiveRevision.DexLoadException;
 
@@ -112,7 +113,7 @@ public class OptDexProcess {
 	/**** 对已安装并且安装方式为STORE的Bundle进行dexopt操作 ****/
 	private void optStoreDex() {
 		for (Bundle bundle : Atlas.getInstance().getBundles()) {
-			if (!(bundle == null || contains(PlatformConfigure.STORE, bundle.getLocation()))) {
+			if (!(bundle == null || contains(AtlasConfig.STORE, bundle.getLocation()))) {
 				try {
 					((BundleImpl) bundle).optDexFile();
 				} catch (Throwable e) {
@@ -127,7 +128,7 @@ public class OptDexProcess {
 
 	/**** 对全部安装方式为Store的Bundle进行dexopt操作 ***/
 	private void optStoreDex2() {
-		for (String bundle : PlatformConfigure.STORE) {
+		for (String bundle : AtlasConfig.STORE) {
 			Bundle bundle2 = Atlas.getInstance().getBundle(bundle);
 			if (bundle2 != null) {
 				try {
@@ -144,7 +145,7 @@ public class OptDexProcess {
 
 	/** 对随宿主启动的插件进行dexopt操作 ****/
 	private void optAUTODex() {
-		for (String bundleName : PlatformConfigure.AUTO) {
+		for (String bundleName : AtlasConfig.AUTO) {
 			Bundle bundle = Atlas.getInstance().getBundle(bundleName);
 			if (bundle != null) {
 				try {

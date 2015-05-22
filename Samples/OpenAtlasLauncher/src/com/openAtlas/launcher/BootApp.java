@@ -22,9 +22,16 @@ package com.openAtlas.launcher;
 
 import com.openatlas.android.lifecycle.AtlasApp;
 import com.openatlas.boot.PlatformConfigure;
+import com.openatlas.framework.AtlasConfig;
 
 public class BootApp extends AtlasApp {
+	static{
+		AtlasConfig.DELAY = new String[]{"com.openatlas.qrcode"};
+		AtlasConfig.AUTO = new String[]{"com.openatlas.homelauncher","com.openatlas.qrcode","com.openatlas.android.game2","com.taobao.universalimageloader.sample0x6a"};
+		AtlasConfig.STORE = new String[]{"com.openatlas.android.appcenter","com.taobao.universalimageloader.sample0x6a"};
+	}
 
+	
 
 	static final String TAG = "TestApp";
 

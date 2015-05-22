@@ -50,18 +50,7 @@ public class PlatformConfigure {
 	public static final String OPENATLAS_STRICT_STARTUP="com.openAtlas.strictStartup";
 	public static final String OPENATLAS_AUTO_LOAD="com.openAtlas.auto.load";
 	public static Class<?> BundleNotFoundActivity=null;
-	/***延时启动配*****/
-	public static final String[] DELAY;
-	/****随宿主程序启动的Bundle，核心Bundle需要在这里添加，其余的不建议在这儿加，不然影响初始化速度***/
-	public static final String[] AUTO;
-	public static final String[] STORE;
 
-	static {
-		DELAY = new String[]{"com.openatlas.qrcode"};
-		AUTO = new String[]{"com.openatlas.homelauncher","com.openatlas.qrcode","com.openatlas.android.game2","com.taobao.universalimageloader.sample0x6a"};
-		STORE = new String[]{"com.openatlas.android.appcenter","com.taobao.universalimageloader.sample0x6a"};
-	}
-	
 	
 
     public static final String BUNDLE_ACTIVATOR = "Bundle-Activator";
