@@ -19,7 +19,7 @@ FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TOR
 ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 @author BunnyBlue
 * **/
-package com.openAtlas.launcher.welcome;
+package com.openatlas.launcher.welcome;
 
 /**
  * @author BunnyBlue
@@ -48,9 +48,9 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AnimationUtils;
 
 import com.eftimoff.androipathview.PathView;
-import com.openAtlas.launcher.R;
 import com.openatlas.boot.Globals;
 import com.openatlas.boot.PlatformConfigure;
+import com.openatlas.launcher.R;
 
 
 public class WelcomeFragment extends Fragment implements Callback {
