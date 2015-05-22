@@ -79,12 +79,12 @@ public class DelegateResources extends Resources {
 			} catch (Exception e) {
 				e.printStackTrace();
 				synchronized (DelegateResources.lock) {
+					DelegateResources.lock.notify();
 				}
-				DelegateResources.lock.notify();
 			} catch (Throwable th) {
 				synchronized (DelegateResources.lock) {
+					DelegateResources.lock.notify();
 				}
-				DelegateResources.lock.notify();
 			}
 		}
 	}
