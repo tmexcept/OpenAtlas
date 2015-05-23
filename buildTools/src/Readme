@@ -1,5 +1,0 @@
-make USE_MINGW=y adb
-make USE_MINGW=y adb -j4
-make USE_MINGW=y adb 
-make USE_MINGW=y aapt
-

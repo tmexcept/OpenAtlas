@@ -15,7 +15,7 @@ void dexopt(const char* apkPath,const char* dexPath,const char* args );
  * Method:    dexopt
  * Signature: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
  */
-JNIEXPORT void JNICALL Java_com_openAtlas_dexopt_InitExecutor_dexopt
+JNIEXPORT void JNICALL Java_com_openatlas_dexopt_InitExecutor_dexopt
 (JNIEnv *env, jclass clazz, jstring japkPtah , jstring jdexPtah, jstring jargs){
 
 	const char* apkPath = env->GetStringUTFChars(japkPtah, 0);
@@ -149,7 +149,16 @@ void dexopt(const char* apkPath,const char* dexPath,const char* args ){
 		{
 			if ( !(status << 25) && !((unsigned int)(status << 16) >> 24) )
 			{
-				__android_log_print(3, "DexInv", "DexInv: --- END '%s' (success) ---\n", apkPath);
+				int  dexPathLock = flock(fdDex, 8);
+						if ( !dexPathLock )
+						{
+							__android_log_print(3, "DexInv", "DexInv: ---  dexPathLock (success) ---\n");
+							close(dexPathLock);
+							close(fdDex);
+
+						}
+
+				__android_log_print(3, "DexInv", "DexInv: --- END '%s' (success) ---status%d\n", apkPath,status);
 				return;
 			}
 			__android_log_print(5, "DexInv", "DexInv: --- END '%s' --- status=0x%04x, process failed\n", apkPath, status);
@@ -164,6 +173,7 @@ void dexopt(const char* apkPath,const char* dexPath,const char* args ){
 				int  dexPathLock = flock(fdDex, 8);
 				if ( !dexPathLock )
 				{
+					__android_log_print(3, "DexInv", "DexInv: ---  dexPathLock (success) ---\n");
 					close(dexPathLock);
 					close(fdDex);
 					return;

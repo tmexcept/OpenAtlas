@@ -1,10 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.openAtlas.launcher"
+    package="com.openatlas.launcher"
     android:versionCode="1"
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="15"
+        android:minSdkVersion="14"
         android:targetSdkVersion="22" />
 
     <uses-permission android:name="android.permission.VIBRATE" />
@@ -23,7 +23,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.openAtlas.launcher.welcome.Welcome"
+            android:name="com.openatlas.launcher.welcome.Welcome"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -38,95 +38,23 @@
         <activity android:name="com.taobao.scan.MainActivity" >
             <intent-filter>
                 <action android:name="com.taobao.scan.MainActivity" />
-
-                <data
-                    android:host="scancode.m.taobao.com"
-                    android:path="/container"
-                    android:scheme="http" />
             </intent-filter>
-
-            <meta-data
-                android:name="bundleLocation"
-                android:value="com.taobao.android.scancode" />
         </activity>
         <activity android:name="com.taobao.scan.SaneService" >
         </activity>
-        <activity android:name="com.taobao.android.gamecenter.main.GcContainerActivity" >
-        </activity>
 
-        <service
-            android:name="com.taobao.android.gamecenter.download.GcAppDownLoadService"
-            android:exported="false" >
-            <meta-data
-                android:name="bundleLocation"
-                android:value="com.taobao.android.gamecenter" />
-        </service>
-
-        <activity android:name="com.taobao.android.gamecenter.main.ActivityInternalActivity" >
-        </activity>
-
-        <receiver
-            android:name="com.taobao.android.gamecenter.GameStaticReceiver"
-            android:enabled="true"
-            android:exported="false" >
-            <intent-filter>
-                <action android:name="com.taobao.android.gamecenter.GameStaticReceiver" >
-                </action>
-            </intent-filter>
-        </receiver>
-
-        <!--
-             <provider
-            android:name="com.taobao.android.gamecenter.AppProvider"
-            android:authorities="appcenter"
-            android:enabled="true"
-            android:exported="false" >
-        </provider>
-        -->
         <provider
-            android:name="com.openAtlas.launcher.mirrorProvider.TBLocationContentProviderProxy"
+            android:name="com.openatlas.launcher.mirrorProvider.GameProviderProxy"
+            android:authorities="game"
+            android:enabled="true"
+            android:exported="true" >
+        </provider>
+        <provider
+            android:name="com.openatlas.launcher.mirrorProvider.AppProviderProxy"
             android:authorities="appcenter"
             android:enabled="true"
             android:exported="true" >
         </provider>
-
-        <activity
-            android:name="com.taobao.android.game2.main.GcContainerActivity"
-            android:label="@string/app_name" >
-            <intent-filter>
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
-        <service
-            android:name="com.taobao.android.game2.download.GcAppDownLoadService"
-            android:exported="false" >
-            <meta-data
-                android:name="bundleLocation"
-                android:value="com.taobao.android.game20x6f" />
-        </service>
-
-        <receiver
-            android:name="com.taobao.android.game2.GameStaticReceiver"
-            android:enabled="true"
-            android:exported="false" >
-            <intent-filter>
-                <action android:name="com.taobao.android.game20x6f.GameStaticReceiver" >
-                </action>
-            </intent-filter>
-        </receiver>
-
-        <activity android:name="com.taobao.android.game2.main.ActivityInternalActivity" >
-        </activity>
-
-        <!--
-             <provider
-            android:name="com.taobao.android.game20x6f.AppProvider"
-            android:authorities="appcenter2"
-            android:enabled="true"
-            android:exported="false" >
-        </provider>
-        -->
 
         <activity android:name="com.nostra13.universalimageloader.sample.activity.HomeActivity" >
         </activity>
@@ -141,6 +69,57 @@
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" >
+        </activity>
+        <activity
+            android:name="com.openatlas.android.appcenter.main.GcContainerActivity"
+            android:label="@string/app_name" >
+        </activity>
+
+        <service
+            android:name="com.openatlas.android.appcenter.download.GcAppDownLoadService"
+            android:exported="false" >
+            <meta-data
+                android:name="bundleLocation"
+                android:value="com.openatlas.android.appcenter" />
+        </service>
+
+        <receiver
+            android:name="com.openatlas.android.appcenter.GameStaticReceiver"
+            android:enabled="true"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="com.openatlas.android.appcenter.GameStaticReceiver" >
+                </action>
+            </intent-filter>
+        </receiver>
+
+        <activity android:name="com.openatlas.android.appcenter.main.ActivityInternalActivity" >
+        </activity>
+        <activity
+            android:name="com.openatlas.android.game2.main.GcContainerActivity"
+            android:label="@string/app_name" >
+    
+        </activity>
+
+        <service
+            android:name="com.openatlas.android.game2.download.GcAppDownLoadService"
+            android:exported="false" >
+            <meta-data
+                android:name="bundleLocation"
+                android:value="com.openatlas.android.game2" />
+        </service>
+
+        <receiver
+            android:name="com.openatlas.android.game2.GameStaticReceiver"
+            android:enabled="true"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="com.openatlas.android.game2.GameStaticReceiver" >
+                </action>
+            </intent-filter>
+        </receiver>
+
+        <activity android:name="com.openatlas.android.game2.main.ActivityInternalActivity" >
         </activity>
     </application>
 
